@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kwaka1208/marche-kit/schema/news.schema.json",
+  "title": "お知らせ (news.json)",
+  "description": "お知らせの配列。順序は自由で、読み込み時に日付の降順でソートされる。0件のときはセクションごと非表示になる。",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["title", "date", "body"],
+    "additionalProperties": true,
+    "properties": {
+      "title": { "type": "string", "minLength": 1 },
+      "date": {
+        "type": "string",
+        "description": "YYYY-MM-DD と ISO日時の両方に対応。UTC表記でもJST基準の暦日に整形して表示される",
+        "anyOf": [
+          { "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+          { "format": "date-time" }
+        ]
+      },
+      "body": {
+        "type": "string",
+        "description": "本文(HTML文字列)。属性はシングルクォート推奨。画像は相対パス(先頭の / なし)"
+      }
+    }
+  },
+  "examples": [
+    [{ "title": "開催日程が決定しました", "date": "2026-08-01", "body": "<p>今年は10月に開催します。</p>" }]
+  ]
+}

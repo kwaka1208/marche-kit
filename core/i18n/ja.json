@@ -1,0 +1,45 @@
+{
+  "common": {
+    "loading": "読み込み中…",
+    "close": "閉じる",
+    "showMore": "もっと見る",
+    "showDetail": "詳細を表示"
+  },
+  "shop": {
+    "logoAlt": "{name}のロゴ",
+    "officialSite": "公式サイト",
+    "noName": "店舗名なし",
+    "empty": "調整中",
+    "loadError": "出店者情報を読み込めませんでした。ページを再読み込みしてお試しください。"
+  },
+  "item": {
+    "imageAlt": "商品画像",
+    "noName": "商品名なし",
+    "noDescription": "詳細情報はありません。",
+    "soldOut": "完売しました",
+    "empty": "順次更新",
+    "saleDayOnly": "{label}のみ",
+    "saleDayLabel": "{label}販売"
+  },
+  "announcements": {
+    "showPast": "過去のお知らせを見る",
+    "hidePast": "閉じる",
+    "badgeNew": "NEW",
+    "loadError": "お知らせを読み込めませんでした。ページを再読み込みしてお試しください。"
+  },
+  "pricing": {
+    "unset": "?",
+    "faceValue": "チケット1枚 {value}"
+  },
+  "form": {
+    "required": "必須",
+    "confirm": "この内容で送信します",
+    "submit": "送信する",
+    "back": "修正する",
+    "sending": "送信中…",
+    "errorRequired": "{label}を入力してください",
+    "errorEmail": "メールアドレスの形式が正しくありません",
+    "errorMaxLength": "{label}は{max}文字以内で入力してください",
+    "errorSend": "送信できませんでした。時間をおいてもう一度お試しください。"
+  }
+}

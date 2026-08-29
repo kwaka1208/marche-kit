@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kwaka1208/marche-kit/schema/shop.schema.json",
+  "title": "出店者データ (shop-data/<店舗ID>/data.json)",
+  "description": "出店者エディタが書き込む各店の実データ。画像は同じフォルダ内に置き、ファイル名だけを記録する。文字列項目はすべてテキストとして扱われ、HTMLタグは保存時にサーバー側で除去される。改行は \\n で表す。",
+  "type": "object",
+  "required": ["id", "name", "items", "updatedAt"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "店舗ID。フォルダ名と一致すること"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "店名。テキストとして描画される。改行は \\n(HTMLタグは書けない)"
+    },
+    "url": {
+      "type": "string",
+      "description": "公式サイト。http:// または https:// で始まる場合だけリンク化される"
+    },
+    "comment": {
+      "type": "string",
+      "description": "紹介文。テキストとして描画され、\\n が改行になる"
+    },
+    "logo": {
+      "type": "string",
+      "pattern": "^[^/\\\\]*\\.(webp|png|jpg|jpeg|gif|avif)$",
+      "description": "ロゴのファイル名。同じフォルダ内のファイルのみ"
+    },
+    "items": {
+      "type": "array",
+      "description": "商品の配列",
+      "items": { "$ref": "#/$defs/item" }
+    },
+    "updatedAt": {
+      "type": "string",
+      "description": "保存時刻(ISO 8601)。画像URLの ?v= に使いブラウザキャッシュを更新する"
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": ["id", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*-[0-9]+$",
+          "description": "商品ID。<店舗ID>-<連番> の形式に限る。他店のIDは名乗れない"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "商品名。テキストとして描画される。改行は \\n"
+        },
+        "category": {
+          "type": "string",
+          "description": "商品カテゴリ。商品一覧のフィルタに使う(出店者のカテゴリとは別物)"
+        },
+        "description": {
+          "type": "string",
+          "description": "説明文。テキストとして描画され、\\n が改行になる"
+        },
+        "image": {
+          "type": "string",
+          "pattern": "^[^/\\\\]*\\.(webp|png|jpg|jpeg|gif|avif)$",
+          "description": "商品画像のファイル名。同じフォルダ内のファイルのみ"
+        },
+        "price": {
+          "type": "number",
+          "minimum": 0,
+          "description": "対価。表示単位はサイト設定の pricing.mode で決まる(金額なら「600円」、チケット運用なら「2枚」)。ticket モードでは整数のみ、currency モードでは pricing.currency.decimals の桁数まで許す。省略または0は未設定とみなし、一覧に表示されない"
+        },
+        "status": {
+          "enum": ["onsale", "soldout", "ended"],
+          "default": "onsale",
+          "description": "省略時は onsale。ended は一覧から消え、soldout は完売の帯を付けて表示し続ける"
+        },
+        "saleDays": {
+          "type": "array",
+          "description": "販売日。サイト設定 days[].id の配列。省略時は全日。開催が1日だけのときはUIごと出力されない",
+          "items": { "type": "string", "pattern": "^day[0-9]+$" },
+          "uniqueItems": true
+        },
+        "imagePosition": {
+          "type": "string",
+          "description": "CSS object-position の値(任意)"
+        },
+        "useContain": {
+          "type": "boolean",
+          "description": "true で object-fit: contain(任意)"
+        }
+      }
+    }
+  }
+}

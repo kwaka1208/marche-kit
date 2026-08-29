@@ -1,0 +1,15 @@
+# 依存
+node_modules/
+# ビルド成果物
+dist/
+.astro/
+# 環境固有の設定(通知先メール・Webhook URL・管理キー)
+.env
+.env.*
+!.env.example
+# 出店者がアップロードした実データ(テンプレート利用者ごとに異なる)
+**/vendor-data/*/
+!**/vendor-data/_example/
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,45 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "close": "Close",
+    "showMore": "Show more",
+    "showDetail": "View details"
+  },
+  "shop": {
+    "logoAlt": "{name} logo",
+    "officialSite": "Official site",
+    "noName": "Unnamed shop",
+    "empty": "Coming soon",
+    "loadError": "Could not load the shop list. Please reload the page."
+  },
+  "item": {
+    "imageAlt": "Product image",
+    "noName": "Unnamed item",
+    "noDescription": "No details available.",
+    "soldOut": "Sold out",
+    "empty": "Coming soon",
+    "saleDayOnly": "{label} only",
+    "saleDayLabel": "Available {label}"
+  },
+  "announcements": {
+    "showPast": "See past announcements",
+    "hidePast": "Close",
+    "badgeNew": "NEW",
+    "loadError": "Could not load announcements. Please reload the page."
+  },
+  "pricing": {
+    "unset": "?",
+    "faceValue": "{value} per ticket"
+  },
+  "form": {
+    "required": "Required",
+    "confirm": "Send this message?",
+    "submit": "Send",
+    "back": "Edit",
+    "sending": "Sending…",
+    "errorRequired": "Please enter {label}.",
+    "errorEmail": "That email address does not look valid.",
+    "errorMaxLength": "{label} must be {max} characters or fewer.",
+    "errorSend": "Could not send. Please try again in a moment."
+  }
+}
