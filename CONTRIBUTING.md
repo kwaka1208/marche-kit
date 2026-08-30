@@ -171,7 +171,7 @@ python3 tools/validate.py examples/demo/variants/oneday
 
 ## 送る前のチェックリスト
 
-- [ ] `python3 tools/validate.py` がデモ3構成とも仕様違反0で通る
+- [ ] `python3 tools/validate.py` がデモ3構成とも仕様違反0で通る（**スロットとの照合を含む**）
 - [ ] デモを**テーマ無しの素の状態**で開いて、描画が壊れていない
 - [ ] コアを変えたなら、**同梱の2テーマ**（`default/` と `night-market/`）の両方で見た
 - [ ] フォームに触れたなら、**おとり欄（`.courier-honeypot`）が画面の外にある**ことを確かめた

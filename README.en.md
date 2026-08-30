@@ -127,6 +127,10 @@ python3 tools/validate.py <public directory>
 It reports vendor ID mismatches, malformed product IDs, HTML tags that slipped in,
 undefined sale days and missing image files. Run it after editing data by hand.
 
+**It also cross-checks the theme.** It reads `index.html` and verifies that every category
+you defined has a slot to render into — forget one and that category's vendors silently
+never appear on the site.
+
 ## Contributing
 
 Issues and pull requests are welcome **in English or Japanese.**

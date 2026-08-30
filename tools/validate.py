@@ -159,6 +159,69 @@ def check_text(where, label, value):
                       " → テキストとして扱う仕様。改行は \\n を使う")
 
 
+HTML_COMMENT = re.compile(r"<!--.*?-->", re.S)
+
+
+def read_slots(base):
+    """公開ディレクトリの index.html から、テーマが置いたスロットを拾う。
+
+    コメントの中は数えない。themes/default/ には「区分が複数あるときはこう書く」という
+    記入例がコメントで入っており、これを実在するスロットと数えると検査が素通りする。
+
+    index.html が無い構成(データだけを検証する場合)では None を返し、照合を省く。
+    """
+    path = os.path.join(base, "index.html")
+    if not os.path.exists(path):
+        return None
+    html = HTML_COMMENT.sub("", open(path, encoding="utf-8").read())
+    return {
+        "shops": set(re.findall(r'data-marche-shops\s*=\s*"([^"]*)"', html)),
+        "forms": set(re.findall(r'data-marche-form\s*=\s*"([^"]*)"', html)),
+        "social": bool(re.search(r"data-marche-social\b", html)),
+    }
+
+
+def check_slots(base, category_ids, form_names, cfg_path):
+    """定義したものが、テーマのスロットに行き先を持っているかを照合する。
+
+    **見るのは一方向だけ。** 「定義があるのにスロットが無い」＝出しどころが無く、
+    書いた内容がサイトに出ない状態だけを問題にする。
+    逆(スロットがあるのに定義が無い)は隠れるだけで、意図した運用でも起きる
+    (examples/demo/variants/ は、そうなることを確かめるために定義を置いていない)。
+    """
+    slots = read_slots(base)
+    if slots is None:
+        warnings.append("index.html が無いため、スロットとの照合を省略"
+                        "（テーマを置いていない構成では正常）")
+        return
+
+    for cid in sorted(category_ids):
+        if cid not in slots["shops"]:
+            errors.append(f"shops.json: カテゴリ '{cid}' に対応するスロットが index.html に無い"
+                          f' → <div data-marche-shops="{cid}"></div> を置くこと。'
+                          "**このカテゴリの出店者はサイトに出ません**")
+
+    for name in sorted(form_names):
+        if name not in slots["forms"]:
+            warnings.append(f"forms/{name}.json があるが、"
+                            f'index.html に data-marche-form="{name}" が無い'
+                            " → このフォームは表示されない")
+
+    if cfg_path and not slots["social"]:
+        try:
+            social = (load(cfg_path).get("site") or {}).get("social") or []
+        except Exception:
+            social = []
+        if social:
+            warnings.append(f"site.social が{len(social)}件あるが、"
+                            "index.html に data-marche-social が無い"
+                            " → SNSのリンクは表示されない")
+
+    print(f"スロット     : index.html と照合（出店者{len(slots['shops'])}"
+          f" / フォーム{len(slots['forms'])}"
+          f" / SNS{'あり' if slots['social'] else 'なし'}）")
+
+
 def check_form(path, name, honeypot="website"):
     """フォーム項目定義(forms/<種別>.json)。フロントの生成とサーバーの検証が共有する"""
     form = load(path)
@@ -360,7 +423,7 @@ def main(base):
         warnings.append("marche.config.json が見つからない（設定に依存する検証を省略）")
 
     # ロスター
-    listed = set()
+    listed, category_ids = set(), set()
     roster_path = os.path.join(data_dir, "shops.json")
     if os.path.exists(roster_path):
         roster = load(roster_path)
@@ -377,6 +440,7 @@ def main(base):
             if cid in seen:
                 errors.append(f"shops.json: categories[].id が重複 ({cid})")
             seen.add(cid)
+            category_ids.add(cid)
             if not c.get("label"):
                 errors.append(f"shops.json: categories[{i}] に label が無い")
             if "variant" in c and c["variant"] not in VARIANTS:
@@ -418,12 +482,16 @@ def main(base):
 
     # フォーム項目定義（置いていない構成もある）
     forms_dir = os.path.join(base, "forms")
+    form_names = []
     if os.path.isdir(forms_dir):
-        names = sorted(f[:-5] for f in os.listdir(forms_dir) if f.endswith(".json"))
+        form_names = sorted(f[:-5] for f in os.listdir(forms_dir) if f.endswith(".json"))
         count = sum(check_form(os.path.join(forms_dir, n + ".json"), n, honeypot)
-                    for n in names)
-        if names:
-            print(f"フォーム     : {len(names)}種 / {count}項目")
+                    for n in form_names)
+        if form_names:
+            print(f"フォーム     : {len(form_names)}種 / {count}項目")
+
+    # 定義とテーマのスロットの照合
+    check_slots(base, category_ids, form_names, cfg_path)
 
     # お知らせ
     news_path = os.path.join(data_dir, "news.json")
