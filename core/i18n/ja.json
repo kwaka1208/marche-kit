@@ -42,7 +42,20 @@
     "errorRequired": "{label}を入力してください",
     "errorEmail": "メールアドレスの形式が正しくありません",
     "errorMaxLength": "{label}は{max}文字以内で入力してください",
-    "errorSend": "送信できませんでした。時間をおいてもう一度お試しください。"
+    "errorSend": "送信できませんでした。時間をおいてもう一度お試しください。",
+    "review": "内容を確認する",
+    "selectPlaceholder": "選択してください",
+    "notEntered": "（未入力）",
+    "consentAgreed": "同意",
+    "honeypot": "この欄は入力しないでください",
+    "success": "送信が完了しました。ありがとうございました。",
+    "mockNotice": "確認用の表示です。実際には送信されません。",
+    "errorPhone": "電話番号の形式が正しくありません",
+    "errorUrl": "URLの形式が正しくありません",
+    "errorNumber": "半角数字で入力してください",
+    "errorHalfwidth": "半角文字で入力してください",
+    "errorChoose": "{label}を選んでください",
+    "errorConsent": "「{label}」への同意が必要です"
   },
   "server": {
     "postOnly": "POSTのみ受け付けます",

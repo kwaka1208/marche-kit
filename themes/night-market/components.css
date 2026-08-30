@@ -621,3 +621,250 @@ a {
     color: var(--primary-color);
     box-shadow: var(--glow);
 }
+
+/* ---------------------------------------------------------------- 問い合わせフォーム */
+
+/*
+  既定テーマと**まったく同じクラス名・同じ構造**で書いている。
+  違うのは値だけで、トークンが暗い側に振れているぶんだけ見た目が変わる。
+  --white が暗色(#221b17)なので、アクセント上の文字色もそのまま成立する。
+
+  **ハニーポットを画面外に置く1ブロックは必ず書くこと。**
+  見えたままだと来場者が入力し、その送信が黙って捨てられる。
+*/
+
+.courier {
+    /* 上流の変数名のまま、値をテーマのトークンから取る */
+    --courier-accent: var(--primary-color);
+    --courier-accent-contrast: var(--white);
+    --courier-text: var(--text-color-dark);
+    --courier-muted: var(--text-color-light);
+    --courier-border: var(--gray-medium);
+    --courier-bg: var(--white);
+    --courier-error: var(--error-color);
+    --courier-radius: var(--border-radius-small);
+    /* 提灯の灯りに寄せた縁取り。このテーマ固有の装飾 */
+    --courier-gap: var(--spacing-medium);
+    --courier-max-width: 40rem;
+
+    display: block;
+    max-width: var(--courier-max-width);
+    /* 他のセクションの中身と同じく中央に置く */
+    margin-inline: auto;
+    color: var(--courier-text);
+}
+
+.courier-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--courier-gap);
+}
+
+.courier-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.courier-label {
+    font-weight: 600;
+}
+
+.courier-required {
+    color: var(--courier-error);
+    margin-inline-start: var(--spacing-xs);
+    font-size: var(--font-size-small);
+}
+
+.courier-desc {
+    font-size: var(--font-size-small);
+    color: var(--courier-muted);
+}
+
+.courier-field-error {
+    font-size: var(--font-size-small);
+    color: var(--courier-error);
+}
+
+/* 不正な入力欄は枠で伝える。コアが aria-invalid を付け外しする */
+.courier-form [aria-invalid="true"] {
+    border-color: var(--courier-error);
+}
+
+.courier-form input:not([type="radio"]):not([type="checkbox"]),
+.courier-form textarea,
+.courier-form select {
+    width: 100%;
+    padding: var(--spacing-small) var(--spacing-medium);
+    font: inherit;
+    color: inherit;
+    background-color: var(--courier-bg);
+    border: 1px solid var(--courier-border);
+    border-radius: var(--courier-radius);
+    box-sizing: border-box;
+}
+
+.courier-form textarea {
+    resize: vertical;
+}
+
+.courier-form input:not([type="radio"]):not([type="checkbox"]):focus,
+.courier-form textarea:focus,
+.courier-form select:focus {
+    outline: 2px solid var(--courier-accent);
+    outline-offset: 1px;
+    border-color: var(--courier-accent);
+}
+
+.courier-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-small);
+}
+
+.courier-option,
+.courier-consent {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-small);
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.courier-consent {
+    align-items: flex-start;
+}
+
+.courier-option input,
+.courier-consent input {
+    accent-color: var(--courier-accent);
+}
+
+/* ハニーポット。**画面の外へ置くこと。**
+   display: none にしないのは、それを見分けて避けるボットがいるため */
+.courier-honeypot {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.courier-error {
+    color: var(--courier-error);
+    font-size: var(--font-size-small);
+    padding: var(--spacing-small) var(--spacing-medium);
+    border: 1px solid var(--courier-error);
+    border-radius: var(--courier-radius);
+}
+
+.courier-submit,
+.courier-modal__confirm {
+    align-self: flex-start;
+    padding: var(--spacing-small) var(--spacing-large);
+    font: inherit;
+    font-weight: 600;
+    color: var(--courier-accent-contrast);
+    background-color: var(--courier-accent);
+    border: none;
+    border-radius: var(--courier-radius);
+    cursor: pointer;
+}
+
+.courier-submit:hover,
+.courier-modal__confirm:hover {
+    background-color: var(--primary-color-dark);
+}
+
+.courier-submit:disabled,
+.courier-modal__confirm:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.courier-success {
+    padding: var(--spacing-large);
+    border: 1px solid var(--courier-border);
+    border-radius: var(--courier-radius);
+    background-color: var(--primary-color-light);
+    box-shadow: var(--glow);
+}
+
+.courier-mock-notice {
+    color: var(--courier-muted);
+    font-size: var(--font-size-small);
+}
+
+/* 確認モーダル。コアは hidden 属性を外すだけなので、見せ方はここで決める */
+.courier-modal {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: var(--spacing-medium);
+    z-index: 1000;
+}
+
+.courier-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.courier-modal__panel {
+    position: relative;
+    width: 100%;
+    max-width: 32rem;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: var(--spacing-large);
+    background-color: var(--courier-bg);
+    color: var(--courier-text);
+    border-radius: var(--border-radius-medium);
+    box-shadow: var(--shadow-medium), var(--glow);
+}
+
+.courier-modal__heading {
+    margin: 0 0 var(--spacing-medium);
+    font-size: var(--font-size-large);
+}
+
+.courier-modal__preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-medium);
+    margin-bottom: var(--spacing-large);
+}
+
+.courier-preview-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.courier-preview-empty {
+    color: var(--courier-muted);
+}
+
+.courier-modal__actions {
+    display: flex;
+    gap: var(--spacing-small);
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.courier-modal__cancel {
+    padding: var(--spacing-small) var(--spacing-large);
+    font: inherit;
+    color: var(--courier-text);
+    background-color: transparent;
+    border: 1px solid var(--courier-border);
+    border-radius: var(--courier-radius);
+    cursor: pointer;
+}
+
+/* 下部に固定したナビにモーダルの操作ボタンが隠れないようにする */
+.courier-modal {
+    padding-bottom: calc(var(--bottom-nav-height) + var(--spacing-medium));
+}

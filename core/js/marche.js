@@ -5,11 +5,12 @@
 //     <script type="module" src="js/marche.js"></script>
 //
 // 読み込む順序と、どこで失敗したときに何を見せるかをここで決める。
-// 個々の描画は shops.js / items.js / announcements.js / social.js が受け持つ。
+// 個々の描画は shops.js / items.js / announcements.js / social.js / form.js が受け持つ。
 
 import { initAnnouncements } from './announcements.js';
 import { loadConfig, t } from './config.js';
 import { loadShopData } from './data.js';
+import { initForms } from './form.js';
 import { initItems } from './items.js';
 import { initPopups } from './popup.js';
 import { initShops } from './shops.js';
@@ -48,6 +49,9 @@ async function start() {
   initUi();
   // 出店者データを待たない。設定だけで描けるものは先に出す
   initSocial();
+  // フォームは自前の定義(forms/<種別>.json)だけで組み立てられる。
+  // 失敗しても他の描画を止めない(器ごと隠して先へ進む)
+  const forms = initForms();
 
   // お知らせは外部JSONで応答が遅いことがある。出店者データの取得と並行して進める
   const announcements = initAnnouncements();
@@ -63,6 +67,7 @@ async function start() {
   }
 
   await announcements;
+  await forms;
 }
 
 start().catch((error) => {

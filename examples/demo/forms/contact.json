@@ -1,0 +1,88 @@
+{
+  "formType": "contact",
+  "autoReply": true,
+  "replyToField": "email",
+  "autoReplyToField": "email",
+  "fields": [
+    {
+      "name": "name",
+      "label": "お名前",
+      "type": "text",
+      "required": true,
+      "maxLength": 100,
+      "placeholder": "山田 太郎",
+      "autocomplete": "name"
+    },
+    {
+      "name": "email",
+      "label": "メールアドレス",
+      "type": "email",
+      "required": true,
+      "validation": "email",
+      "maxLength": 254,
+      "placeholder": "you@example.com",
+      "autocomplete": "email",
+      "description": "お返事にはこのアドレスを使います。"
+    },
+    {
+      "name": "tel",
+      "label": "電話番号",
+      "type": "tel",
+      "validation": "phone",
+      "maxLength": 20,
+      "placeholder": "03-1234-5678",
+      "autocomplete": "tel",
+      "description": "ハイフンはあってもなくてもかまいません。"
+    },
+    {
+      "name": "topic",
+      "label": "お問い合わせの種類",
+      "type": "select",
+      "required": true,
+      "options": [
+        { "value": "exhibit", "label": "出店について" },
+        { "value": "visit",   "label": "来場について" },
+        { "value": "other",   "label": "その他" }
+      ]
+    },
+    {
+      "name": "contactMethod",
+      "label": "希望する連絡方法",
+      "type": "radio",
+      "options": [
+        { "value": "email", "label": "メール" },
+        { "value": "tel",   "label": "電話" }
+      ]
+    },
+    {
+      "name": "interests",
+      "label": "関心のあること",
+      "type": "checkbox",
+      "options": [
+        { "value": "shops",   "label": "出店者" },
+        { "value": "items",   "label": "商品" },
+        { "value": "access",  "label": "アクセス" }
+      ]
+    },
+    {
+      "name": "body",
+      "label": "お問い合わせ内容",
+      "type": "textarea",
+      "required": true,
+      "maxLength": 2000,
+      "placeholder": "ご用件をお書きください。"
+    },
+    {
+      "name": "consent",
+      "label": "個人情報の取り扱いに同意します",
+      "type": "consent",
+      "required": true
+    },
+    {
+      "name": "pageUrl",
+      "label": "送信元ページ",
+      "type": "hidden",
+      "capture": "pageUrl"
+    }
+  ]
+}

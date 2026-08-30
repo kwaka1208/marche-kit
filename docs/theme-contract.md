@@ -77,6 +77,8 @@
 | `[data-marche-announcements-past]` | 過去のお知らせの折りたたみ領域 |
 | `[data-marche-face-value]` | チケット1枚の額面の案内。金額運用では隠される |
 | `[data-marche-social]` | イベント公式SNSのリンクの置き場。**中身はコアが作る。** ページ内にいくつ置いてもよい（ヘッダーとフッターの両方など） |
+| `[data-marche-form="<種別>"]` | 問い合わせフォームの置き場。**中身はコアが作る**（`forms/<種別>.json` から） |
+| `[data-marche-form-section]` | フォームのセクション全体。**定義が読めないときここごと隠す** |
 | `.top-navigation` / `.navigation-list` / `.menu-toggle-button` | ナビゲーションと開閉 |
 | `.item-filter-buttons` | フィルタボタンの置き場。**中身はコアが作る** |
 | `.show-more-button` | 商品の続きを表示するボタン |
@@ -123,7 +125,7 @@
 **器とクラス名だけでは動きません。**
 開閉するものについて、コアがするのは状態クラスの付け外しだけです。
 **見せる・隠すの判断はテーマのCSSが持ちます。**
-次の6つは、書かないと機能そのものが動きません。
+次の7つは、書かないと機能そのものが動きません。
 
 | 仕掛け | コアがすること | 無いとどうなるか |
 |---|---|---|
@@ -133,6 +135,23 @@
 | 過去のお知らせ | 折りたたみ領域に `is-expanded` を付け外し | 過去分が最初から見えている |
 | スクロール抑止 | `body` に `no-scroll` を付け外し | ポップアップの背後が動く |
 | 商品グリッド | `grid-template-columns` を読む | 折りたたみが1行分しか描かれない |
+| ハニーポット | `.courier-honeypot` を出力する | **来場者の問い合わせが黙って捨てられる**（下記） |
+
+ハニーポットだけは性質が違います。他の6つは「見た目が崩れる」で済みますが、
+これは**書き忘れると実害が出ます。** コアはおとり欄に値が入っていたらボットとみなし、
+送信せずに完了したように見せます。画面に出したままだと来場者が親切に入力し、
+**その問い合わせは届きません。**
+
+```css
+/* display: none にしないこと。それを見分けて避けるボットがいる */
+.courier-honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+```
 
 最小形は次のとおりです。**これは見た目ではなく機構です。**
 
@@ -295,9 +314,47 @@ body.no-scroll { overflow: hidden; }
 | `announcement-toggle` | 開閉ラベルの置き場。中に `toggle-text--open` / `--close` が入る |
 | `announcement-body` | 本文。**ここだけHTMLが入る**（運営しか書けないため） |
 
+### 問い合わせフォーム
+
+**クラス名とCSS変数は [astro-courier](https://github.com/kwaka1208/astro-courier) の
+Courier と同じです**（決定13）。上流のCSSをそのまま持ってこられるようにするためで、
+`courier-` の接頭辞はテーマ側で改名しないでください。
+
+| クラス | 要素 |
+|---|---|
+| `courier` | 器そのもの。**CSS変数はここに置く** |
+| `courier-form` | `<form>` |
+| `courier-field` | 1項目のまとまり |
+| `courier-label` | ラベル。`radio` / `checkbox` では `<span>` になる |
+| `courier-required` | 必須の印 |
+| `courier-desc` | 補足テキスト（`description`） |
+| `courier-field-error` | 項目ごとのエラー。**エラーが無いときは `hidden`** |
+| `courier-options` / `courier-option` | 選択肢群と1つぶん |
+| `courier-consent` | 単一の同意チェック |
+| `courier-honeypot` | おとり欄。**必ず画面外に置くこと**（上記） |
+| `courier-error` | 送信全体のエラー |
+| `courier-submit` | 「内容を確認する」ボタン |
+| `courier-success` | 送信後の完了表示 |
+| `courier-mock-notice` | モックモードの断り書き |
+| `courier-modal` / `__backdrop` / `__panel` / `__heading` / `__preview` / `__actions` / `__cancel` / `__confirm` | 確認モーダル |
+| `courier-preview-row` / `courier-preview-value` / `courier-preview-empty` | 確認内容の1行 |
+
+不正な入力欄には `aria-invalid="true"` が付きます。**枠の色はこれに当ててください。**
+コアは `:invalid` を使いません（ブラウザ既定の検証メッセージだと辞書の言語と食い違うため）。
+
+上書きできるCSS変数は次のとおりです。`.courier` に置きます。
+
+| 変数 | 用途 |
+|---|---|
+| `--courier-accent` / `--courier-accent-contrast` | 送信ボタンの地色と、その上の文字色 |
+| `--courier-text` / `--courier-muted` | 本文と補足の文字色 |
+| `--courier-border` / `--courier-bg` | 枠線と入力欄の地色 |
+| `--courier-error` | エラーの色 |
+| `--courier-radius` / `--courier-gap` / `--courier-max-width` | 角丸・項目の間隔・フォームの最大幅 |
+
 ### 状態・共通
 
-コアが付け外しするクラスです。**上の6つ以外は、当てなくても機能は動きます**
+コアが付け外しするクラスです。**上の7つ以外は、当てなくても機能は動きます**
 （見た目の手がかりとして使ってください）。
 
 | クラス | 要素 | 当てないと |
@@ -371,6 +428,9 @@ body.no-scroll { overflow: hidden; }
 | `[data-marche-announcements-section]` | お知らせが0件、または `announcements.source` が空 |
 | `[data-marche-face-value]` | 金額運用、または `ticket.showFaceValue` が偽 |
 | `[data-marche-social]` | `site.social` が未定義・空、または `http(s)` で始まるURLが1件も無い（**器ごと `hidden`**） |
+| `[data-marche-form-section]` | `forms/<種別>.json` が読めない（**セクションごと `hidden`**）。器を包んでいないときは器だけが隠れ、**見出しが残ります** |
+| `courier-desc` | その項目に `description` が無い |
+| `courier-required` | その項目が必須でない |
 | `shop-card-official-link` | 店が公式サイトを登録していない |
 | `shop-popup-link` / `shop-popup-comment` | 店がURL・紹介文を登録していない（`hidden`） |
 

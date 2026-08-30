@@ -41,7 +41,7 @@ const MARCHE_ALLOWED_EXTENSIONS = ['webp', 'png', 'jpg', 'jpeg', 'gif', 'avif'];
 const MARCHE_MAX_TOTAL_IMAGE_BYTES = 20 * 1024 * 1024;
 
 // 商品の販売状態として保存を許可する値。
-// core/editor/editor.js の ITEM_STATUS_VALUES・描画JS の定義と同じ値にする
+// core/editor/editor.js の ITEM_STATUSES・描画JS の定義と同じ値にする
 const MARCHE_ITEM_STATUSES = ['onsale', 'soldout', 'ended'];
 
 /**

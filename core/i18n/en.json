@@ -42,7 +42,20 @@
     "errorRequired": "Please enter {label}.",
     "errorEmail": "That email address does not look valid.",
     "errorMaxLength": "{label} must be {max} characters or fewer.",
-    "errorSend": "Could not send. Please try again in a moment."
+    "errorSend": "Could not send. Please try again in a moment.",
+    "review": "Review your entry",
+    "selectPlaceholder": "Please choose",
+    "notEntered": "(not entered)",
+    "consentAgreed": "Agreed",
+    "honeypot": "Leave this field empty",
+    "success": "Your message has been sent. Thank you.",
+    "mockNotice": "Preview only. Nothing is actually sent.",
+    "errorPhone": "That phone number does not look valid.",
+    "errorUrl": "That URL does not look valid.",
+    "errorNumber": "Please use digits only.",
+    "errorHalfwidth": "Please use single-byte characters only.",
+    "errorChoose": "Please choose {label}.",
+    "errorConsent": "You need to agree to “{label}”."
   },
   "server": {
     "postOnly": "Only POST requests are accepted.",

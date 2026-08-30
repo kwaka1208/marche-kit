@@ -29,6 +29,16 @@ SOCIAL_FIELDS = {"platform", "url", "label"}
 ITEM_FIELDS = {"id", "name", "category", "description", "image", "price",
                "status", "saleDays", "imagePosition", "useContain"}
 TEXT_FIELDS = ("name", "comment", "description")
+FIELD_NAME = re.compile(r"^[a-zA-Z][a-zA-Z0-9_]*$")
+CAPTURE = re.compile(r"^(pageUrl|referrer|query:[A-Za-z0-9_-]+)$")
+FORM_FIELDS = {"name", "label", "type", "required", "validation", "maxLength",
+               "placeholder", "autocomplete", "options", "description",
+               "min", "max", "step", "value", "capture"}
+FORM_TOP = {"formType", "autoReply", "replyToField", "autoReplyToField", "fields"}
+INPUT_TYPES = {"text", "email", "tel", "url", "number", "date", "time",
+               "textarea", "select", "checkbox", "radio", "consent", "hidden"}
+VALIDATIONS = {"email", "phone", "url", "number", "halfwidth"}
+CHOICE_TYPES = {"select", "checkbox", "radio"}
 
 errors = []
 warnings = []
@@ -125,6 +135,93 @@ def check_text(where, label, value):
     if isinstance(value, str) and HTML_TAG.search(value):
         errors.append(f"{where}: {label} にHTMLタグが含まれている"
                       " → テキストとして扱う仕様。改行は \\n を使う")
+
+
+def check_form(path, name):
+    """フォーム項目定義(forms/<種別>.json)。フロントの生成とサーバーの検証が共有する"""
+    form = load(path)
+    where = f"forms/{name}"
+
+    ftype = str(form.get("formType", ""))
+    if not re.match(r"^[a-z0-9_-]+$", ftype):
+        errors.append(f"{where}: formType がパターン違反 ({ftype!r})")
+    elif ftype != name:
+        errors.append(f"{where}: formType が {ftype!r} だがファイル名は {name!r}"
+                      " → send.php は type でこのファイルを引くため一致させること")
+
+    unknown = set(form) - FORM_TOP
+    if unknown:
+        warnings.append(f"{where}: 仕様に無いフィールド {sorted(unknown)}")
+
+    fields = form.get("fields")
+    if not isinstance(fields, list) or not fields:
+        errors.append(f"{where}: fields が空。項目を1件以上定義すること")
+        return 0
+
+    seen = set()
+    for i, f in enumerate(fields):
+        at = f"{where}: fields[{i}]"
+        if not isinstance(f, dict):
+            errors.append(f"{at} はオブジェクトにすること")
+            continue
+
+        fname = str(f.get("name", ""))
+        if not FIELD_NAME.match(fname):
+            errors.append(f"{at}.name がパターン違反 ({fname!r})"
+                          " → 送信データのキーになるため英字始まりの英数字とアンダースコア")
+        if fname in seen:
+            errors.append(f"{at}.name が重複 ({fname})")
+        seen.add(fname)
+
+        if not f.get("label"):
+            errors.append(f"{at} に label が無い")
+
+        ftype_ = f.get("type")
+        if ftype_ not in INPUT_TYPES:
+            errors.append(f"{at}.type が不正 ({ftype_!r}) → {sorted(INPUT_TYPES)} のいずれか")
+
+        v = f.get("validation")
+        if v is not None and v not in VALIDATIONS:
+            errors.append(f"{at}.validation が不正 ({v!r}) → {sorted(VALIDATIONS)} のいずれか")
+        elif v and ftype_ in (CHOICE_TYPES | {"consent", "hidden"}):
+            warnings.append(f"{at}: {ftype_} に validation は効かない（無視される）")
+
+        # 選択式は options が要る。逆に選択式でないのに options があるのは書き間違い
+        opts = f.get("options")
+        if ftype_ in CHOICE_TYPES:
+            if not isinstance(opts, list) or not opts:
+                errors.append(f"{at}: type が {ftype_} なのに options が無い")
+            else:
+                for j, o in enumerate(opts):
+                    if not isinstance(o, dict) or "value" not in o or "label" not in o:
+                        errors.append(f"{at}.options[{j}] は "
+                                      '{"value": ..., "label": ...} の形にすること')
+        elif opts is not None:
+            warnings.append(f"{at}: type が {ftype_} なので options は使われない")
+
+        cap = f.get("capture")
+        if cap is not None:
+            if ftype_ != "hidden":
+                errors.append(f"{at}.capture は type が hidden のときだけ使える")
+            elif not CAPTURE.match(str(cap)):
+                errors.append(f"{at}.capture が不正 ({cap!r})"
+                              " → pageUrl / referrer / query:<パラメータ名>")
+
+        ml = f.get("maxLength")
+        if ml is not None and (not isinstance(ml, int) or ml < 1):
+            errors.append(f"{at}.maxLength は1以上の整数にすること ({ml!r})")
+
+    # 返信先に指定された項目が実在するか（無いと自動返信の宛先が取れない）
+    for key in ("replyToField", "autoReplyToField"):
+        target = form.get(key)
+        if target is not None and target not in seen:
+            errors.append(f"{where}: {key} が {target!r} だが、その項目が fields に無い")
+    # autoReplyToField を省略したときの既定は 'email'。明示した場合は上のループで見ている
+    if form.get("autoReply") and "autoReplyToField" not in form and "email" not in seen:
+        errors.append(f"{where}: autoReply が有効だが、宛先の既定 'email' が fields に無い"
+                      " → autoReplyToField で宛先の項目名を指定すること")
+
+    return len(fields)
 
 
 def check_shop(path, shop_dir, listed, day_ids, mode, decimals, item_cats):
@@ -291,6 +388,14 @@ def main(base):
         unlisted = len(set(dirs) - listed)
         print(f"出店者データ : {checked}店 / {total}商品"
               + (f"（ロスター外 {unlisted}件は非表示）" if unlisted else ""))
+
+    # フォーム項目定義（置いていない構成もある）
+    forms_dir = os.path.join(base, "forms")
+    if os.path.isdir(forms_dir):
+        names = sorted(f[:-5] for f in os.listdir(forms_dir) if f.endswith(".json"))
+        count = sum(check_form(os.path.join(forms_dir, n + ".json"), n) for n in names)
+        if names:
+            print(f"フォーム     : {len(names)}種 / {count}項目")
 
     # お知らせ
     news_path = os.path.join(data_dir, "news.json")

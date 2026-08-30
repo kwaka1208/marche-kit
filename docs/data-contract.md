@@ -115,7 +115,7 @@ HTMLタグは書けません。保存時にサーバー側で除去されます�
 | `id` | ○ | カテゴリID。テーマの器 `data-marche-shops="<id>"` と対応する |
 | `label` | ○ | 画面に出す見出し |
 | `variant` | | `standard`（既定）/ `compact` / `feature`。カードの見た目 |
-| `shops` | ○ | 店舗IDの配列。順序は固定表示時（`?kotei`）の並び順 |
+| `shops` | ○ | 店舗IDの配列。順序は固定表示時（`?fixed`）の並び順 |
 
 **カテゴリの数と名前は自由です。** 配列の順序がサイトでの表示順になります。
 
@@ -218,7 +218,8 @@ HTMLタグは書けません。保存時にサーバー側で除去されます�
 ```json
 {
   "formType": "contact",
-  "autoReply": false,
+  "autoReply": true,
+  "replyToField": "email",
   "fields": [
     { "name": "email", "label": "メールアドレス", "type": "email",
       "required": true, "validation": "email", "maxLength": 254 }
@@ -226,8 +227,61 @@ HTMLタグは書けません。保存時にサーバー側で除去されます�
 }
 ```
 
+ファイル名と `formType` は一致させます。`send.php` は受け取った `type` でこのファイルを引きます。
+
+| トップレベル | 必須 | 内容 |
+|---|---|---|
+| `formType` | ○ | フォーム種別。**ファイル名と同じにする** |
+| `fields` | ○ | 項目の配列。1件以上 |
+| `autoReply` | | 送信者への自動返信。既定は `false`。文面は辞書の `notify.autoReply*` |
+| `replyToField` | | 運営への通知メールの `Reply-To` に入れる項目名。既定は `email` |
+| `autoReplyToField` | | 自動返信の宛先に使う項目名。既定は `email` |
+
+### 項目
+
+| フィールド | 必須 | 内容 |
+|---|---|---|
+| `name` | ○ | 送信データのキー。英字始まりの英数字とアンダースコア |
+| `label` | ○ | 表示ラベル。通知メールの見出しにもなる |
+| `type` | ○ | 下の表のいずれか |
+| `required` | | 必須かどうか |
+| `validation` | | `email` / `phone` / `url` / `number` / `halfwidth`。**選択式には効きません** |
+| `maxLength` | | 文字数の上限 |
+| `placeholder` | | 入力例。`select` では先頭の空選択肢の文言になる |
+| `description` | | ラベルの下に出す補足。`aria-describedby` で入力欄に関連付きます |
+| `autocomplete` | | ブラウザの補完に渡す属性値（`name` / `email` / `tel` など） |
+| `options` | | `select` / `radio` / `checkbox` の選択肢。`[{"value", "label"}]` |
+| `min` / `max` / `step` | | `number` / `date` / `time` の範囲と刻み |
+| `value` | | `hidden` の固定値 |
+| `capture` | | `hidden` の値をブラウザ側で自動取得する。下記 |
+
+### type
+
+| type | 出るもの |
+|---|---|
+| `text` / `email` / `tel` / `url` / `number` / `date` / `time` | 1行の入力欄 |
+| `textarea` | 複数行の入力欄 |
+| `select` | 選択肢から1つ |
+| `radio` | 選択肢から1つ（並べて表示） |
+| `checkbox` | 選択肢から複数。送信値は `", "` で連結される |
+| `consent` | **単一の同意チェック**。`required` にすると同意必須。送信値は「同意」か空 |
+| `hidden` | **画面に出ない値**。`value` か `capture` で埋める |
+
+### capture — 隠し項目に文脈を入れる
+
+`type: "hidden"` のときだけ使えます。ブラウザ側で値を解決して送ります。
+
+| 値 | 入るもの |
+|---|---|
+| `pageUrl` | 送信元ページのURL |
+| `referrer` | 参照元（`document.referrer`） |
+| `query:<パラメータ名>` | URLクエリの値（例 `query:utm_source`） |
+
+**`capture` の値には `maxLength` を付けないでください。** URLは長くなりがちで、
+サーバー側の検証で弾かれます。
+
 通知先メールアドレスや本文テンプレートは**このJSONに入れません**。
-公開ディレクトリに置かれるためです。それらはサーバー側の設定ファイルに保持します。
+公開ディレクトリに置かれるためです。通知先は `.env`、文面は辞書（`i18n/<locale>.json`）から取ります。
 
 ## サーバー側の検証ルール
 

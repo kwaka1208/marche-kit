@@ -6,11 +6,14 @@
 クラフトビール祭り、マルシェ、朝市、文化祭、地域イベントなど、
 「出店者が集まり、それぞれが商品を並べる」形のイベントを想定しています。
 
-> **開発状況: 実装中（段階6完了）**
+*[English](README.en.md)*
+
+> **開発状況: 実装中（段階8完了）**
 > サーバー側（[`core/php/`](core/php/)）、編集画面（[`core/editor/`](core/editor/)）、
 > サイトの描画（[`core/js/`](core/js/)）、テーマ2種（[`themes/`](themes/README.md)）と
 > 動くサンプル（[`examples/demo/`](examples/demo/README.md)）が動きます。
-> 次は公開の準備（段階7）です。
+> 配置手順（[docs/setup.md](docs/setup.md)）と貢献の手引き（[CONTRIBUTING.md](CONTRIBUTING.md)）も揃いました。
+> 問い合わせフォームは [astro-courier](https://github.com/kwaka1208/astro-courier) から移植しています（[決定13](docs/decisions.md)）。
 > 進み具合は [docs/roadmap.md](docs/roadmap.md) を参照してください。
 
 ## 何が入るのか
@@ -22,11 +25,11 @@
 |---|---|---|---|
 | 出店者エディタ | 各出店者 | 自店の紹介文・ロゴ・商品・対価・完売状況を編集して即時反映 | ✅ |
 | お知らせエディタ | 運営 | お知らせの追加・修正。サイトの再ビルド不要 | ✅ |
-| お問い合わせフォーム | 来場者 | 項目定義JSONから生成。メール送信 + チャット通知 | サーバー側 ✅ |
+| お問い合わせフォーム | 来場者 | 項目定義JSONから生成。確認モーダル・スパム対策つき。メール送信 | ✅ |
 | サイトの描画 | 来場者 | 出店者カード・商品一覧・お知らせの表示 | ✅ |
 | イベント公式のSNS | 運営 | 設定にURLを並べるとサイトに出る。アイコンはテーマが持つ | ✅ |
 
-動作要件は **PHPが動く一般的なレンタルサーバー**だけです。
+動作要件は **PHP 8.0以上が動く一般的なレンタルサーバー**だけです。
 データベースも、管理画面フレームワークも、外部SaaSも使いません。
 データはすべてサーバー上のJSONファイルとして置かれます。
 
@@ -73,7 +76,7 @@ python3 -m http.server 8000
 <http://localhost:8000/?fixed> を開いてください。
 何が確認できるかは [examples/demo/README.md](examples/demo/README.md) にあります。
 
-## 使い方（予定）
+## 使い方
 
 テンプレート方式です。npmの依存として入れるのではなく、リポジトリごとコピーして使います。
 PHPを含むこと、そしてイベントごとにカスタマイズする前提が強いためです。
@@ -94,14 +97,17 @@ cp .env.example .env                        # 値を記入する
 python3 tools/inject-env.py <配置先ディレクトリ>
 ```
 
-**リポジトリのファイルには実運用の値を書きません。** 詳しくは
-[core/php/README.md](core/php/README.md) を参照してください。
+**リポジトリのファイルには実運用の値を書きません。**
+
+公開ディレクトリの組み立て方・パーミッション・動作確認の手順は
+**[docs/setup.md](docs/setup.md)** にまとめてあります。
 
 ## ドキュメント
 
 | ファイル | 内容 |
 |---|---|
 | [docs/concepts.md](docs/concepts.md) | 3層モデルと設計思想。まずここから |
+| [docs/setup.md](docs/setup.md) | セットアップ手順。配置・パーミッション・動作確認 |
 | [docs/decisions.md](docs/decisions.md) | 設計上の決定と、その理由 |
 | [docs/data-contract.md](docs/data-contract.md) | データ仕様。JSONの形式とサーバー側の検証 |
 | [docs/theme-contract.md](docs/theme-contract.md) | テーマ仕様。CSS変数、クラス名、コアが探す器 |
@@ -111,6 +117,7 @@ python3 tools/inject-env.py <配置先ディレクトリ>
 | [core/php/README.md](core/php/README.md) | サーバー側の配置と検証 |
 | [core/editor/README.md](core/editor/README.md) | 編集画面の配置とアクセス制御 |
 | [examples/demo/README.md](examples/demo/README.md) | 動くサンプル。動かし方と確認できること |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | 貢献の手引き。コアとテーマの境界、送る前の確認 |
 
 ## データの検証
 

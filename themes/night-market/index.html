@@ -112,6 +112,16 @@
         </div>
     </section>
 
+    <!-- お問い合わせ。**器はこの1行だけ。** forms/contact.json の項目定義から、
+         コアが入力欄・確認モーダル・送信までを組み立てる。
+         定義が読めないときはコアが器ごと隠すので、壊れた枠は出ない -->
+    <section class="section-container" id="contact" data-marche-form-section>
+        <div class="content-wrapper">
+            <h2 class="section-heading">お問い合わせ</h2>
+            <div data-marche-form="contact"></div>
+        </div>
+    </section>
+
 </main>
 
 <!-- フッター。SNSのリンクはコアが marche.config.json の site.social から作る。
@@ -133,6 +143,7 @@
         <li class="navigation-item"><a href="#shops">出店者</a></li>
         <li class="navigation-item"><a href="#items">商品</a></li>
         <li class="navigation-item"><a href="#faq">質問</a></li>
+        <li class="navigation-item"><a href="#contact">問合せ</a></li>
     </ul>
 </nav>
 

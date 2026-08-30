@@ -133,11 +133,31 @@ function render_template(string $template, array $data): string
 function build_admin_body(array $data, array $fields): string
 {
     $labels = [];
+    // 選択式は送信値(value)で届く。人が読む通知メールでは表示ラベルに戻す
+    $options = [];
     foreach ($fields as $field) {
-        if (isset($field['name'])) {
-            $labels[$field['name']] = $field['label'] ?? $field['name'];
+        if (!isset($field['name'])) {
+            continue;
+        }
+        $labels[$field['name']] = $field['label'] ?? $field['name'];
+        foreach ($field['options'] ?? [] as $opt) {
+            if (isset($opt['value'], $opt['label'])) {
+                $options[$field['name']][$opt['value']] = $opt['label'];
+            }
         }
     }
+
+    // 送信値をラベルに置き換える。チェックボックスは ", " 区切りで複数届く
+    $toLabels = static function (string $name, string $value) use ($options): string {
+        if (!isset($options[$name]) || $value === '') {
+            return $value;
+        }
+        $parts = array_map(
+            static fn($v) => $options[$name][trim($v)] ?? trim($v),
+            explode(',', $value)
+        );
+        return implode(marche_text('common.listSeparator'), $parts);
+    };
 
     $lines = [
         marche_text('notify.labelReceivedAt') . ': ' . date('Y-m-d H:i:s'),
@@ -149,6 +169,7 @@ function build_admin_body(array $data, array $fields): string
             continue;
         }
         $heading = $labels[$key] ?? $key;
+        $value = $toLabels((string)$key, (string)$value);
         // 複数行になりうる項目は見出しの次の行から出す
         $lines[] = str_contains((string)$value, "\n")
             ? "{$heading}:\n{$value}"

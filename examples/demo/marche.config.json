@@ -4,10 +4,23 @@
     "url": "https://example.com",
     "description": "marche-kit の動作確認用サンプル。架空のイベントです。",
     "social": [
-      { "platform": "x", "url": "https://x.com/example" },
-      { "platform": "instagram", "url": "https://www.instagram.com/example/" },
-      { "platform": "youtube", "url": "https://www.youtube.com/@example", "label": "公式チャンネル" },
-      { "platform": "midorino-bbs", "url": "https://example.com/bbs" }
+      {
+        "platform": "x",
+        "url": "https://x.com/example"
+      },
+      {
+        "platform": "instagram",
+        "url": "https://www.instagram.com/example/"
+      },
+      {
+        "platform": "youtube",
+        "url": "https://www.youtube.com/@example",
+        "label": "公式チャンネル"
+      },
+      {
+        "platform": "midorino-bbs",
+        "url": "https://example.com/bbs"
+      }
     ]
   },
   "event": {
@@ -16,19 +29,46 @@
     "hours": "10:00-16:00"
   },
   "days": [
-    { "id": "day1", "date": "2026-10-03", "label": "10月3日(土)", "shortLabel": "3日(土)" },
-    { "id": "day2", "date": "2026-10-04", "label": "10月4日(日)", "shortLabel": "4日(日)" }
+    {
+      "id": "day1",
+      "date": "2026-10-03",
+      "label": "10月3日(土)",
+      "shortLabel": "3日(土)"
+    },
+    {
+      "id": "day2",
+      "date": "2026-10-04",
+      "label": "10月4日(日)",
+      "shortLabel": "4日(日)"
+    }
   ],
   "pricing": {
     "mode": "currency",
-    "currency": { "unit": "円", "position": "suffix", "grouping": true, "decimals": 0 },
+    "currency": {
+      "unit": "円",
+      "position": "suffix",
+      "grouping": true,
+      "decimals": 0
+    },
     "note": "税込"
   },
   "locale": "ja",
   "timezone": "Asia/Tokyo",
   "itemCategories": [
-    { "id": "drink", "label": "ドリンク" },
-    { "id": "food", "label": "フード" }
+    {
+      "id": "drink",
+      "label": "ドリンク"
+    },
+    {
+      "id": "food",
+      "label": "フード"
+    }
   ],
-  "announcements": { "source": "data/news.json", "visibleCount": 2 }
+  "forms": {
+    "endpoint": ""
+  },
+  "announcements": {
+    "source": "data/news.json",
+    "visibleCount": 2
+  }
 }

@@ -43,6 +43,18 @@ body.no-scroll { overflow: hidden; }
 [data-marche-announcements-past] { display: none; }
 [data-marche-announcements-past].is-expanded { display: block; }
 
+/* ハニーポット(おとり欄)は画面の外へ。**書き忘れると実害が出る。**
+   コアは値が入っていたらボットとみなし、送信せずに完了したように見せる。
+   見えたままだと来場者が親切に入力し、その送信が黙って捨てられる。
+   display:none にしないのは、それを見分けて避けるボットがいるため */
+.courier-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 /* 画像の大きさだけは抑える。テーマは通常カードの中で寸法を決めるが、
    素の状態では固有サイズを持たない代替画像(SVG)が画面幅いっぱいに広がり、
    ページが縦に伸びて確認しづらくなる。見た目を作る意図はない */

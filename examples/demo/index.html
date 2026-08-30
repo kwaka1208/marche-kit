@@ -29,6 +29,7 @@
         <li class="navigation-item"><a href="#shops">出店者</a></li>
         <li class="navigation-item"><a href="#items">商品</a></li>
         <li class="navigation-item"><a href="#faq">よくある質問</a></li>
+        <li class="navigation-item"><a href="#contact">お問い合わせ</a></li>
     </ul>
 </nav>
 
@@ -78,6 +79,14 @@
                 </div>
             </div>
         </div>
+    </section>
+
+    <!-- お問い合わせ。器はこの1行だけで、中身は forms/contact.json からコアが組み立てる。
+         このデモは marche.config.json の forms.endpoint が空（モックモード）なので、
+         実際には送信せず、送信内容をコンソールに出して完了表示に切り替える -->
+    <section id="contact" data-marche-form-section>
+        <h2>お問い合わせ</h2>
+        <div data-marche-form="contact"></div>
     </section>
 
 </main>

@@ -22,6 +22,10 @@ export const ROSTER_URL = 'data/shops.json';
 // 店舗データ・画像の取得先(末尾スラッシュ必須)
 export const SHOP_DATA_URL = 'data/shop-data/';
 
+// フォーム項目定義の置き場(末尾スラッシュ必須)。<種別>.json を読む。
+// サーバー側(core/php/send.php)が読むのと同じファイル
+export const FORM_URL = 'forms/';
+
 // 画像が未設定のとき、または読み込みに失敗したときに出す代替画像。
 // 枠を空にせず代替を出すのは、画像の有無でカードの高さが変わらないようにするため。
 // **この2ファイルはテーマ側(またはサイト側)が用意する。**
@@ -77,6 +81,21 @@ export const itemCategories = () => state.config.itemCategories ?? [];
 
 // お知らせ。source が空ならセクション自体を出さない
 export const announcements = () => state.config.announcements ?? {};
+
+// 問い合わせフォームの設定。すべて省略可。
+//   endpoint  送信先。空文字にするとモックモード(送らずに内容を画面へ出す)
+//   honeypot  おとり欄の name。ボットが埋めたら送信しない
+//   retries   送信失敗時の再試行回数
+//   successUrl 送信後の遷移先。空なら同じページで完了表示に差し替える
+export function formSettings() {
+  const forms = state.config.forms ?? {};
+  return {
+    endpoint: forms.endpoint ?? 'data/send.php',
+    honeypot: forms.honeypot || 'website',
+    retries: Number.isInteger(forms.retries) ? forms.retries : 1,
+    successUrl: forms.successUrl ?? '',
+  };
+}
 
 // ---------------------------------------------------------------- イベント公式のSNS
 
