@@ -79,6 +79,54 @@ export const usesSaleDays = () => days().length > 1;
 // 商品カテゴリ。未定義なら商品一覧のフィルタを出さない(決定8)
 export const itemCategories = () => state.config.itemCategories ?? [];
 
+// 設定の値をドット区切りのパスで引く(決定14)。
+// テーマが data-marche-text="site.name" と書いた箇所に流し込むためのもの。
+//
+// 途中が配列のときは、その先のキーを各要素から取って listSeparator で連結する。
+// 会期のように「日付が2つある」ものを1つの文字列にするため。
+//
+//     site.name       → "みどり野マルシェ"
+//     event.venue     → "みどり野中央公園"
+//     days.label      → "10月3日(土)・10月4日(日)"
+//     days.0.label    → "10月3日(土)"
+//
+// 見つからないときは null を返す(呼び出し側が要素を隠す)。
+export function configValue(path) {
+  const keys = String(path ?? '').split('.').filter(Boolean);
+  if (keys.length === 0) return null;
+
+  let value = state.config;
+  for (let i = 0; i < keys.length; i++) {
+    if (value == null || typeof value !== 'object') return null;
+    const key = keys[i];
+    // 配列に非数値のキーが来たら、残りのパスを各要素に当てて連結する
+    if (Array.isArray(value) && !/^\d+$/.test(key)) {
+      const parts = value
+        .map((item) => scalarAt(item, keys.slice(i)))
+        .filter((v) => v !== null);
+      return parts.length > 0 ? parts.join(t('common.listSeparator')) : null;
+    }
+    value = Array.isArray(value) ? value[Number(key)] : value[key];
+  }
+  return scalar(value);
+}
+
+// 末端の値だけを文字列にする。オブジェクト・配列・未設定・空文字は null(＝出さない)
+function scalar(value) {
+  if (value == null || value === '' || typeof value === 'object') return null;
+  return String(value);
+}
+
+// 配列の要素に残りのパスを当てて、末端の値を取る
+function scalarAt(target, keys) {
+  let value = target;
+  for (const key of keys) {
+    if (value == null || typeof value !== 'object') return null;
+    value = Array.isArray(value) ? value[Number(key)] : value[key];
+  }
+  return scalar(value);
+}
+
 // お知らせ。source が空ならセクション自体を出さない
 export const announcements = () => state.config.announcements ?? {};
 

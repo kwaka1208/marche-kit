@@ -12,7 +12,7 @@
 .loading-message {
     grid-column: 1 / -1;
     text-align: center;
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
     padding: var(--spacing-large) 0;
 }
 
@@ -25,9 +25,9 @@ button {
 .filter-button,
 .show-more-button,
 .announcements-toggle-button {
-    background-color: var(--white);
-    color: var(--text-color-dark);
-    border: 1px solid var(--gray-medium);
+    background-color: var(--surface);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-pill);
     padding: var(--spacing-small) var(--spacing-large);
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -36,14 +36,14 @@ button {
 .filter-button:hover,
 .show-more-button:hover,
 .announcements-toggle-button:hover {
-    background-color: var(--gray-light);
+    background-color: var(--surface-sunken);
 }
 
 /* 選択中のフィルタ */
 .filter-button.active-filter {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
-    color: var(--white);
+    color: var(--surface);
 }
 
 /* ---------------------------------------------------------------- 出店者カード */
@@ -54,8 +54,8 @@ button {
     align-items: center;
     gap: var(--spacing-small);
     padding: var(--spacing-medium);
-    background-color: var(--white);
-    border: 1px solid var(--gray-medium);
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-medium);
     box-shadow: var(--shadow-soft);
     cursor: pointer;
@@ -100,7 +100,7 @@ button {
 }
 
 .shop-card--feature {
-    border-color: var(--primary-color-light);
+    border-color: var(--primary-color-subtle);
     box-shadow: var(--shadow-medium);
 }
 
@@ -114,8 +114,8 @@ button {
     display: flex;
     flex-direction: column;
     min-height: var(--item-card-min-height);
-    background-color: var(--white);
-    border: 1px solid var(--gray-medium);
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-medium);
     box-shadow: var(--shadow-soft);
     overflow: hidden;
@@ -152,7 +152,7 @@ button {
 .price-unit,
 .price-note {
     font-size: var(--font-size-small);
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
 }
 
 /* 販売日は開催が2日以上のときだけ来る。無い前提でレイアウトを崩さない */
@@ -165,7 +165,7 @@ button {
 .item-image-wrapper {
     position: relative;
     aspect-ratio: 4 / 3;
-    background-color: var(--gray-light);
+    background-color: var(--surface-sunken);
     cursor: pointer;
 }
 
@@ -183,7 +183,7 @@ button {
     bottom: 0;
     padding: var(--spacing-xs) 0;
     background-color: var(--error-color);
-    color: var(--white);
+    color: var(--surface);
     font-size: var(--font-size-small);
     text-align: center;
 }
@@ -204,20 +204,20 @@ button {
 .item-shop-name {
     margin: 0;
     font-size: var(--font-size-small);
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
 }
 
 .item-detail-button {
     margin-top: var(--spacing-small);
     background-color: var(--primary-color);
-    color: var(--white);
+    color: var(--surface);
     border: none;
     border-radius: var(--border-radius-small);
     padding: var(--spacing-small);
 }
 
 .item-detail-button:hover {
-    background-color: var(--primary-color-dark);
+    background-color: var(--primary-color-strong);
 }
 
 /* ---------------------------------------------------------------- サムネイル */
@@ -274,7 +274,7 @@ button {
     width: min(680px, 100%);
     margin: auto;
     padding: var(--spacing-large);
-    background-color: var(--white);
+    background-color: var(--surface);
     border-radius: var(--border-radius-medium);
     box-shadow: var(--shadow-medium);
 }
@@ -286,7 +286,7 @@ button {
     right: var(--spacing-small);
     width: 2rem;
     height: 2rem;
-    background-color: var(--gray-light);
+    background-color: var(--surface-sunken);
     border: none;
     border-radius: var(--border-radius-pill);
     line-height: 1;
@@ -310,7 +310,7 @@ button {
 
 .item-popup-shop-name,
 .shop-popup-link {
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
     font-size: var(--font-size-small);
 }
 
@@ -335,9 +335,9 @@ button {
 /* ---------------------------------------------------------------- お知らせ */
 
 .announcement {
-    border: 1px solid var(--gray-medium);
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-small);
-    background-color: var(--white);
+    background-color: var(--surface);
 }
 
 .announcement--latest {
@@ -355,14 +355,14 @@ button {
 
 .announcement-date {
     font-size: var(--font-size-small);
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
 }
 
 .announcement-badge-new {
     margin-left: var(--spacing-xs);
     padding: 0 var(--spacing-xs);
     background-color: var(--error-color);
-    color: var(--white);
+    color: var(--surface);
     border-radius: var(--border-radius-small);
     font-size: var(--font-size-small);
 }
@@ -410,7 +410,7 @@ button {
 
 /* 少しでもスクロールしたら背景を敷く(コアが付けるクラス) */
 .top-navigation.scrolled {
-    background-color: var(--white);
+    background-color: var(--surface);
     box-shadow: var(--shadow-soft);
 }
 
@@ -423,7 +423,7 @@ button {
 }
 
 .navigation-item a {
-    color: var(--text-color-dark);
+    color: var(--text-color);
     text-decoration: none;
 }
 
@@ -452,7 +452,7 @@ button {
         right: 0;
         flex-direction: column;
         padding: var(--spacing-medium);
-        background-color: var(--white);
+        background-color: var(--surface);
         box-shadow: var(--shadow-medium);
     }
 
@@ -465,7 +465,7 @@ button {
 /* ---------------------------------------------------------------- FAQ */
 
 .faq-item {
-    border-bottom: 1px solid var(--gray-medium);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .faq-question {
@@ -490,7 +490,7 @@ button {
 /* チケット運用の額面の案内。金額運用のイベントでは要素ごと隠される */
 .pricing-face-value {
     text-align: center;
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
     font-size: var(--font-size-small);
 }
 
@@ -508,10 +508,10 @@ button {
     display: inline-flex;
     align-items: center;
     padding: var(--spacing-xs) var(--spacing-medium);
-    border: 1px solid var(--gray-medium);
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-pill);
-    background-color: var(--white);
-    color: var(--text-color-dark);
+    background-color: var(--surface);
+    color: var(--text-color);
     font-size: var(--font-size-small);
     text-decoration: none;
 }
@@ -531,7 +531,7 @@ button {
     height: 2.5rem;
     padding: 0;
     justify-content: center;
-    background: url("../images/social/x.svg") center / 45% no-repeat var(--white);
+    background: url("../images/social/x.svg") center / 45% no-repeat var(--surface);
 }
 
 .social-link--x .social-link-label {
@@ -557,11 +557,11 @@ button {
 .courier {
     /* 上流の変数名のまま、値をテーマのトークンから取る */
     --courier-accent: var(--primary-color);
-    --courier-accent-contrast: var(--white);
-    --courier-text: var(--text-color-dark);
-    --courier-muted: var(--text-color-light);
-    --courier-border: var(--gray-medium);
-    --courier-bg: var(--white);
+    --courier-accent-contrast: var(--surface);
+    --courier-text: var(--text-color);
+    --courier-muted: var(--text-color-muted);
+    --courier-border: var(--border-color);
+    --courier-bg: var(--surface);
     --courier-error: var(--error-color);
     --courier-radius: var(--border-radius-small);
     --courier-gap: var(--spacing-medium);
@@ -694,7 +694,7 @@ button {
 
 .courier-submit:hover,
 .courier-modal__confirm:hover {
-    background-color: var(--primary-color-dark);
+    background-color: var(--primary-color-strong);
 }
 
 .courier-submit:disabled,
@@ -707,7 +707,7 @@ button {
     padding: var(--spacing-large);
     border: 1px solid var(--courier-border);
     border-radius: var(--courier-radius);
-    background-color: var(--primary-color-light);
+    background-color: var(--primary-color-subtle);
 }
 
 .courier-mock-notice {

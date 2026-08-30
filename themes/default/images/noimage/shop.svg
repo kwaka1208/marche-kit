@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ロゴ未設定・読み込み失敗のときにコアが出す代替画像(正方形)。
-     core/js/config.js の FALLBACK_IMAGES.shop がこのパスを指している -->
+     core/js/config.js の FALLBACK_IMAGES.shop がこのパスを指している。
+
+     色はこのファイルの中で決める。**CSSからは触れないため**（<img> で読まれるので
+     ページ側のスタイルは届かない）、暗い配色への追随もここに書く。
+     @media が効かないブラウザでは既定（明るい側）のまま出る。 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="no image">
-  <rect width="200" height="200" fill="#f4f5f6"/>
-  <rect x="8" y="8" width="184" height="184" fill="none" stroke="#dcdfe3" stroke-width="2" stroke-dasharray="8 6"/>
-  <path d="M60 120h80v34H60z" fill="#dcdfe3"/>
-  <path d="M60 120l16-30h48l16 30z" fill="#c9ced4"/>
-  <rect x="92" y="132" width="16" height="22" fill="#f4f5f6"/>
+  <style>
+    .bg   { fill: #f4f5f6; }
+    .line { stroke: #dcdfe3; }
+    .mid  { fill: #dcdfe3; }
+    .fore { fill: #c9ced4; }
+    @media (prefers-color-scheme: dark) {
+      .bg   { fill: #17191b; }
+      .line { stroke: #34383c; }
+      .mid  { fill: #34383c; }
+      .fore { fill: #4a4f54; }
+    }
+  </style>
+  <rect class="bg" width="200" height="200"/>
+  <rect class="line" x="8" y="8" width="184" height="184" fill="none" stroke-width="2" stroke-dasharray="8 6"/>
+  <path class="mid" d="M60 120h80v34H60z"/>
+  <path class="fore" d="M60 120l16-30h48l16 30z"/>
+  <rect class="bg" x="92" y="132" width="16" height="22"/>
 </svg>

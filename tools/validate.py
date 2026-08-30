@@ -178,6 +178,7 @@ def read_slots(base):
         "shops": set(re.findall(r'data-marche-shops\s*=\s*"([^"]*)"', html)),
         "forms": set(re.findall(r'data-marche-form\s*=\s*"([^"]*)"', html)),
         "social": bool(re.search(r"data-marche-social\b", html)),
+        "text": set(re.findall(r'data-marche-text\s*=\s*"([^"]*)"', html)),
     }
 
 
@@ -207,6 +208,21 @@ def check_slots(base, category_ids, form_names, cfg_path):
                             f'index.html に data-marche-form="{name}" が無い'
                             " → このフォームは表示されない")
 
+    # data-marche-text のパス。**未設定と綴り違いを区別する。**
+    # 値が空なのは正常(そのイベントに開催時間が無い、など)で、コアが要素を隠すだけ。
+    # 一方、先頭のキーが設定に無いのは綴り違いとしか考えられないので指摘する。
+    if cfg_path:
+        try:
+            cfg = load(cfg_path)
+        except Exception:
+            cfg = {}
+        for path in sorted(slots["text"]):
+            head = path.split(".")[0]
+            if head and head not in cfg:
+                warnings.append(f'index.html の data-marche-text="{path}" が'
+                                f" marche.config.json のどの項目も指していない"
+                                f"（'{head}' がありません）→ この要素は常に隠れます")
+
     if cfg_path and not slots["social"]:
         try:
             social = (load(cfg_path).get("site") or {}).get("social") or []
@@ -219,7 +235,8 @@ def check_slots(base, category_ids, form_names, cfg_path):
 
     print(f"スロット     : index.html と照合（出店者{len(slots['shops'])}"
           f" / フォーム{len(slots['forms'])}"
-          f" / SNS{'あり' if slots['social'] else 'なし'}）")
+          f" / SNS{'あり' if slots['social'] else 'なし'}"
+          f" / 設定の差し込み{len(slots['text'])}）")
 
 
 def check_form(path, name, honeypot="website"):

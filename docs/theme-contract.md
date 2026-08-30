@@ -16,13 +16,57 @@
 | 変数 | 用途 |
 |---|---|
 | `--primary-color` | 基調色。ボタン、リンク、アクセント |
-| `--primary-color-dark` | ホバー時など、基調色より暗い状態 |
-| `--primary-color-light` | 淡いアクセント、選択状態の背景 |
+| `--primary-color-strong` | 押したとき・ホバー。基調色より**強く出る側** |
+| `--primary-color-subtle` | 淡いアクセント、選択状態の背景 |
 | `--error-color` | エラー表示、完売の帯 |
-| `--text-color-dark` | 本文と見出し |
-| `--text-color-light` | 補足文、キャプション |
-| `--white` | カードなどの前面の背景 |
-| `--gray-light` / `--gray-medium` / `--gray-dark` | 入力欄の背景、罫線、無効状態 |
+| `--text-color` | 本文と見出し |
+| `--text-color-muted` | 補足文、キャプション |
+| `--surface` | カードなどの**前面の背景** |
+| `--surface-sunken` | 一段**沈んだ面**。入力欄の背景など |
+| `--border-color` | 罫線 |
+| `--border-color-strong` | 目立たせる罫線、控えめな前景 |
+
+> **名前は色ではなく役割です。**
+> 暗い配色のテーマでは、`--surface`（前面の背景）に暗い色が入り、
+> `--text-color`（本文）に明るい色が入ります。
+> **「白」「濃い」といった見た目で名前を読まないでください。**
+> `themes/night-market/tokens.css` が実例です。
+
+### 明暗の切り替え（任意）
+
+1つのテーマで明暗の両方に対応できます（[決定16](decisions.md)）。
+**上書きするのは配色のトークンだけです。** 余白・角丸・フォントは明暗で変わりません。
+
+```css
+@media (prefers-color-scheme: dark) {
+    :root {
+        --surface: #1e2124;      /* 前面の背景。名前は色ではなく役割 */
+        --text-color: #e8eaed;   /* 本文。暗い地なので明るい色が入る */
+        /* … 配色のトークンだけを並べる */
+    }
+}
+```
+
+`themes/default/tokens.css` が実例です。**コアの変更は要りません。**
+
+> **代替画像はCSSから色を変えられません。**
+> `images/noimage/*.svg` は `<img>` で読まれるため、ページ側のスタイルが届きません。
+> **同じ `@media` をSVGファイルの中に書いてください。**
+>
+> ```xml
+> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+>   <style>
+>     .bg { fill: #f4f5f6; }
+>     @media (prefers-color-scheme: dark) { .bg { fill: #17191b; } }
+>   </style>
+>   <rect class="bg" width="400" height="300"/>
+> </svg>
+> ```
+>
+> `<img>` 経由でもSVG内の `@media` が効くことは確認済みです（Chrome）。
+> **効かないブラウザでは既定の値が出る**ので、既定は明るい側に書いてください。
+
+閲覧者が切り替えるトグルは持ちません。OSの設定に従います。
 
 ### 文字
 
@@ -30,6 +74,35 @@
 |---|---|
 | `--font-family-main` | 全体のフォントスタック |
 | `--font-size-base` / `--font-size-small` / `--font-size-large` | 基準・補足・強調のサイズ |
+
+**フォントの読み込みはテーマが受け持ちます**（[決定17](decisions.md)）。
+設定（`marche.config.json`）には置きません。書体は運用の途中で増えないためです。
+
+外部のWebフォントを使う場合は `index.html` の `<head>` に置きます。
+
+```html
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap">
+```
+
+自前で置く場合は `tokens.css` に `@font-face` を書きます。**CSSだけで完結するので、
+テーマを掛け替えるときに `index.html` を触らずに済みます。**
+CSSの `@import` でも読めますが、**CSSの取得が終わってから font の取得が始まる**ため遅くなります。
+
+守ってほしいのは2つだけです。
+
+| | なぜ |
+|---|---|
+| **フォールバックを必ず残す** | 配信元が落ちても・ブロックされても文字は読めます。動作要件は「PHPが動くサーバー」のままです |
+| **`display=swap` を付ける** | 付けないと、取得が終わるまで文字が見えない時間ができます |
+
+```css
+--font-family-main: "Zen Maru Gothic", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+```
+
+外部の配信元を使うと、**閲覧者のIPアドレスがその配信元に渡ります。**
+禁止はしませんが、使う側で承知しておいてください。
+同梱の2テーマはシステムフォントだけで、外部の読み込みはありません。
 
 ### 余白・形
 
@@ -85,6 +158,7 @@
 | `[data-marche-social]` | イベント公式SNSのリンクの置き場。**中身はコアが作る。** ページ内にいくつ置いてもよい（ヘッダーとフッターの両方など） |
 | `[data-marche-form="<種別>"]` | 問い合わせフォームの置き場。**中身はコアが作る**（`forms/<種別>.json` から） |
 | `[data-marche-form-section]` | フォームのセクション全体。**定義が読めないときここごと隠す** |
+| `[data-marche-text="<パス>"]` | `marche.config.json` の値を差し込む。イベント名・会期・会場（決定14） |
 | `.top-navigation` / `.navigation-list` / `.menu-toggle-button` | ナビゲーションと開閉 |
 | `.item-filter-buttons` | フィルタボタンの置き場。**中身はコアが作る** |
 | `.show-more-button` | 商品の続きを表示するボタン |
@@ -320,6 +394,43 @@ body.no-scroll { overflow: hidden; }
 | `announcement-toggle` | 開閉ラベルの置き場。中に `toggle-text--open` / `--close` が入る |
 | `announcement-body` | 本文。**ここだけHTMLが入る**（運営しか書けないため） |
 
+### イベント名・会期・会場
+
+テーマのHTMLに直書きせず、設定のパスを指定します（[決定14](decisions.md)）。
+
+```html
+<h1 class="site-title" data-marche-text="site.name"></h1>
+<p class="site-meta">
+    <span data-marche-text="days.label"></span>
+    <span data-marche-text="event.venue"></span>
+    <span data-marche-text="event.hours"></span>
+</p>
+```
+
+| 書き方 | 出るもの |
+|---|---|
+| `site.name` | イベント名 |
+| `event.venue` / `event.hours` / `event.year` | 会場・時間・年 |
+| `days.label` | **配列を連結**して「10月3日(土)・10月4日(日)」 |
+| `days.shortLabel` | 同じく「3日(土)・4日(日)」 |
+| `days.0.label` | 1件目だけ |
+
+連結の区切りは辞書の `common.listSeparator` です。**それ以上の整形はしません。**
+
+**設定に無い項目は、コアが要素ごと隠します。** 開催時間を持たないイベントでも崩れません。
+
+> **区切り記号は「前に見えている兄弟があるもの」に付けてください。**
+> 隠れた要素も兄弟としては残るため、隣接セレクタ（`+`）だと
+> **先頭の項目が未設定のときに区切りだけが先頭に残ります。**
+>
+> ```css
+> /* × 先頭が隠れると「／会場名」になる */
+> .site-meta span + span::before { content: "／"; }
+>
+> /* ○ 前に見えている兄弟があるものだけに当たる */
+> .site-meta span:not([hidden]) ~ span:not([hidden])::before { content: "／"; }
+> ```
+
 ### 問い合わせフォーム
 
 **クラス名とCSS変数は [astro-courier](https://github.com/kwaka1208/astro-courier) の
@@ -434,6 +545,7 @@ Courier と同じです**（決定13）。上流のCSSをそのまま持って�
 | `[data-marche-announcements-section]` | お知らせが0件、または `announcements.source` が空 |
 | `[data-marche-face-value]` | 金額運用、または `ticket.showFaceValue` が偽 |
 | `[data-marche-social]` | `site.social` が未定義・空、または `http(s)` で始まるURLが1件も無い（**スロットごと `hidden`**） |
+| `[data-marche-text]` の要素 | 指したパスが設定に無い、または値が空（**要素ごと `hidden`**） |
 | `[data-marche-form-section]` | `forms/<種別>.json` が読めない（**セクションごと `hidden`**）。スロットを包んでいないときはスロットだけが隠れ、**見出しが残ります** |
 | `courier-desc` | その項目に `description` が無い |
 | `courier-required` | その項目が必須でない |
@@ -472,15 +584,5 @@ document.addEventListener('marche:rendered', (e) => {
 
 ## 10. まだ決まっていないこと
 
-- **フォント読み込み**をテーマ側で完結させるか、サイト設定側に置くか
-- **ダークモード**への対応。暗い配色のテーマは作れますが（`themes/night-market/`）、
-  1つのテーマが明暗を切り替える仕組みは持っていません
-- **トークンの名前が色を名指ししている**こと。`--white` の役割は「前面の背景」、
-  `--gray-light` は「沈んだ面」で、暗い配色ではその名前どおりの色が入りません。
-  名前は仕様なので変えられず、値のほうを役割に合わせる形になっています
-- **イベント名・会期・会場を出すスロット**がありません。`marche.config.json` に
-  `site.name` や `days` がありますが、コアはこれを描画しないため、
-  テーマのHTMLに直接書くことになります（テーマがイベント固有の記述を持つ唯一の場所です）。
-  SNSのリンクだけはスロット（`[data-marche-social]`）を持ちます。**リンク先が運用中に変わり、
-  テーマを触らずに直せる必要があるため**です（決定12）。同じ理由が当てはまる項目が
-  他にもあるなら、スロットを足す形になります
+いまのところありません。決着したものは[決定記録](decisions.md)にあります。
+

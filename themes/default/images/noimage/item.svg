@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 商品画像が未設定・読み込み失敗のときにコアが出す代替画像(4:3)。
-     core/js/config.js の FALLBACK_IMAGES.item がこのパスを指している -->
+     core/js/config.js の FALLBACK_IMAGES.item がこのパスを指している。
+
+     色はこのファイルの中で決める。**CSSからは触れないため**（<img> で読まれるので
+     ページ側のスタイルは届かない）、暗い配色への追随もここに書く。
+     @media が効かないブラウザでは既定（明るい側）のまま出る。 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="no image">
-  <rect width="400" height="300" fill="#f4f5f6"/>
-  <rect x="10" y="10" width="380" height="280" fill="none" stroke="#dcdfe3" stroke-width="2" stroke-dasharray="10 8"/>
-  <circle cx="150" cy="120" r="26" fill="#dcdfe3"/>
-  <path d="M90 220l70-70 50 46 40-34 60 58z" fill="#c9ced4"/>
+  <style>
+    .bg   { fill: #f4f5f6; }
+    .line { stroke: #dcdfe3; }
+    .mid  { fill: #dcdfe3; }
+    .fore { fill: #c9ced4; }
+    @media (prefers-color-scheme: dark) {
+      .bg   { fill: #17191b; }
+      .line { stroke: #34383c; }
+      .mid  { fill: #34383c; }
+      .fore { fill: #4a4f54; }
+    }
+  </style>
+  <rect class="bg" width="400" height="300"/>
+  <rect class="line" x="10" y="10" width="380" height="280" fill="none" stroke-width="2" stroke-dasharray="10 8"/>
+  <circle class="mid" cx="150" cy="120" r="26"/>
+  <path class="fore" d="M90 220l70-70 50 46 40-34 60 58z"/>
 </svg>

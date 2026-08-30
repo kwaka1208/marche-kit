@@ -32,14 +32,19 @@
 </head>
 <body>
 
-<!-- ページの表札。イベント名・会期・会場はサイトごとに書き換える。
-     コアはここを描画しない（marche.config.json を読むのは描画JSの中だけで、
-     site.name や days を出力するスロットは仕様に無い） -->
+<!-- ページの表札。イベント名・会期・会場は marche.config.json から引く（決定14）。
+     data-marche-text の値は設定のパス。設定に無ければコアがその要素を隠す。
+     キャッチコピーだけはテーマの持ち物なので直書きする -->
 <header class="site-header">
     <div class="content-wrapper">
         <p class="site-header-mark">◍</p>
-        <h1 class="site-title">マルシェ</h1>
+        <h1 class="site-title" data-marche-text="site.name"></h1>
         <p class="site-lead">日が落ちてからの、ひとときの市。</p>
+        <p class="site-meta">
+            <span data-marche-text="days.label"></span>
+            <span data-marche-text="event.venue"></span>
+            <span data-marche-text="event.hours"></span>
+        </p>
     </div>
 </header>
 

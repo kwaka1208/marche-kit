@@ -9,17 +9,18 @@
  */
 
 :root {
-    /* 配色 */
+    /* 配色。**名前は色ではなく役割**。暗いテーマでは --surface に暗色が入る
+       （themes/night-market/tokens.css を参照） */
     --primary-color: #2f6f4e;
-    --primary-color-dark: #24573d;
-    --primary-color-light: #e6f1ea;
+    --primary-color-strong: #24573d;
+    --primary-color-subtle: #e6f1ea;
     --error-color: #c0392b;
-    --text-color-dark: #23282d;
-    --text-color-light: #6b7280;
-    --white: #ffffff;
-    --gray-light: #f4f5f6;
-    --gray-medium: #dcdfe3;
-    --gray-dark: #9aa0a6;
+    --text-color: #23282d;
+    --text-color-muted: #6b7280;
+    --surface: #ffffff;
+    --surface-sunken: #f4f5f6;
+    --border-color: #dcdfe3;
+    --border-color-strong: #9aa0a6;
 
     /* 文字 */
     --font-family-main: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", system-ui, sans-serif;
@@ -46,4 +47,33 @@
     --max-content-width: 1100px;
     --bottom-nav-height: 0px;
     --item-card-min-height: 320px;
+}
+
+/*
+  暗い配色への対応。**上書きするのは配色のトークンだけ。**
+
+  レイアウト・余白・角丸・フォントは明暗で変わらないので触らない。
+  変数名は役割を指すので（決定15）、--surface に暗色が、--text-color に明色が入る。
+  **名前と値の明暗が逆になるのは正常。**
+
+  代替画像（images/noimage/）はCSSから色を変えられないため、SVGファイルの中に
+  同じ @media を書いている。
+*/
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #5cae86;         /* 暗い地の上で読める明るさに上げる */
+        --primary-color-strong: #7cc4a0;  /* 「強く出る側」＝暗い配色では明るい側 */
+        --primary-color-subtle: #1c2a23;  /* 淡いアクセント面。暗い側に振る */
+        --error-color: #e06c5b;
+        --text-color: #e8eaed;            /* 本文 */
+        --text-color-muted: #9aa0a6;      /* 補足 */
+        --surface: #1e2124;               /* 前面の背景 */
+        --surface-sunken: #17191b;        /* 沈んだ面 */
+        --border-color: #34383c;          /* 罫線 */
+        --border-color-strong: #5f6469;   /* 目立たせる罫線・控えめな前景 */
+
+        /* 暗い地の上では影が沈んで見えないため、濃くする */
+        --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.5);
+        --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.6);
+    }
 }

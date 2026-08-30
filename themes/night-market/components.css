@@ -16,7 +16,7 @@
 
 .loading-message {
     grid-column: 1 / -1;
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
     padding: var(--spacing-large) 0;
 }
 
@@ -34,8 +34,8 @@ a {
 .show-more-button,
 .announcements-toggle-button {
     background-color: transparent;
-    color: var(--text-color-light);
-    border: 1px solid var(--gray-medium);
+    color: var(--text-color-muted);
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-pill);
     padding: var(--spacing-xs) var(--spacing-large);
     letter-spacing: 0.08em;
@@ -45,8 +45,8 @@ a {
 .filter-button:hover,
 .show-more-button:hover,
 .announcements-toggle-button:hover {
-    color: var(--text-color-dark);
-    border-color: var(--gray-dark);
+    color: var(--text-color);
+    border-color: var(--border-color-strong);
 }
 
 /* 選択中のフィルタ。暗い面では塗りより灯りのほうが目立つ */
@@ -64,7 +64,7 @@ a {
     align-items: center;
     gap: var(--spacing-small);
     padding: var(--spacing-medium);
-    background-color: var(--white);
+    background-color: var(--surface);
     border: 1px solid transparent;
     border-radius: var(--border-radius-medium);
     cursor: pointer;
@@ -72,8 +72,8 @@ a {
 }
 
 .shop-card-info:hover {
-    background-color: var(--primary-color-light);
-    border-color: var(--gray-dark);
+    background-color: var(--primary-color-subtle);
+    border-color: var(--border-color-strong);
 }
 
 /* ロゴは円に切り抜く。暗い面に白いロゴが浮くよう、下地は明るいままにする */
@@ -96,9 +96,9 @@ a {
 /* 公式サイトを登録していない店では要素ごと来ない。無い前提で余白を作らない */
 .shop-card-official-link {
     font-size: var(--font-size-small);
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
     text-decoration: none;
-    border-bottom: 1px solid var(--gray-medium);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .shop-card-official-link:hover {
@@ -127,7 +127,7 @@ a {
 
 /* 灯りを帯びた区分。キッチンカーのように数の少ない区分を目立たせる */
 .shop-card--feature {
-    background-color: var(--primary-color-light);
+    background-color: var(--primary-color-subtle);
     box-shadow: var(--glow);
 }
 
@@ -145,7 +145,7 @@ a {
     display: flex;
     flex-direction: column;
     min-height: var(--item-card-min-height);
-    background-color: var(--gray-light);
+    background-color: var(--surface-sunken);
     border-radius: var(--border-radius-medium);
     overflow: hidden;
 }
@@ -227,14 +227,14 @@ a {
 /* 但し書きは設定に文言が無ければ要素ごと来ない。無い前提で書く */
 .price-note {
     font-size: var(--font-size-small);
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
     margin-left: var(--spacing-xs);
 }
 
 /* 販売日は開催が2日以上のときだけ来る。無い前提でレイアウトを崩さない */
 .item-sale-day {
     font-size: var(--font-size-small);
-    color: var(--text-color-dark);
+    color: var(--text-color);
     white-space: nowrap;
 }
 
@@ -273,7 +273,7 @@ a {
 .item-shop-name {
     margin: 0;
     font-size: var(--font-size-small);
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
 }
 
 .item-detail-button {
@@ -317,7 +317,7 @@ a {
 .item-thumb .item-sale-day {
     display: block;
     font-size: var(--font-size-small);
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
 }
 
 /* 完売の帯はカードと同じクラス名で来る。サムネイルは幅が狭いので字間を詰める */
@@ -354,8 +354,8 @@ a {
     width: min(620px, 100%);
     margin: auto;
     padding: var(--spacing-large);
-    background-color: var(--white);
-    border: 1px solid var(--gray-medium);
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-medium);
     box-shadow: var(--shadow-medium);
 }
@@ -368,8 +368,8 @@ a {
     width: 2rem;
     height: 2rem;
     background-color: transparent;
-    color: var(--text-color-light);
-    border: 1px solid var(--gray-medium);
+    color: var(--text-color-muted);
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-pill);
     line-height: 1;
 }
@@ -400,7 +400,7 @@ a {
 
 .item-popup-shop-name {
     margin: 0;
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
     font-size: var(--font-size-small);
 }
 
@@ -421,7 +421,7 @@ a {
 }
 
 .item-popup-sale-day {
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
     font-size: var(--font-size-small);
 }
 
@@ -433,7 +433,7 @@ a {
 
 .item-popup-description,
 .shop-popup-comment {
-    color: var(--text-color-dark);
+    color: var(--text-color);
 }
 
 .item-popup-other-items h4,
@@ -441,9 +441,9 @@ a {
     margin: var(--spacing-large) 0 var(--spacing-small);
     font-size: var(--font-size-small);
     font-weight: 600;
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
     letter-spacing: 0.16em;
-    border-bottom: 1px solid var(--gray-medium);
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: var(--spacing-xs);
 }
 
@@ -457,8 +457,8 @@ a {
 /* ---------------------------------------------------------------- お知らせ */
 
 .announcement {
-    background-color: var(--white);
-    border-left: 2px solid var(--gray-medium);
+    background-color: var(--surface);
+    border-left: 2px solid var(--border-color);
     border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
 }
 
@@ -477,7 +477,7 @@ a {
 
 .announcement-date {
     font-size: var(--font-size-small);
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
 }
 
 .announcement-badge-new {
@@ -496,7 +496,7 @@ a {
 .announcement-toggle {
     margin-left: auto;
     font-size: var(--font-size-small);
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
 }
 
 /* 開閉のラベルはコアが両方出す。どちらを見せるかはテーマが決める */
@@ -511,7 +511,7 @@ a {
 
 .announcement-body {
     padding: 0 var(--spacing-medium) var(--spacing-medium);
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
 }
 
 .announcement-body a {
@@ -533,7 +533,7 @@ a {
     height: var(--bottom-nav-height);
     padding: 0 var(--spacing-medium);
     background-color: rgba(20, 16, 14, 0.96);
-    border-top: 1px solid var(--gray-medium);
+    border-top: 1px solid var(--border-color);
 }
 
 /* 上端から離れたときにコアが付けるクラス。
@@ -550,7 +550,7 @@ a {
 .navigation-item a {
     display: block;
     padding: var(--spacing-xs) 0;
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
     text-decoration: none;
     font-size: var(--font-size-small);
     letter-spacing: 0.1em;
@@ -565,7 +565,7 @@ a {
 /* ---------------------------------------------------------------- FAQ */
 
 .faq-item {
-    border-bottom: 1px solid var(--gray-medium);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .faq-question {
@@ -573,7 +573,7 @@ a {
     text-align: left;
     background: none;
     border: none;
-    color: var(--text-color-dark);
+    color: var(--text-color);
     padding: var(--spacing-medium) 0;
     font-weight: 600;
 }
@@ -586,7 +586,7 @@ a {
 .faq-answer {
     display: none;
     padding-bottom: var(--spacing-medium);
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
 }
 
 .faq-item.active .faq-answer {
@@ -595,7 +595,7 @@ a {
 
 /* チケット運用の額面の案内。金額運用のイベントでは要素ごと隠される */
 .pricing-face-value {
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
     font-size: var(--font-size-small);
 }
 
@@ -608,10 +608,10 @@ a {
     display: inline-flex;
     align-items: center;
     padding: var(--spacing-xs) var(--spacing-medium);
-    border: 1px solid var(--gray-medium);
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-pill);
-    background-color: var(--white);
-    color: var(--text-color-dark);
+    background-color: var(--surface);
+    color: var(--text-color);
     font-size: var(--font-size-small);
     letter-spacing: 0.04em;
     text-decoration: none;
@@ -627,7 +627,7 @@ a {
 /*
   既定テーマと**まったく同じクラス名・同じ構造**で書いている。
   違うのは値だけで、トークンが暗い側に振れているぶんだけ見た目が変わる。
-  --white が暗色(#221b17)なので、アクセント上の文字色もそのまま成立する。
+  --surface が暗色(#221b17)なので、アクセント上の文字色もそのまま成立する。
 
   **ハニーポットを画面外に置く1ブロックは必ず書くこと。**
   見えたままだと来場者が入力し、その送信が黙って捨てられる。
@@ -636,11 +636,11 @@ a {
 .courier {
     /* 上流の変数名のまま、値をテーマのトークンから取る */
     --courier-accent: var(--primary-color);
-    --courier-accent-contrast: var(--white);
-    --courier-text: var(--text-color-dark);
-    --courier-muted: var(--text-color-light);
-    --courier-border: var(--gray-medium);
-    --courier-bg: var(--white);
+    --courier-accent-contrast: var(--surface);
+    --courier-text: var(--text-color);
+    --courier-muted: var(--text-color-muted);
+    --courier-border: var(--border-color);
+    --courier-bg: var(--surface);
     --courier-error: var(--error-color);
     --courier-radius: var(--border-radius-small);
     /* 提灯の灯りに寄せた縁取り。このテーマ固有の装飾 */
@@ -774,7 +774,7 @@ a {
 
 .courier-submit:hover,
 .courier-modal__confirm:hover {
-    background-color: var(--primary-color-dark);
+    background-color: var(--primary-color-strong);
 }
 
 .courier-submit:disabled,
@@ -787,7 +787,7 @@ a {
     padding: var(--spacing-large);
     border: 1px solid var(--courier-border);
     border-radius: var(--courier-radius);
-    background-color: var(--primary-color-light);
+    background-color: var(--primary-color-subtle);
     box-shadow: var(--glow);
 }
 

@@ -7,25 +7,22 @@
  * このテーマは暗い背景を前提にしている。既定テーマとの違いは値だけで、
  * 変数の顔ぶれは同じ。**変数を1つも増やさずに配色を反転できるか**を試している。
  *
- * 変数名について:
- *   --white と --gray-light / --gray-medium / --gray-dark は「色の名前」だが、
- *   意味は「前面の背景」「沈んだ面・罫線・効かない状態」である。
- *   暗い配色ではその名前どおりの色が入らない。名前は仕様なので変えられないため、
- *   ここでは**役割のほうに合わせて値を決めている**。
+ * 変数名は色ではなく役割を指す。--surface は「前面の背景」、--text-color は「本文」で、
+ * 暗い配色ではそれぞれ暗色・明色が入る。**名前と値の明暗が逆になるのは正常。**
  */
 
 :root {
     /* 配色。夜の屋台の灯りを基調にする */
-    --primary-color: #e0a458;        /* 提灯の灯り */
-    --primary-color-dark: #c2863a;   /* 押したとき・ホバー */
-    --primary-color-light: #3a2c1d;  /* 淡いアクセント＝暗い側に振る（明るくならない） */
+    --primary-color: #e0a458;         /* 提灯の灯り */
+    --primary-color-strong: #c2863a;  /* 押したとき・ホバー */
+    --primary-color-subtle: #3a2c1d;  /* 淡いアクセント。暗い側に振る（明るくしない） */
     --error-color: #d9584a;
-    --text-color-dark: #f2ece4;      /* 「濃い文字」＝暗い背景では明るい色になる */
-    --text-color-light: #a2988c;     /* 「淡い文字」＝背景に近づける */
-    --white: #221b17;                /* 「前面の背景」。白ではなく一段持ち上げた暗色 */
-    --gray-light: #1a1512;           /* 沈んだ面 */
-    --gray-medium: #352c25;          /* 罫線 */
-    --gray-dark: #6d6259;            /* 効かない状態・補助 */
+    --text-color: #f2ece4;            /* 本文。暗い背景なので明るい色が入る */
+    --text-color-muted: #a2988c;      /* 補足。背景に近づける */
+    --surface: #221b17;               /* 前面の背景。地色より一段持ち上げた暗色 */
+    --surface-sunken: #1a1512;        /* 沈んだ面 */
+    --border-color: #352c25;          /* 罫線 */
+    --border-color-strong: #6d6259;   /* 目立たせる罫線・控えめな前景 */
 
     /* 文字 */
     --font-family-main: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", system-ui, sans-serif;
@@ -41,7 +38,7 @@
     --spacing-xl: 3.5rem;
 
     /* 形。角丸と影は控えめ。暗い面では影がほとんど見えないため、
-       浮きは影ではなく明度差（--white と --gray-light の差）で出している */
+       浮きは影ではなく明度差（--surface と --surface-sunken の差）で出している */
     --border-radius-small: 2px;
     --border-radius-medium: 4px;
     --border-radius-pill: 999px;

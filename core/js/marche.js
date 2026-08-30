@@ -8,7 +8,7 @@
 // 個々の描画は shops.js / items.js / announcements.js / social.js / form.js が受け持つ。
 
 import { initAnnouncements } from './announcements.js';
-import { loadConfig, t } from './config.js';
+import { configValue, loadConfig, t } from './config.js';
 import { loadShopData } from './data.js';
 import { initForms } from './form.js';
 import { initItems } from './items.js';
@@ -23,6 +23,25 @@ import { el } from './util.js';
 function applyStaticText(root = document) {
   for (const node of root.querySelectorAll('[data-i18n]')) {
     node.textContent = t(node.dataset.i18n);
+  }
+}
+
+// data-marche-text にイベントの設定を流し込む(決定14)。
+// イベント名・会期・会場をテーマのHTMLに直書きさせないためのもの。
+//
+// 値が無いときは要素を隠す。**パスの綴りを間違えたときも同じく隠れる**ため、
+// 原因が分かるようコンソールに残す(tools/validate.py でも照合できる)
+function applyConfigText(root = document) {
+  for (const node of root.querySelectorAll('[data-marche-text]')) {
+    const path = node.dataset.marcheText;
+    const value = configValue(path);
+    if (value === null) {
+      console.warn(`marche.config.json に '${path}' がありません（要素を隠します）`);
+      node.hidden = true;
+      continue;
+    }
+    node.hidden = false;
+    node.textContent = value;
   }
 }
 
@@ -45,6 +64,7 @@ async function start() {
   await loadConfig();
 
   applyStaticText();
+  applyConfigText();
   initPopups();
   initUi();
   // 出店者データを待たない。設定だけで描けるものは先に出す

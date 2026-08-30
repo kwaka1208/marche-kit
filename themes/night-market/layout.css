@@ -26,7 +26,7 @@ body {
     font-family: var(--font-family-main);
     font-size: var(--font-size-base);
     line-height: 1.75;
-    color: var(--text-color-dark);
+    color: var(--text-color);
     background-color: var(--page-background);
     /* 下に固定したナビゲーションの分。ページ末尾がナビに隠れないようにする */
     padding-bottom: var(--bottom-nav-height);
@@ -75,9 +75,28 @@ img {
 
 .site-lead {
     margin: var(--spacing-xs) 0 0;
-    color: var(--text-color-light);
+    color: var(--text-color-muted);
     font-size: var(--font-size-small);
     letter-spacing: 0.1em;
+}
+
+/* 会期・会場・時間。コアが marche.config.json から入れる（決定14）。
+   設定に無い項目はコアが要素ごと隠すので、区切りは要素の側に持たせる
+   （包む側に書くと、中身が消えても区切りだけが残る） */
+.site-meta {
+    margin: var(--spacing-medium) 0 0;
+    color: var(--text-color-muted);
+    font-size: var(--font-size-small);
+}
+
+/* 区切りは「先頭以外」に付ける。**隣接(+)ではなく間接(~)にすること。**
+   コアは未設定の項目を hidden にするが、hidden の要素も兄弟としては残るため、
+   + だと「先頭が未設定のとき、区切りだけが先頭に残る」。
+   :not([hidden]) ~ :not([hidden]) なら「前に見えている兄弟があるもの」だけに当たる */
+.site-meta span:not([hidden]) ~ span:not([hidden])::before {
+    content: "／";
+    margin: 0 var(--spacing-small);
+    color: var(--border-color-strong);
 }
 
 /* ---------------------------------------------------------------- 区画 */
@@ -89,7 +108,7 @@ img {
 /* 既定テーマは1つおきに背景色を変えるが、暗い配色では面の差が沈む。
    代わりに区切りの罫で分ける */
 .section-container + .section-container {
-    border-top: 1px solid var(--gray-medium);
+    border-top: 1px solid var(--border-color);
 }
 
 /* 見出しは左寄せ。行の右側に罫を伸ばして、屋台の暖簾のような区切りにする */
@@ -206,5 +225,5 @@ img {
     justify-content: center;
     gap: var(--spacing-medium);
     padding: var(--spacing-large) var(--spacing-medium);
-    border-top: 1px solid var(--gray-medium);
+    border-top: 1px solid var(--border-color);
 }
