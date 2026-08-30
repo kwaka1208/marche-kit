@@ -6,10 +6,11 @@
 クラフトビール祭り、マルシェ、朝市、文化祭、地域イベントなど、
 「出店者が集まり、それぞれが商品を並べる」形のイベントを想定しています。
 
-> **開発状況: 実装中（段階3完了）**
+> **開発状況: 実装中（段階4完了）**
 > サーバー側（[`core/php/`](core/php/)）、編集画面（[`core/editor/`](core/editor/)）、
-> サイトの描画（[`core/js/`](core/js/)）と既定テーマ（[`themes/default/`](themes/default/)）が
-> 動きます。次は動く最小サンプル（段階4）です。
+> サイトの描画（[`core/js/`](core/js/)）、既定テーマ（[`themes/default/`](themes/default/)）と
+> 動くサンプル（[`examples/demo/`](examples/demo/README.md)）が動きます。
+> 次は2つ目のテーマ（段階5）です。
 > 進み具合は [docs/roadmap.md](docs/roadmap.md) を参照してください。
 
 ## 何が入るのか
@@ -55,6 +56,18 @@ marche-kit はマルシェの構造をそのまま設計に借りています。
 Halle と Auvent の境界は「**コアはクラス名を出力する。見た目は決めない**」の一線で引いています。
 詳しくは [docs/concepts.md](docs/concepts.md) を参照してください。
 
+## 動かしてみる
+
+架空のイベントのサンプルが入っています。テーマを当てない素の状態で動きます。
+
+```bash
+cd examples/demo
+python3 -m http.server 8000
+```
+
+<http://localhost:8000/?fixed> を開いてください。
+何が確認できるかは [examples/demo/README.md](examples/demo/README.md) にあります。
+
 ## 使い方（予定）
 
 テンプレート方式です。npmの依存として入れるのではなく、リポジトリごとコピーして使います。
@@ -85,17 +98,18 @@ python3 tools/inject-env.py <配置先ディレクトリ>
 |---|---|
 | [docs/concepts.md](docs/concepts.md) | 3層モデルと設計思想。まずここから |
 | [docs/decisions.md](docs/decisions.md) | 設計上の決定と、その理由 |
-| [docs/data-contract.md](docs/data-contract.md) | データ契約。JSONの形式とサーバー側の検証 |
-| [docs/theme-contract.md](docs/theme-contract.md) | テーマ契約。CSS変数、クラス名、コアが探す器 |
+| [docs/data-contract.md](docs/data-contract.md) | データ仕様。JSONの形式とサーバー側の検証 |
+| [docs/theme-contract.md](docs/theme-contract.md) | テーマ仕様。CSS変数、クラス名、コアが探す器 |
 | [docs/roadmap.md](docs/roadmap.md) | 実装の段階 |
 | [schema/](schema/) | JSON Schema（形式の正） |
 | [core/README.md](core/README.md) | コアが守る約束 |
 | [core/php/README.md](core/php/README.md) | サーバー側の配置と検証 |
 | [core/editor/README.md](core/editor/README.md) | 編集画面の配置とアクセス制御 |
+| [examples/demo/README.md](examples/demo/README.md) | 動くサンプル。動かし方と確認できること |
 
 ## データの検証
 
-契約どおりのデータになっているかを確認できます。外部ライブラリは不要です。
+仕様どおりのデータになっているかを確認できます。外部ライブラリは不要です。
 
 ```bash
 python3 tools/validate.py <サイトの公開ディレクトリ>

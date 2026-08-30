@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!--
+  デモのトップページ（テーマを当てない素の状態）
+
+  themes/ のCSSは読み込まない。読み込むのは mechanics.css だけで、これはテーマではなく
+  「テーマが必ず用意する仕掛け」の最小形（ポップアップの開閉など）。
+  つまりこのページは、**見た目を何も与えなくてもデータが正しく出るか**の試験になる。
+
+  器の一覧は docs/theme-contract.md。器が無い機能は動かない。
+-->
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>みどり野マルシェ（marche-kit デモ）</title>
+    <link rel="stylesheet" href="mechanics.css">
+    <!-- 描画JS。読み込むのはこの1行だけ -->
+    <script type="module" src="js/marche.js"></script>
+</head>
+<body>
+
+<p><strong>marche-kit の動作確認用サンプルです。</strong>
+   架空のイベントで、テーマ（デザイン）は当てていません。</p>
+
+<nav class="top-navigation">
+    <button class="menu-toggle-button" aria-label="メニュー">≡</button>
+    <ul class="navigation-list">
+        <li class="navigation-item"><a href="#news">お知らせ</a></li>
+        <li class="navigation-item"><a href="#shops">出店者</a></li>
+        <li class="navigation-item"><a href="#items">商品</a></li>
+        <li class="navigation-item"><a href="#faq">よくある質問</a></li>
+    </ul>
+</nav>
+
+<main>
+
+    <!-- お知らせ。0件のときと取得先が未設定のときは、コアがこのセクションごと隠す -->
+    <section id="news" data-marche-announcements-section>
+        <h2>お知らせ</h2>
+        <p data-marche-announcements-status data-i18n="common.loading"></p>
+        <div data-marche-announcements></div>
+        <div data-marche-announcements-past></div>
+        <button class="announcements-toggle-button" hidden></button>
+    </section>
+
+    <!-- 出店者。器の属性値は data/shops.json の categories[].id と一致させる -->
+    <section id="shops">
+        <h2>出店ブース</h2>
+        <div data-marche-shops="stalls"></div>
+
+        <h2>キッチンカー</h2>
+        <div data-marche-shops="foodtrucks"></div>
+    </section>
+
+    <!-- 商品。フィルタボタンは marche.config.json の itemCategories からコアが作る -->
+    <section id="items">
+        <h2>商品</h2>
+        <p data-marche-face-value hidden></p>
+        <div class="item-filter-buttons"></div>
+        <div data-marche-items></div>
+        <button class="show-more-button" hidden></button>
+    </section>
+
+    <!-- よくある質問。中身はサイトが直接書く。コアは開閉だけを受け持つ -->
+    <section id="faq">
+        <h2>よくある質問</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-question">雨天でも開催しますか？</button>
+                <div class="faq-answer">
+                    <p>小雨決行です。荒天の場合は、お知らせでご案内します。</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">駐車場はありますか？</button>
+                <div class="faq-answer">
+                    <p>会場に駐車場はありません。公共交通機関をご利用ください。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- 商品ポップアップ。空の器を置くと、コアが値を流し込む -->
+<div class="item-popup-overlay">
+    <div class="item-popup">
+        <button class="item-popup-close-button" aria-label="閉じる">×</button>
+        <img class="item-popup-image" src="" alt="">
+        <h3 class="item-popup-name"></h3>
+        <p class="item-popup-shop-name"></p>
+        <p class="item-popup-price"></p>
+        <p class="item-popup-sale-day" hidden></p>
+        <p class="item-popup-sold-out" hidden></p>
+        <p class="item-popup-description"></p>
+        <div class="item-popup-other-items" hidden>
+            <h4>この店の他の商品</h4>
+            <div class="item-popup-other-items-list"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 店舗ポップアップ -->
+<div class="shop-popup-overlay">
+    <div class="shop-popup">
+        <button class="shop-popup-close-button" aria-label="閉じる">×</button>
+        <img class="shop-popup-logo" src="" alt="">
+        <h3 class="shop-popup-name"></h3>
+        <a class="shop-popup-link" target="_blank" rel="noopener noreferrer"
+           data-i18n="shop.officialSite"></a>
+        <p class="shop-popup-comment"></p>
+        <div class="shop-popup-item-list">
+            <h4>取り扱い</h4>
+            <div class="shop-popup-items"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

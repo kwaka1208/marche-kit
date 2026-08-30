@@ -1,0 +1,31 @@
+{
+  "id": "kogumado",
+  "name": "小熊堂",
+  "comment": "自宅の台所で焼いている焼き菓子の店です。ロゴはまだありません。",
+  "items": [
+    {
+      "id": "kogumado-1",
+      "name": "焼き菓子の詰め合わせ",
+      "category": "food",
+      "description": "その日に焼いたクッキーとパウンドケーキを詰め合わせます。",
+      "image": "kogumado-1.png",
+      "price": 800,
+      "status": "onsale"
+    },
+    {
+      "id": "kogumado-2",
+      "name": "季節のスコーン",
+      "category": "food",
+      "description": "今年は出しません(status が ended のため、サイトには出ません)。",
+      "price": 350,
+      "status": "ended"
+    },
+    {
+      "id": "kogumado-3",
+      "name": "くるみクッキー",
+      "category": "food",
+      "description": "対価が未設定のため、サイトには出ません。"
+    }
+  ],
+  "updatedAt": "2026-09-18T21:40:00+09:00"
+}

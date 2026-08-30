@@ -12,6 +12,8 @@ core/php/secrets.php
 # 出店者がアップロードした実データ(テンプレート利用者ごとに異なる)
 **/shop-data/*/
 !**/shop-data/_example/
+# デモは架空のデータなのでコミットする(examples/demo/README.md)
+!examples/**/shop-data/*/
 # Python
 __pycache__/
 # OS

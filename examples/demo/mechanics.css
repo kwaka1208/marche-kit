@@ -1,0 +1,49 @@
+/*
+  デモ用の「機構だけ」のCSS。**テーマではない。**
+
+  配色・余白・フォント・カードの形は1行も書かない。ここにあるのは、
+  コアが状態をクラスや hidden 属性で伝えるだけの箇所で、
+  **テーマ側が必ず用意しなければならない仕掛け**の最小形だけ。
+  これが無いと、素のデモではポップアップが常に開いたまま見えてしまう。
+
+  逆に言えば、テーマを作るときに最低限これだけは書く必要がある。
+  一覧は docs/theme-contract.md の「テーマが用意する仕掛け」。
+  見た目の作り方は themes/default/ を参照。
+
+  スマートフォンでメニューを畳むテーマでは .navigation-list の open にも
+  同じ関係があるが、素のデモでは畳まないので書いていない。
+*/
+
+/* コアは条件に合わない要素を hidden 属性で隠す。
+   display を当てる側は必ずこれを併記する(docs/theme-contract.md) */
+[hidden] { display: none !important; }
+
+/* ポップアップは .active が付いているときだけ見せる。
+   コアは開閉でこのクラスを付け外しするだけで、見せ方はテーマの領分 */
+.item-popup-overlay,
+.shop-popup-overlay { display: none; }
+.item-popup-overlay.active,
+.shop-popup-overlay.active { display: block; }
+
+/* 本文のスクロール止め。ポップアップが開くとコアが body に付ける */
+body.no-scroll { overflow: hidden; }
+
+/* 商品グリッドは grid で組む。コアが grid-template-columns を読んで
+   折りたたみ時の件数(列数 × 3行)を決めるため、flex では1行分しか出ない */
+[data-marche-items] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+/* FAQ の開閉。コアは .faq-item に active を付け外しするだけ */
+.faq-answer { display: none; }
+.faq-item.active .faq-answer { display: block; }
+
+/* 過去のお知らせ。コアは .is-expanded を付け外しするだけ */
+[data-marche-announcements-past] { display: none; }
+[data-marche-announcements-past].is-expanded { display: block; }
+
+/* 画像の大きさだけは抑える。テーマは通常カードの中で寸法を決めるが、
+   素の状態では固有サイズを持たない代替画像(SVG)が画面幅いっぱいに広がり、
+   ページが縦に伸びて確認しづらくなる。見た目を作る意図はない */
+img { max-width: 200px; height: auto; }

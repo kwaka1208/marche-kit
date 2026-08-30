@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """marche-kit データ検証ツール
 
-サイトのデータが schema/ の契約に合っているかを確認する。
+サイトのデータが schema/ の定める形に合っているかを確認する。
 外部ライブラリを使わないので、python3 さえあればどこでも動く。
 
     python3 tools/validate.py <公開ディレクトリ>
@@ -100,7 +100,7 @@ def check_text(where, label, value):
     """出店者が入力する文字列にHTMLタグが混ざっていないか"""
     if isinstance(value, str) and HTML_TAG.search(value):
         errors.append(f"{where}: {label} にHTMLタグが含まれている"
-                      " → テキストとして扱う契約。改行は \\n を使う")
+                      " → テキストとして扱う仕様。改行は \\n を使う")
 
 
 def check_shop(path, shop_dir, listed, day_ids, mode, decimals, item_cats):
@@ -137,7 +137,7 @@ def check_shop(path, shop_dir, listed, day_ids, mode, decimals, item_cats):
 
     unknown = set(v) - SHOP_FIELDS
     if unknown:
-        warnings.append(f"{where}: 契約に無い店舗フィールド {sorted(unknown)}")
+        warnings.append(f"{where}: 仕様に無い店舗フィールド {sorted(unknown)}")
 
     count = 0
     for m in v.get("items", []):
@@ -192,7 +192,7 @@ def check_shop(path, shop_dir, listed, day_ids, mode, decimals, item_cats):
 
         unknown = set(m) - ITEM_FIELDS
         if unknown:
-            warnings.append(f"{where}: 契約に無い商品フィールド {sorted(unknown)} ({label})")
+            warnings.append(f"{where}: 仕様に無い商品フィールド {sorted(unknown)} ({label})")
     return count
 
 
@@ -290,11 +290,11 @@ def main(base):
     if warnings:
         print()
     if errors:
-        print(f"❌ 契約違反 {len(errors)}件")
+        print(f"❌ 仕様違反 {len(errors)}件")
         for e in errors:
             print(f"  -  {e}")
         return 1
-    print("✅ 契約違反なし")
+    print("✅ 仕様違反なし")
     return 0
 
 

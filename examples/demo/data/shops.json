@@ -1,0 +1,16 @@
+{
+  "categories": [
+    {
+      "id": "stalls",
+      "label": "出店ブース",
+      "variant": "standard",
+      "shops": ["hinata-coffee", "kogumado"]
+    },
+    {
+      "id": "foodtrucks",
+      "label": "キッチンカー",
+      "variant": "feature",
+      "shops": ["mori-no-kitchen"]
+    }
+  ]
+}

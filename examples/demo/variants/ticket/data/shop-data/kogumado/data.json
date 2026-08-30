@@ -1,0 +1,16 @@
+{
+  "id": "kogumado",
+  "name": "小熊堂",
+  "comment": "チケット運用の確認用データです。",
+  "items": [
+    {
+      "id": "kogumado-1",
+      "name": "焼き菓子の詰め合わせ",
+      "category": "food",
+      "description": "その日に焼いたクッキーとパウンドケーキを詰め合わせます。",
+      "price": 3,
+      "status": "onsale"
+    }
+  ],
+  "updatedAt": "2026-09-18T21:40:00+09:00"
+}

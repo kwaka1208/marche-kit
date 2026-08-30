@@ -67,7 +67,7 @@ HTMLの文言も `data-i18n="editor.itemName"` で辞書を指し、JSが読み�
 ## クラス名
 
 エディタのクラス名は `editor-` を接頭辞に付けます（`.editor-item` など）。
-テーマ契約（[docs/theme-contract.md](../../docs/theme-contract.md)）のクラス名とは
+テーマ仕様（[docs/theme-contract.md](../../docs/theme-contract.md)）のクラス名とは
 **別物**で、テーマからスタイルを当てる対象ではありません。
 
 ## モックモード

@@ -13,7 +13,7 @@ core/
 └── components/ # フォームコンポーネント
 ```
 
-`components/` の移植は[段階4以降](../docs/roadmap.md)で行います。
+`components/` の移植はまだです（[ロードマップ](../docs/roadmap.md)に段階を置いていません）。
 
 ### js/ の中身
 
@@ -45,7 +45,7 @@ ESモジュールなのでビルドは要りません。**そのまま公開デ�
 
 色・余白・フォントをコアのコードに書いてはいけません。
 それはテーマ（[`themes/`](../themes/)）の領分です。
-契約の詳細は [docs/theme-contract.md](../docs/theme-contract.md) を参照してください。
+仕様の詳細は [docs/theme-contract.md](../docs/theme-contract.md) を参照してください。
 
 例外は [`editor/editor.css`](editor/README.md) です。エディタは来場者が見る画面ではなく
 運営と出店者が使う管理ツールなので、テーマの対象外として見た目を同梱しています。

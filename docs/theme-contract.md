@@ -1,4 +1,4 @@
-# テーマ契約
+# テーマ仕様
 
 コア（Halle）とテーマ（Auvent）の境界です。
 
@@ -108,6 +108,50 @@
 `.item-popup-sale-day` や `.shop-popup-link` にレイアウト用の `display` を当てるときは、
 `[hidden] { display: none !important; }` を併せて書いてください。
 
+### テーマが用意する仕掛け
+
+**器とクラス名だけでは動きません。**
+開閉するものについて、コアがするのは状態クラスの付け外しだけです。
+**見せる・隠すの判断はテーマのCSSが持ちます。**
+次の6つは、書かないと機能そのものが動きません。
+
+| 仕掛け | コアがすること | 無いとどうなるか |
+|---|---|---|
+| ポップアップ | `*-overlay` に `active` を付け外し | 常に開いたまま見える |
+| `hidden` 属性 | 条件に合わない要素に付ける | 隠れない（`display` で上書きした場合） |
+| FAQ | `.faq-item` に `active` を付け外し | 答えが開いたまま |
+| 過去のお知らせ | 折りたたみ領域に `is-expanded` を付け外し | 過去分が最初から見えている |
+| スクロール抑止 | `body` に `no-scroll` を付け外し | ポップアップの背後が動く |
+| 商品グリッド | `grid-template-columns` を読む | 折りたたみが1行分しか描かれない |
+
+最小形は次のとおりです。**これは見た目ではなく機構です。**
+
+```css
+[hidden] { display: none !important; }
+
+.item-popup-overlay,
+.shop-popup-overlay { display: none; }
+.item-popup-overlay.active,
+.shop-popup-overlay.active { display: block; }
+
+body.no-scroll { overflow: hidden; }
+
+.faq-answer { display: none; }
+.faq-item.active .faq-answer { display: block; }
+
+[data-marche-announcements-past] { display: none; }
+[data-marche-announcements-past].is-expanded { display: block; }
+
+[data-marche-items] { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+```
+
+そのまま動くものが [`examples/demo/mechanics.css`](../examples/demo/mechanics.css) にあります。
+デモはテーマを当てずにこの1枚だけで動いているので、**テーマの下限**がそこに見えます。
+
+スマートフォンのメニューを畳むテーマでは、`.navigation-list` の `open`
+（と `.menu-toggle-button` の `active`、`.top-navigation` の `menu-open`）にも
+同じ関係があります。畳まないテーマでは要りません。
+
 ポップアップの `*-overlay` / `*-close-button` / `*-image` / `*-name` / `*-price` /
 `*-description` などは、**テーマが用意した空の器にコアが値を流し込む**構造です。
 器の見た目はテーマの自由ですが、クラス名と入れ子の関係は維持してください。
@@ -178,12 +222,21 @@
 
 ### 状態・共通
 
-| クラス | 要素 |
-|---|---|
-| `loading-message` | 読み込み中の表示 |
-| `active-filter` | 選択中のフィルタボタン |
-| `toggle-text--open` / `toggle-text--close` | 開閉ラベルの出し分け |
-| `no-scroll` | `body` に付く。ポップアップ表示中のスクロール抑止 |
+コアが付け外しするクラスです。**上の6つ以外は、当てなくても機能は動きます**
+（見た目の手がかりとして使ってください）。
+
+| クラス | 要素 | 当てないと |
+|---|---|---|
+| `loading-message` | 読み込み中・エラーの表示 | 素のまま出る |
+| `active-filter` | 選択中のフィルタボタン | どれを選んでいるか分からない |
+| `toggle-text--open` / `toggle-text--close` | 開閉ラベルの出し分け | 両方の文言が出る |
+| `is-sold-out` | 完売の商品カード | 帯（`item-sold-out-badge`）だけで示される |
+| `is-collapsed` | 折りたたみ中の商品グリッド | 何も起きない（件数の制御はコアがする） |
+| `scrolled` | 上端から離れたときの `.top-navigation` | 何も起きない |
+| `active` | 現在位置の `.navigation-item` | 現在位置が分からない |
+
+**機能が動くために必要なもの**（`active` / `is-expanded` / `no-scroll` / `open`）は、
+[テーマが用意する仕掛け](#テーマが用意する仕掛け)を参照してください。
 
 ## 4. カテゴリごとに見た目を変える
 

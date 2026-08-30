@@ -1,0 +1,34 @@
+{
+  "id": "hinata-coffee",
+  "name": "ひなた\nコーヒー",
+  "url": "https://example.com/hinata-coffee",
+  "comment": "チケット運用の確認用データです。対価はチケットの枚数で入っています。",
+  "items": [
+    {
+      "id": "hinata-coffee-1",
+      "name": "ドリップコーヒー",
+      "category": "drink",
+      "description": "その日の豆を一杯ずつ淹れます。",
+      "price": 2,
+      "status": "onsale"
+    },
+    {
+      "id": "hinata-coffee-2",
+      "name": "カフェオレ",
+      "category": "drink",
+      "description": "深煎りの豆と近隣牧場の牛乳で作ります。",
+      "price": 2,
+      "status": "soldout"
+    },
+    {
+      "id": "hinata-coffee-3",
+      "name": "水出し\nアイスコーヒー",
+      "category": "drink",
+      "description": "初日だけ持っていきます。",
+      "price": 3,
+      "status": "onsale",
+      "saleDays": ["day1"]
+    }
+  ],
+  "updatedAt": "2026-09-20T10:12:00+09:00"
+}

@@ -1,0 +1,24 @@
+{
+  "site": {
+    "name": "みどり野マルシェ（チケット運用の確認）",
+    "url": "https://example.com",
+    "description": "pricing.mode が ticket のとき、対価が枚数として表示されることを確認するための設定。"
+  },
+  "event": { "year": 2026, "venue": "みどり野中央公園", "hours": "10:00-16:00" },
+  "days": [
+    { "id": "day1", "date": "2026-10-03", "label": "10月3日(土)", "shortLabel": "3日(土)" },
+    { "id": "day2", "date": "2026-10-04", "label": "10月4日(日)", "shortLabel": "4日(日)" }
+  ],
+  "pricing": {
+    "mode": "ticket",
+    "ticket": { "unit": "枚", "faceValue": 300, "showFaceValue": true },
+    "currency": { "unit": "円" }
+  },
+  "locale": "ja",
+  "timezone": "Asia/Tokyo",
+  "itemCategories": [
+    { "id": "drink", "label": "ドリンク" },
+    { "id": "food", "label": "フード" }
+  ],
+  "announcements": { "source": "data/news.json", "visibleCount": 2 }
+}

@@ -1,0 +1,36 @@
+{
+  "id": "hinata-coffee",
+  "name": "ひなた\nコーヒー",
+  "url": "https://example.com/hinata-coffee",
+  "comment": "みどり野の駅前で焙煎している小さなコーヒー店です。\n浅煎りから深煎りまで、その日の豆を持っていきます。",
+  "logo": "logo.png",
+  "items": [
+    {
+      "id": "hinata-coffee-1",
+      "name": "ドリップコーヒー",
+      "category": "drink",
+      "description": "その日の豆を一杯ずつ淹れます。ホットのみ。",
+      "image": "hinata-coffee-1.png",
+      "price": 500,
+      "status": "onsale"
+    },
+    {
+      "id": "hinata-coffee-2",
+      "name": "カフェオレ",
+      "category": "drink",
+      "description": "深煎りの豆と近隣牧場の牛乳で作ります。",
+      "price": 550,
+      "status": "soldout"
+    },
+    {
+      "id": "hinata-coffee-3",
+      "name": "水出し\nアイスコーヒー",
+      "category": "drink",
+      "description": "前日から12時間かけて抽出したものを、初日だけ持っていきます。",
+      "price": 600,
+      "status": "onsale",
+      "saleDays": ["day1"]
+    }
+  ],
+  "updatedAt": "2026-09-20T10:12:00+09:00"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "mori-no-kitchen",
+  "name": "森のキッチン",
+  "url": "https://example.com/mori-no-kitchen",
+  "logo": "logo.png",
+  "items": [
+    {
+      "id": "mori-no-kitchen-1",
+      "name": "きのこカレー",
+      "category": "food",
+      "description": "地元のきのこを3種類使った、スパイスのカレーです。",
+      "image": "mori-no-kitchen-1.png",
+      "price": 900,
+      "status": "onsale",
+      "imagePosition": "center top"
+    },
+    {
+      "id": "mori-no-kitchen-2",
+      "name": "スープセット",
+      "category": "food",
+      "description": "日替わりのスープとパンのセット。数に限りがあります。",
+      "price": 700,
+      "status": "onsale"
+    }
+  ],
+  "updatedAt": "2026-09-19T08:05:00+09:00"
+}

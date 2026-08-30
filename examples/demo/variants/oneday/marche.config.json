@@ -1,0 +1,23 @@
+{
+  "site": {
+    "name": "みどり野マルシェ（1日開催の確認）",
+    "url": "https://example.com",
+    "description": "days が1件のとき、販売日のUIが出力されないことを確認するための設定。"
+  },
+  "event": { "year": 2026, "venue": "みどり野中央公園", "hours": "10:00-16:00" },
+  "days": [
+    { "id": "day1", "date": "2026-10-03", "label": "10月3日(土)", "shortLabel": "3日(土)" }
+  ],
+  "pricing": {
+    "mode": "currency",
+    "currency": { "unit": "円", "position": "suffix", "grouping": true, "decimals": 0 },
+    "note": "税込"
+  },
+  "locale": "ja",
+  "timezone": "Asia/Tokyo",
+  "itemCategories": [
+    { "id": "drink", "label": "ドリンク" },
+    { "id": "food", "label": "フード" }
+  ],
+  "announcements": { "source": "data/news.json", "visibleCount": 2 }
+}
