@@ -24,7 +24,7 @@ export const isSoldOut = (item) => item.status === 'soldout';
 export const isListed = (item) =>
   item.status !== 'ended' && Number(item.price) > 0;
 
-// カード本体の見た目のバリエーション(決定1)。未指定と未知の値は standard に寄せる
+// カード本体の見た目のバリエーション。未指定と未知の値は standard に寄せる
 const VARIANTS = ['standard', 'compact', 'feature'];
 const normalizeVariant = (value) => (VARIANTS.includes(value) ? value : 'standard');
 

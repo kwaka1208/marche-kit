@@ -491,8 +491,13 @@ def main(base):
                 continue
             total += check_shop(p, d, listed, day_ids, mode, decimals, item_cats)
             checked += 1
+        # ロスターに載せた直後は必ずこの状態になる（出店者が保存して初めて作られる）。
+        # **正常な途中経過なので仕様違反にしない。** ただしIDの綴り違いでも同じ形になるため、
+        # 両方の可能性を書いて知らせる
         for s in sorted(listed - set(dirs)):
-            errors.append(f"shops.json: '{s}' のフォルダが shop-data/ に無い")
+            warnings.append(f"shops.json: '{s}' の shop-data/ がまだ無い"
+                            " → その店が保存すると作られます。"
+                            "開催が近いのに残っているなら、未入稿か店舗IDの綴り違いです")
         unlisted = len(set(dirs) - listed)
         print(f"出店者データ : {checked}店 / {total}商品"
               + (f"（ロスター外 {unlisted}件は非表示）" if unlisted else ""))

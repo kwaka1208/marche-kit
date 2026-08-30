@@ -10,7 +10,7 @@ import { fetchJson, isHttpUrl } from './util.js';
 // いずれもページ相対。サイトのトップページ(公開ディレクトリ直下)から見た位置。
 // 絶対パスにしないのは、ルート公開・サブフォルダ公開のどちらでも解決できるようにするため
 
-// サイト設定。エディタが読むものと同じファイル(決定7)
+// サイト設定。エディタが読むものと同じファイル
 const CONFIG_URL = 'marche.config.json';
 
 // 表示文言の辞書の置き場(末尾スラッシュ必須)。<locale>.json を読む
@@ -55,7 +55,7 @@ function localeTag() {
   return /^[a-z]{2}(-[A-Za-z0-9]+)?$/.test(locale) ? locale : 'ja';
 }
 
-// 表示文言を辞書から引く(決定4)。'item.soldOut' のようなドット区切り。
+// 表示文言を辞書から引く。'item.soldOut' のようなドット区切り。
 // {name} などのプレースホルダを vars で置き換える。
 // 見つからないキーはキー名をそのまま返す(記入漏れが画面で分かるように)
 export function t(key, vars = {}) {
@@ -72,14 +72,14 @@ export function t(key, vars = {}) {
 
 export const config = () => state.config;
 
-// 開催日。1件のときは販売日のUIを出さない(決定2)
+// 開催日。1件のときは販売日のUIを出さない
 export const days = () => state.config.days ?? [];
 export const usesSaleDays = () => days().length > 1;
 
-// 商品カテゴリ。未定義なら商品一覧のフィルタを出さない(決定8)
+// 商品カテゴリ。未定義なら商品一覧のフィルタを出さない
 export const itemCategories = () => state.config.itemCategories ?? [];
 
-// 設定の値をドット区切りのパスで引く(決定14)。
+// 設定の値をドット区切りのパスで引く。
 // テーマが data-marche-text="site.name" と書いた箇所に流し込むためのもの。
 //
 // 途中が配列のときは、その先のキーを各要素から取って listSeparator で連結する。
@@ -147,7 +147,7 @@ export function formSettings() {
 
 // ---------------------------------------------------------------- イベント公式のSNS
 
-// プラットフォームの既定の表記(決定12)。ここに無いIDも設定に書ける。
+// プラットフォームの既定の表記。ここに無いIDも設定に書ける。
 // 表記は固有名詞なので辞書(i18n)には置かない。言語が変わっても Instagram は Instagram
 const SOCIAL_LABELS = new Map([
   ['x', 'X'],
@@ -166,7 +166,7 @@ const SOCIAL_LABELS = new Map([
 // 商品カテゴリと同じく小文字・数字・ハイフンに限る
 const SOCIAL_PLATFORM = /^[a-z0-9][a-z0-9-]*$/;
 
-// イベント公式SNSのリンク。設定に書かれた順のまま返す(決定12)。
+// イベント公式SNSのリンク。設定に書かれた順のまま返す。
 // 形の合わない1件は黙って落とす。書き間違いで他のリンクまで消えないようにするため
 export function socialLinks() {
   const list = state.config.site?.social;
@@ -191,7 +191,7 @@ const pricing = () => state.config.pricing ?? {};
 
 // ---------------------------------------------------------------- 対価の表示
 
-// 対価を数値・単位・単位の位置に分けて返す(決定5)。
+// 対価を数値・単位・単位の位置に分けて返す。
 // 文字列に組み立てないのは、テーマが単位だけ小さく見せられるようにするため。
 // price は「対価を表す数値」で、金額とは限らない(チケット運用では枚数)
 export function priceParts(price) {
@@ -207,7 +207,7 @@ export function priceParts(price) {
   // 万一データが欠けても表示を壊さないための保険として ? を返す
   if (!(number > 0)) return { value: t('pricing.unset'), unit, position };
 
-  // チケットは枚数なので常に整数(決定5)。小数桁は金額のときだけ効く
+  // チケットは枚数なので常に整数。小数桁は金額のときだけ効く
   const decimals = isTicket ? 0 : (p.currency?.decimals ?? 0);
   const grouping = isTicket ? true : (p.currency?.grouping ?? true);
   const value = number.toLocaleString(localeTag(), {
@@ -235,14 +235,14 @@ export function faceValueNote() {
 // ---------------------------------------------------------------- 販売日
 
 // 商品の販売日の表記。全日のときは null を返し、呼び出し側は要素ごと出力しない。
-// 開催が1日だけのイベントでは常に null(決定2)
+// 開催が1日だけのイベントでは常に null
 export function saleDayLabel(item) {
   if (!usesSaleDays()) return null;
   const all = days();
   const selected = Array.isArray(item.saleDays)
     ? all.filter((day) => item.saleDays.includes(day.id))
     : [];
-  // 未指定と全日選択は同じ意味(決定9)。どちらも日程の表記を出さない
+  // 未指定と全日選択は同じ意味。どちらも日程の表記を出さない
   if (selected.length === 0 || selected.length === all.length) return null;
   return selected
     .map((day) => day.shortLabel || day.label)

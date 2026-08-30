@@ -128,7 +128,7 @@ function marche_pricing_mode(): string
 }
 
 /**
- * 表示文言を辞書から引く(決定4)。コアは文言を直書きしない。
+ * 表示文言を辞書から引く。コアは文言を直書きしない。
  *
  * $key は "server.badShopId" のようなドット区切り。$vars で {name} を置き換える。
  * 辞書は marche.config.json の locale で決まり、次の順に探す。
@@ -177,7 +177,7 @@ function marche_text(string $key, array $vars = []): string
 }
 
 /**
- * 出店者が入力した文字列をテキストに正規化する(決定6)。
+ * 出店者が入力した文字列をテキストに正規化する。
  *
  * 出店者の入力はサイト上ですべてテキストとして描画される。HTMLタグは書けない。
  * クライアントを信用せず、保存時にここで落とす。

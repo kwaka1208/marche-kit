@@ -26,7 +26,7 @@ function applyStaticText(root = document) {
   }
 }
 
-// data-marche-text にイベントの設定を流し込む(決定14)。
+// data-marche-text にイベントの設定を流し込む。
 // イベント名・会期・会場をテーマのHTMLに直書きさせないためのもの。
 //
 // 値が無いときは要素を隠す。**パスの綴りを間違えたときも同じく隠れる**ため、

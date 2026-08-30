@@ -1,7 +1,7 @@
 // イベント公式のSNSリンク
 //
 // テーマが置いたスロット [data-marche-social] に、marche.config.json の site.social を並べる。
-// 出店者のSNSではなく、イベント運営のアカウント(決定12)。
+// 出店者のSNSではなく、イベント運営のアカウント。
 //
 // **アイコンはここで作らない。** コアが出すのはリンク・クラス名・表記だけで、
 // 何の絵を出すかはテーマのCSSが決める(代替画像 images/noimage/ と同じ扱い)。
@@ -10,7 +10,7 @@ import { socialLinks } from './config.js';
 import { announceRendered, el } from './util.js';
 
 function buildSocialLink(link) {
-  // カードと同じ二段構え(決定1)。テーマは social-link--<platform> に当て、
+  // カードと同じ二段構え。テーマは social-link--<platform> に当て、
   // data-platform はイベント側での微調整に使う
   const anchor = el('a', `social-link social-link--${link.platform}`);
   anchor.dataset.platform = link.platform;

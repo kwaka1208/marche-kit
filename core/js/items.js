@@ -36,7 +36,7 @@ const state = {
 
 // ---------------------------------------------------------------- 部品
 
-// 対価を数値・単位・但し書きに分けて入れる(決定5)。
+// 対価を数値・単位・但し書きに分けて入れる。
 // 文字列に組み立てないのは、テーマが単位だけ小さく見せられるようにするため
 function fillPrice(container, item) {
   container.textContent = '';
@@ -54,7 +54,7 @@ function fillPrice(container, item) {
   if (note) container.appendChild(el('span', 'price-note', note));
 }
 
-// 販売日の表記。全日の商品と1日開催のイベントでは要素ごと出さない(決定2)
+// 販売日の表記。全日の商品と1日開催のイベントでは要素ごと出さない
 function saleDayElement(item, key) {
   const label = saleDayLabel(item);
   return label ? el('span', 'item-sale-day', t(key, { label })) : null;
@@ -103,7 +103,7 @@ function buildItemCard(item) {
   if (isSoldOut(item)) card.classList.add('is-sold-out');
   card.dataset.itemId = item.id;
   card.dataset.shopId = item.shopId;
-  // カテゴリごとの微調整のための手がかり。テーマは基本的にこれを見ずに書く(決定1)
+  // カテゴリごとの微調整のための手がかり。テーマは基本的にこれを見ずに書く
   if (item.category) card.dataset.category = item.category;
 
   const top = el('div', 'item-card-top');
@@ -190,7 +190,7 @@ function applyFilter(categoryId) {
 
 // ---------------------------------------------------------------- フィルタ
 
-// フィルタボタンは設定の itemCategories から作る(決定8)。
+// フィルタボタンは設定の itemCategories から作る。
 // カテゴリが未定義のイベントでは1つも作らず、全商品をそのまま出す
 function renderFilterButtons() {
   const categories = itemCategories();

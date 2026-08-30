@@ -66,7 +66,7 @@ const state = {
 
 const $ = (id) => document.getElementById(id);
 
-// 表示文言を辞書から引く(決定4)。'editor.itemName' のようなドット区切り。
+// 表示文言を辞書から引く。'editor.itemName' のようなドット区切り。
 // {name} などのプレースホルダを vars で置き換える。
 // 見つからないキーはキー名をそのまま返す(記入漏れが画面で分かるように)
 function t(key, vars = {}) {
@@ -102,14 +102,14 @@ const fileExt = (file) => {
   return m ? m[1].toLowerCase() : '';
 };
 
-// 開催日。1件のときは販売日のUIを出さない(決定2)
+// 開催日。1件のときは販売日のUIを出さない
 const days = () => state.config.days ?? [];
 const usesSaleDays = () => days().length > 1;
 
 // 商品カテゴリ。未定義なら商品カテゴリの欄を出さない
 const itemCategories = () => state.config.itemCategories ?? [];
 
-// 対価の入力欄のラベルと補足。単位と言い回しは pricing.mode で変わる(決定5)
+// 対価の入力欄のラベルと補足。単位と言い回しは pricing.mode で変わる
 function priceLabel() {
   const pricing = state.config.pricing ?? {};
   return pricing.mode === 'ticket'
@@ -506,7 +506,7 @@ function buildStatusField(wrap, itemKey, current) {
   return field;
 }
 
-// 販売日のチェックボックス群。saleDays は日IDの配列なので、日ごとに1つ用意する(決定2)。
+// 販売日のチェックボックス群。saleDays は日IDの配列なので、日ごとに1つ用意する。
 // 未設定は全日販売として扱い、すべてチェックした状態で開く。
 // 開催が1日だけのときはこの欄自体を作らない(呼び出し側で判断)
 function buildSaleDaysField(itemKey, current) {

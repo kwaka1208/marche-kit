@@ -17,7 +17,7 @@
         "description": { "type": "string", "description": "サイトの説明(meta description)" },
         "social": {
           "type": "array",
-          "description": "イベント公式SNSのリンク(決定12)。テーマのスロット [data-marche-social] に、この配列の順で出力される。未定義・空のときは1件も出力せず、スロットごと隠される",
+          "description": "イベント公式SNSのリンク。テーマのスロット [data-marche-social] に、この配列の順で出力される。未定義・空のときは1件も出力せず、スロットごと隠される",
           "items": {
             "type": "object",
             "required": ["platform", "url"],
@@ -165,7 +165,7 @@
     "forms": {
       "type": "object",
       "additionalProperties": false,
-      "description": "問い合わせフォームの設定(決定13)。すべて省略可。項目そのものは forms/<種別>.json 側にある",
+      "description": "問い合わせフォームの設定。すべて省略可。項目そのものは forms/<種別>.json 側にある",
       "properties": {
         "endpoint": {
           "type": "string",

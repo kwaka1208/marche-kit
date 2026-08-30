@@ -10,7 +10,7 @@
 // ビルド不要のESモジュールとして書き起こしたもの。**移植後はこのリポジトリのコード**で、
 // 上流を追いかける仕組みは持たない。移植にあたって変えたのは次の3点。
 //
-//   - 文言はすべて辞書から引く(決定4)。ブラウザ既定の検証メッセージは使わない
+//   - 文言はすべて辞書から引く。ブラウザ既定の検証メッセージは使わない
 //   - 選択肢は {value, label} の形(送信値と表示を分けられる)
 //   - Discord通知は持たない。通知はサーバー側(send.php)が受け持つ
 //
@@ -288,7 +288,7 @@ function activate(container, def, settings) {
     return value.split(', ').map((v) => labels.get(v) ?? v).join(t('common.listSeparator'));
   };
 
-  // 1項目の検査。**メッセージはすべて辞書から引く**(決定4)。
+  // 1項目の検査。**メッセージはすべて辞書から引く**。
   // ブラウザ既定の validationMessage を使うと、辞書の言語と食い違う
   const errorOf = (field) => {
     const value = valueOf(field);
@@ -374,7 +374,7 @@ function activate(container, def, settings) {
       if (value === '') {
         row.appendChild(el('span', 'courier-preview-empty', t('form.notEntered')));
       } else {
-        // 入力値はテキストとして流し込む。改行だけ残す(決定6と同じ扱い)
+        // 入力値はテキストとして流し込む。改行だけ残す
         const body = el('span', 'courier-preview-value');
         value.split('\n').forEach((line, i) => {
           if (i > 0) body.appendChild(document.createElement('br'));

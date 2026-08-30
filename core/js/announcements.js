@@ -40,7 +40,7 @@ function buildAnnouncement(item, { isLatest = false, open = false } = {}) {
   summary.appendChild(toggle);
 
   const body = el('div', 'announcement-body');
-  // 本文だけはHTML文字列として扱う(決定6)。運営しか書けないため許している。
+  // 本文だけはHTML文字列として扱う。運営しか書けないため許している。
   // 出店者が入力する項目は、どこもテキストとして描画している
   body.innerHTML = item.body;
 

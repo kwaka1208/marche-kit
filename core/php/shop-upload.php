@@ -111,7 +111,7 @@ if (!$validImageName($data['logo'] ?? '', 'logo')) {
     fail(400, 'server.badLogoName');
 }
 
-// 保存する形に組み直す。出店者が入力した文字列はここでテキストに正規化する(決定6)
+// 保存する形に組み直す。出店者が入力した文字列はここでテキストに正規化する
 $clean = [
     'id' => $shopId,
     'name' => marche_plain_text($data['name'] ?? ''),

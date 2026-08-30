@@ -1,7 +1,7 @@
 // 出店者の描画
 //
 // 出店者カードと店舗ポップアップを受け持つ。
-// カテゴリの数と名前はイベントごとに違うため、コアは固定のIDを持たない(決定1)。
+// カテゴリの数と名前はイベントごとに違うため、コアは固定のIDを持たない。
 // テーマが置いたスロット [data-marche-shops="<カテゴリID>"] を探し、あるものだけを埋める。
 
 import { FALLBACK_IMAGES, t } from './config.js';
@@ -24,7 +24,7 @@ const state = {
 // ---------------------------------------------------------------- 出店者カード
 
 function buildShopCard(shop) {
-  // カテゴリごとに見た目を変える手がかりを2つ出す(決定1)。
+  // カテゴリごとに見た目を変える手がかりを2つ出す。
   // テーマは variant に当てるのが基本で、data-category はこのイベント専用の逃げ道
   const card = el('div', `shop-card-info shop-card--${shop.variant}`);
   card.dataset.category = shop.categoryId;

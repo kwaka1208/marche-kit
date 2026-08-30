@@ -37,7 +37,7 @@ export function el(tag, className, text) {
   return node;
 }
 
-// 出店者が入力した文字列をテキストとして流し込む(決定6)。
+// 出店者が入力した文字列をテキストとして流し込む。
 // HTMLとしては解釈せず、改行(\n)だけを <br> に変える。
 // テーマのCSS(white-space)に頼らないのは、テーマが忘れても改行が保たれるようにするため
 export function setText(el, text) {
