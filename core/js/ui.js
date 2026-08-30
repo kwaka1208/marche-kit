@@ -15,11 +15,16 @@ const SCROLL_OFFSET = 20;
 // 上端からこれだけ動いたらナビゲーションに scrolled を付ける(ピクセル)
 const SCROLLED_THRESHOLD = 10;
 
+// 上端からこれだけの範囲にあるナビを「上に貼り付いている」とみなす(ピクセル)
+const NAV_TOP_TOLERANCE = 1;
+
 // 位置を固定しているナビゲーションの高さ。移動先の計算で差し引く
-// (固定していないテーマでは差し引かない)
+// (固定していないテーマでは差し引かない)。
+// **画面の上端に貼り付いているときだけ差し引く。** 下や横に固定したナビは
+// 移動先の見出しを隠さないため、差し引くとかえって行き過ぎる
 function fixedNavHeight(nav) {
-  if (!nav) return 0;
-  return getComputedStyle(nav).position === 'fixed' ? nav.offsetHeight : 0;
+  if (!nav || getComputedStyle(nav).position !== 'fixed') return 0;
+  return nav.getBoundingClientRect().top <= NAV_TOP_TOLERANCE ? nav.offsetHeight : 0;
 }
 
 // ナビゲーションの開閉(スマートフォンでのメニュー)

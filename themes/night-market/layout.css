@@ -1,0 +1,190 @@
+/* レイアウト（夜市）
+ *
+ * ページの骨組みと、グリッドの段組み。
+ * **商品グリッドの列数はここで決まる。** コアは grid-template-columns を読んで
+ * 折りたたみ時に見せる件数を決めるので、段組みは必ずgridで書くこと。
+ *
+ * このテーマはナビゲーションを画面の下に固定する。マークアップは既定テーマと同じで、
+ * 位置を決めているのはここと components.css だけ。
+ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* コアは条件に合わない要素を hidden 属性で隠す。
+   このテーマは .shop-popup-link などに display を当てるため、必ずこの1行を書く
+   （書かないと隠れない。docs/theme-contract.md「隠すのは hidden 属性」） */
+[hidden] {
+    display: none !important;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family-main);
+    font-size: var(--font-size-base);
+    line-height: 1.75;
+    color: var(--text-color-dark);
+    background-color: var(--page-background);
+    /* 下に固定したナビゲーションの分。ページ末尾がナビに隠れないようにする */
+    padding-bottom: var(--bottom-nav-height);
+}
+
+/* ポップアップ表示中とメニュー展開中に付く。背後の本文を動かさない */
+body.no-scroll {
+    overflow: hidden;
+}
+
+img {
+    max-width: 100%;
+}
+
+.content-wrapper {
+    max-width: var(--max-content-width);
+    margin: 0 auto;
+    padding: 0 var(--spacing-medium);
+}
+
+/* ---------------------------------------------------------------- 表札 */
+
+.site-header {
+    padding: var(--spacing-xl) 0 var(--spacing-large);
+    text-align: center;
+    background:
+        radial-gradient(60% 120% at 50% 0%, rgba(224, 164, 88, 0.18), transparent 70%),
+        var(--page-background);
+}
+
+.site-header-mark {
+    margin: 0;
+    font-size: 2rem;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.site-title {
+    margin: var(--spacing-small) 0 0;
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    /* 字間を空けると右端に余白がぶら下がるため、その分だけ戻す */
+    text-indent: 0.35em;
+}
+
+.site-lead {
+    margin: var(--spacing-xs) 0 0;
+    color: var(--text-color-light);
+    font-size: var(--font-size-small);
+    letter-spacing: 0.1em;
+}
+
+/* ---------------------------------------------------------------- 区画 */
+
+.section-container {
+    padding: var(--spacing-xl) 0;
+}
+
+/* 既定テーマは1つおきに背景色を変えるが、暗い配色では面の差が沈む。
+   代わりに区切りの罫で分ける */
+.section-container + .section-container {
+    border-top: 1px solid var(--gray-medium);
+}
+
+/* 見出しは左寄せ。行の右側に罫を伸ばして、屋台の暖簾のような区切りにする */
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-medium);
+    margin: 0 0 var(--spacing-large);
+    font-size: var(--font-size-large);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+}
+
+.section-heading::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--primary-color), transparent);
+}
+
+/* 2つ目以降の見出し（同じ区画に区分が複数あるとき）は上に余白を置く */
+.section-container .shop-grid + .section-heading {
+    margin-top: var(--spacing-xl);
+}
+
+/* ---------------------------------------------------------------- グリッド */
+
+/* 出店者グリッド。カテゴリごとに1つ置かれる */
+.shop-grid {
+    display: grid;
+    gap: var(--grid-gap);
+    grid-template-columns: repeat(2, 1fr);
+}
+
+/* 商品グリッド。**gridであることがコアの前提**（折りたたみ件数の計算に使う）。
+   既定テーマより1列多くして、列数が変わっても折りたたみが3行に揃うことを確かめる */
+.item-grid {
+    display: grid;
+    gap: var(--grid-gap);
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 600px) {
+    .shop-grid,
+    .item-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 900px) {
+    .shop-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .item-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* 折りたたみ中。何件見せるかはコアが列数から計算して描き分ける
+   (ここでCSSが隠すのではなく、描かれる件数そのものが変わる) */
+.item-grid.is-collapsed {
+    overflow: hidden;
+}
+
+.item-filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-small);
+    margin-bottom: var(--spacing-large);
+}
+
+.show-more-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--spacing-large);
+}
+
+/* ---------------------------------------------------------------- お知らせ */
+
+.announcements-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-small);
+}
+
+/* 過去のお知らせ。開くまでは畳んでおく。
+   中身はコアが直接書き込むため、包む要素を挟まずこの要素自体を出し入れする */
+.announcements-past {
+    display: none;
+}
+
+.announcements-past.is-expanded {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-small);
+    margin-top: var(--spacing-small);
+}

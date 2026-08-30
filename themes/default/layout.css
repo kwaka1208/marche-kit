@@ -11,6 +11,13 @@
     box-sizing: border-box;
 }
 
+/* コアは条件に合わない要素を hidden 属性で隠す。
+   display を当てた要素で効かなくなるため、テーマは無条件でこの1行を書く
+   （docs/theme-contract.md「隠すのは hidden 属性」） */
+[hidden] {
+    display: none !important;
+}
+
 body {
     margin: 0;
     font-family: var(--font-family-main);

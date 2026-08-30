@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ロゴ未設定・読み込み失敗のときにコアが出す代替画像(正方形)。
+     core/js/config.js の FALLBACK_IMAGES.shop がこのパスを指している。
+     このテーマはロゴを明るい円の上に置くため、暗い配色でもここは明るいままにする -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="no image">
+  <rect width="200" height="200" fill="#f4f1ec"/>
+  <path d="M56 120h88v36H56z" fill="#d8cfc2"/>
+  <path d="M56 120l18-32h52l18 32z" fill="#c2b6a4"/>
+  <rect x="92" y="134" width="16" height="22" fill="#f4f1ec"/>
+</svg>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!--
+  夜市テーマのトップページ（器の見本）
+
+  既定テーマとは狙いが違う。暗い背景を前提にし、ナビゲーションを画面下に固定する。
+  この2点は「テーマの自由」の範囲だが、**どこまでが自由なのか**を確かめるために
+  意図的にずらしてある（docs/roadmap.md 段階5）。
+
+  器の一覧は docs/theme-contract.md。**器が無い機能は動かない。**
+  逆に、要らない機能は器ごと消せばよい。
+
+  データやイベント固有の文言はここに書かない。店名・商品・お知らせはコアが流し込む。
+
+  配置するとき（詳しくは themes/README.md）:
+      themes/night-market/index.html   → <公開ディレクトリ>/index.html
+      themes/night-market/*.css        → <公開ディレクトリ>/css/
+      themes/night-market/images/      → <公開ディレクトリ>/images/
+      core/js/                         → <公開ディレクトリ>/js/
+      core/i18n/                       → <公開ディレクトリ>/i18n/
+-->
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>マルシェ</title>
+    <meta name="color-scheme" content="dark">
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <!-- 描画JS。読み込むのはこの1行だけで、残りは core/js/ の中で解決する -->
+    <script type="module" src="js/marche.js"></script>
+</head>
+<body>
+
+<!-- ページの表札。イベント名・会期・会場はサイトごとに書き換える。
+     コアはここを描画しない（marche.config.json を読むのは描画JSの中だけで、
+     site.name や days を出力する器は仕様に無い） -->
+<header class="site-header">
+    <div class="content-wrapper">
+        <p class="site-header-mark">◍</p>
+        <h1 class="site-title">マルシェ</h1>
+        <p class="site-lead">日が落ちてからの、ひとときの市。</p>
+    </div>
+</header>
+
+<main>
+
+    <!-- お知らせ。
+         0件のときと取得先が未設定のときは、コアがこのセクションごと隠す -->
+    <section class="section-container" id="news" data-marche-announcements-section>
+        <div class="content-wrapper">
+            <h2 class="section-heading">お知らせ</h2>
+            <!-- 取得に時間がかかることがあるため、読み込み中の表示を先に出しておく。
+                 取得できたらコアがこの要素を取り除く -->
+            <p class="loading-message" data-marche-announcements-status data-i18n="common.loading"></p>
+            <div class="announcements-list" data-marche-announcements></div>
+            <div class="announcements-past" data-marche-announcements-past></div>
+            <div class="show-more-wrapper">
+                <button class="announcements-toggle-button" hidden></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 出店者。
+         属性値は data/shops.json の categories[].id と一致させる。
+         **区分を増やすときはこの器を1行足すだけでよい**（コアの変更は要らない）。
+         見た目の差は categories[].variant で付ける。CSSはカテゴリIDを見ていない -->
+    <section class="section-container" id="shops">
+        <div class="content-wrapper">
+            <h2 class="section-heading">出店者</h2>
+            <div class="shop-grid" data-marche-shops="shops"></div>
+
+            <h2 class="section-heading">キッチンカー</h2>
+            <div class="shop-grid" data-marche-shops="foodstalls"></div>
+        </div>
+    </section>
+
+    <!-- 商品。
+         フィルタボタンは marche.config.json の itemCategories からコアが作る。
+         カテゴリが未定義のイベントでは1つも作られない（空の器が残るだけ） -->
+    <section class="section-container" id="items">
+        <div class="content-wrapper">
+            <h2 class="section-heading">商品</h2>
+            <!-- チケット運用で額面を出す設定のときだけ、コアが文言を入れる -->
+            <p class="pricing-face-value" data-marche-face-value hidden></p>
+            <div class="item-filter-buttons"></div>
+            <div class="item-grid" data-marche-items></div>
+            <div class="show-more-wrapper">
+                <button class="show-more-button" hidden></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- よくある質問。中身はテーマ（サイト）が直接書く。コアは開閉だけを受け持つ -->
+    <section class="section-container" id="faq">
+        <div class="content-wrapper">
+            <h2 class="section-heading">よくある質問</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">雨天でも開催しますか？</button>
+                    <div class="faq-answer">
+                        <p>小雨決行です。荒天の場合は、お知らせでご案内します。</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">駐車場はありますか？</button>
+                    <div class="faq-answer">
+                        <p>会場に駐車場はありません。公共交通機関をご利用ください。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ナビゲーション。**このテーマは画面の下に固定する。**
+     位置を決めているのはCSSだけで、コアに上下の区別は無い。
+
+     開閉ボタン（.menu-toggle-button）の器は置いていない。下に固定した4項目は
+     スマートフォンでも畳まずに収まるため、この機能は要らない。
+     **器の無い機能は動かないだけで、エラーにはならない**（要らない機能は器ごと消せる） -->
+<nav class="top-navigation">
+    <ul class="navigation-list">
+        <li class="navigation-item"><a href="#news">お知らせ</a></li>
+        <li class="navigation-item"><a href="#shops">出店者</a></li>
+        <li class="navigation-item"><a href="#items">商品</a></li>
+        <li class="navigation-item"><a href="#faq">質問</a></li>
+    </ul>
+</nav>
+
+<!-- 商品ポップアップ。空の器を置くと、コアが値を流し込む。
+     要らない項目は器ごと消してよい（コアは器のあるものだけ埋める） -->
+<div class="item-popup-overlay">
+    <div class="item-popup">
+        <button class="item-popup-close-button" aria-label="閉じる">×</button>
+        <img class="item-popup-image" src="" alt="">
+        <h3 class="item-popup-name"></h3>
+        <p class="item-popup-shop-name"></p>
+        <p class="item-popup-price"></p>
+        <p class="item-popup-sale-day" hidden></p>
+        <p class="item-popup-sold-out" hidden></p>
+        <p class="item-popup-description"></p>
+        <div class="item-popup-other-items" hidden>
+            <h4>この店の他の商品</h4>
+            <div class="item-popup-other-items-list"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 店舗ポップアップ -->
+<div class="shop-popup-overlay">
+    <div class="shop-popup">
+        <button class="shop-popup-close-button" aria-label="閉じる">×</button>
+        <img class="shop-popup-logo" src="" alt="">
+        <h3 class="shop-popup-name"></h3>
+        <a class="shop-popup-link" target="_blank" rel="noopener noreferrer"
+           data-i18n="shop.officialSite"></a>
+        <p class="shop-popup-comment"></p>
+        <div class="shop-popup-item-list">
+            <h4>取り扱い</h4>
+            <div class="shop-popup-items"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

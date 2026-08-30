@@ -6,11 +6,11 @@
 クラフトビール祭り、マルシェ、朝市、文化祭、地域イベントなど、
 「出店者が集まり、それぞれが商品を並べる」形のイベントを想定しています。
 
-> **開発状況: 実装中（段階4完了）**
+> **開発状況: 実装中（段階5完了）**
 > サーバー側（[`core/php/`](core/php/)）、編集画面（[`core/editor/`](core/editor/)）、
-> サイトの描画（[`core/js/`](core/js/)）、既定テーマ（[`themes/default/`](themes/default/)）と
+> サイトの描画（[`core/js/`](core/js/)）、テーマ2種（[`themes/`](themes/README.md)）と
 > 動くサンプル（[`examples/demo/`](examples/demo/README.md)）が動きます。
-> 次は2つ目のテーマ（段階5）です。
+> 次は本家サイトの移行（段階6）です。
 > 進み具合は [docs/roadmap.md](docs/roadmap.md) を参照してください。
 
 ## 何が入るのか
@@ -52,6 +52,10 @@ marche-kit はマルシェの構造をそのまま設計に借りています。
 | **Halle** (`core/`) | 市場の屋根・共通の骨組み | PHPバックエンド、描画JS、エディタ、文言辞書 | しない |
 | **Étal** (運用データ) | 各店の陳列台 | 出店者ごとのJSONと画像 | イベントごと |
 | **Auvent** (`themes/`) | 掛け替える日よけの布 | CSS、レイアウト、フォント、配色 | 自由 |
+
+テーマは2つ入っています。中立な [`default/`](themes/default/) と、
+暗い配色でナビを画面下に固定した [`night-market/`](themes/night-market/) です。
+**同じコア・同じDOMのまま、CSSだけで見た目がここまで変わります。**
 
 Halle と Auvent の境界は「**コアはクラス名を出力する。見た目は決めない**」の一線で引いています。
 詳しくは [docs/concepts.md](docs/concepts.md) を参照してください。

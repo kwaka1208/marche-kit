@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 商品画像が未設定・読み込み失敗のときにコアが出す代替画像(4:3)。
+     core/js/config.js の FALLBACK_IMAGES.item がこのパスを指している。
+     カード全面に敷かれるため、このテーマでは地色に沿った暗い版を置く -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="no image">
+  <rect width="400" height="300" fill="#1a1512"/>
+  <circle cx="152" cy="112" r="24" fill="#3a2c1d"/>
+  <path d="M84 224l72-72 50 46 42-36 62 62z" fill="#352c25"/>
+</svg>
