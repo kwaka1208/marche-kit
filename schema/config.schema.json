@@ -97,6 +97,28 @@
       "default": "ja",
       "description": "表示文言の辞書。ja と en を同梱。core/i18n/<locale>.json を読む"
     },
+    "timezone": {
+      "type": "string",
+      "description": "日付の解釈と表示に使うタイムゾーン(例: Asia/Tokyo)。お知らせの日付整形と通知の日時に使う。省略時はサーバー/ブラウザの既定"
+    },
+    "itemCategories": {
+      "type": "array",
+      "description": "商品カテゴリの定義(出店者のカテゴリとは別物)。商品一覧のフィルタとエディタの選択肢に使う。未定義または空のときは、エディタに商品カテゴリの欄を出さない",
+      "items": {
+        "type": "object",
+        "required": ["id", "label"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$",
+            "description": "カテゴリID。商品の category に入る値"
+          },
+          "label": { "type": "string", "minLength": 1, "description": "画面に出す表記" }
+        }
+      },
+      "uniqueItems": true
+    },
     "announcements": {
       "type": "object",
       "additionalProperties": false,
@@ -125,6 +147,11 @@
       ],
       "pricing": { "mode": "currency", "currency": { "unit": "円", "position": "suffix", "grouping": true, "decimals": 0 }, "note": "税込" },
       "locale": "ja",
+      "itemCategories": [
+        { "id": "beer", "label": "ビール" },
+        { "id": "food", "label": "フード" },
+        { "id": "other", "label": "その他" }
+      ],
       "announcements": { "source": "data/news.json", "visibleCount": 3 }
     }
   ]

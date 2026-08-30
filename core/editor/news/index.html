@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <!-- 見出し・ラベルは data-i18n の指す辞書から news-editor.js が入れます -->
+  <title data-i18n="editor.news.pageTitle"></title>
+  <link rel="stylesheet" href="../editor.css">
+</head>
+<body>
+  <header class="page-header">
+    <h1 data-i18n="editor.news.pageTitle"></h1>
+    <p class="mock-notice" id="mock-notice" data-i18n="editor.mockNotice" hidden></p>
+  </header>
+
+  <main>
+    <form id="edit-form" hidden>
+      <section class="item-section">
+        <h2 data-i18n="editor.news.heading"></h2>
+        <p class="hint" data-i18n="editor.news.hint"></p>
+        <div class="add-item-area">
+          <button type="button" id="add-item-button" data-i18n="editor.news.add"></button>
+        </div>
+        <div id="news-list"></div>
+        <div class="submit-area">
+          <button type="submit" id="submit-button" data-i18n="editor.submit"></button>
+          <p id="send-result" hidden></p>
+        </div>
+      </section>
+    </form>
+
+    <section id="payload-section" hidden>
+      <h2 data-i18n="editor.payloadHeading"></h2>
+      <pre id="payload-view"></pre>
+    </section>
+  </main>
+
+  <script src="news-editor.js"></script>
+</body>
+</html>

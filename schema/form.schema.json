@@ -15,7 +15,17 @@
     "autoReply": {
       "type": "boolean",
       "default": false,
-      "description": "送信者への自動返信の有効/無効。サーバー側に文面が定義されていても false なら送らない"
+      "description": "送信者への自動返信の有効/無効。文面は辞書(i18n)の notify.autoReply* にあり、false なら送らない"
+    },
+    "replyToField": {
+      "type": "string",
+      "default": "email",
+      "description": "運営への通知メールの Reply-To に入れる項目名。メール形式として妥当なときだけ設定される"
+    },
+    "autoReplyToField": {
+      "type": "string",
+      "default": "email",
+      "description": "自動返信の宛先に使う項目名"
     },
     "fields": {
       "type": "array",
@@ -40,8 +50,8 @@
         },
         "required": { "type": "boolean", "default": false },
         "validation": {
-          "enum": ["email", "tel", "url", "number"],
-          "description": "サーバー側で追加検証をかける種別"
+          "enum": ["email", "phone", "url", "number", "halfwidth"],
+          "description": "追加検証をかける種別。フロントとサーバー(core/php/send.php)が同じ規則で二重に検査する。空値の扱いは required に委ね、値があるときだけ形式を見る"
         },
         "maxLength": { "type": "integer", "minimum": 1 },
         "placeholder": { "type": "string" },

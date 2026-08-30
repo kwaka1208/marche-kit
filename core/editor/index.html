@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <!-- 見出し・ラベルは data-i18n の指す辞書(core/i18n/<locale>.json)から
+       editor.js が入れます。ここに文言を直書きしないこと -->
+  <title data-i18n="editor.pageTitle"></title>
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+  <header class="page-header">
+    <h1 data-i18n="editor.pageTitle"></h1>
+    <p class="mock-notice" id="mock-notice" data-i18n="editor.mockNotice" hidden></p>
+  </header>
+
+  <main>
+    <section class="admin-links" id="admin-links" hidden>
+      <a href="news/" data-i18n="editor.newsLink"></a>
+    </section>
+
+    <section class="shop-select-section" id="shop-select-section" hidden>
+      <label for="shop-select" data-i18n="editor.selectShop"></label>
+      <select id="shop-select"></select>
+    </section>
+
+    <section class="admin-list-section" id="price-missing-section" hidden>
+      <h2 data-i18n="editor.priceMissingHeading"></h2>
+      <p class="hint" data-i18n="editor.priceMissingHint"></p>
+      <div id="price-missing-list"></div>
+    </section>
+
+    <section class="admin-list-section" id="no-item-section" hidden>
+      <h2 data-i18n="editor.noItemHeading"></h2>
+      <p class="hint" data-i18n="editor.noItemHint"></p>
+      <div id="no-item-list"></div>
+    </section>
+
+    <section id="id-input-section" hidden>
+      <label for="shop-id-input" data-i18n="editor.shopIdLabel"></label>
+      <div class="id-input-row">
+        <input type="text" id="shop-id-input" data-i18n-placeholder="editor.shopIdPlaceholder">
+        <button type="button" id="shop-id-submit" data-i18n="editor.shopIdSubmit"></button>
+      </div>
+      <p id="shop-id-error" class="error-text" hidden></p>
+    </section>
+
+    <form id="edit-form" hidden>
+      <section class="price-alert-section" id="shop-price-missing" hidden>
+        <h2 data-i18n="editor.priceMissingHeading"></h2>
+        <p class="hint" data-i18n="editor.shopPriceMissingHint"></p>
+        <ul id="shop-price-missing-list"></ul>
+      </section>
+
+      <section class="shop-section">
+        <h2 data-i18n="editor.shopHeading"></h2>
+        <div class="field">
+          <label for="shop-name" data-i18n="editor.shopName"></label>
+          <textarea id="shop-name" rows="2"></textarea>
+          <p class="hint" data-i18n="editor.shopNameHint"></p>
+        </div>
+        <div class="field">
+          <label for="shop-url" data-i18n="editor.shopUrl"></label>
+          <input type="url" id="shop-url" placeholder="https://...">
+        </div>
+        <div class="field">
+          <label for="shop-comment" data-i18n="editor.shopComment"></label>
+          <textarea id="shop-comment" rows="3"></textarea>
+        </div>
+        <div class="field">
+          <label data-i18n="editor.logo"></label>
+          <div class="image-field">
+            <figure>
+              <img id="shop-logo-current" alt="">
+              <figcaption data-i18n="editor.currentImage"></figcaption>
+            </figure>
+            <figure id="shop-logo-preview-wrap" hidden>
+              <img id="shop-logo-preview" alt="">
+              <figcaption data-i18n="editor.newImage"></figcaption>
+            </figure>
+            <div class="file-input-wrap">
+              <input type="file" id="shop-logo-file" accept="image/*">
+              <p class="hint" data-i18n="editor.replaceHint"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="item-section">
+        <h2 data-i18n="editor.itemsHeading"></h2>
+        <p class="hint" data-i18n="editor.itemsHint"></p>
+        <div id="item-list"></div>
+        <div class="add-item-area">
+          <button type="button" id="add-item-button" data-i18n="editor.addItem"></button>
+        </div>
+      </section>
+
+      <div class="submit-area">
+        <button type="submit" id="submit-button" data-i18n="editor.submit"></button>
+        <p id="send-result" hidden></p>
+      </div>
+    </form>
+
+    <section id="payload-section" hidden>
+      <h2 data-i18n="editor.payloadHeading"></h2>
+      <p class="hint" data-i18n="editor.payloadHint"></p>
+      <pre id="payload-view"></pre>
+    </section>
+  </main>
+
+  <script src="editor.js"></script>
+</body>
+</html>

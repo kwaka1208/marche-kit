@@ -7,9 +7,13 @@ dist/
 .env
 .env.*
 !.env.example
+# .env から tools/inject-env.py が生成する。実運用の値が入るのでコミットしない
+core/php/secrets.php
 # 出店者がアップロードした実データ(テンプレート利用者ごとに異なる)
-**/vendor-data/*/
-!**/vendor-data/_example/
+**/shop-data/*/
+!**/shop-data/_example/
+# Python
+__pycache__/
 # OS
 .DS_Store
 Thumbs.db

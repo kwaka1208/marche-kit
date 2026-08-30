@@ -1,0 +1,487 @@
+/* エディタの見た目。
+ *
+ * ここはテーマの領分ではありません。エディタは来場者が見る画面ではなく、
+ * 運営と出店者が使う管理ツールです。テーマ契約(docs/theme-contract.md)の
+ * クラス名とは無関係で、サイト本体のCSSとも混ざりません。
+ *
+ * 色を変えたいときは下の :root のカスタムプロパティを差し替えてください。
+ * サイト側のテーマと揃えたいなら、テーマの同名プロパティと同じ値を入れます。
+ *
+ * クラス名は editor- を接頭辞に付けます。テーマ契約側の .item-card などと
+ * 読み手が取り違えないようにするためです。
+ */
+
+:root {
+  --primary-color: #ed6c15;
+  --primary-color-dark: #d95f10;
+  --error-color: #c0392b;
+  --text-color-dark: #4a1d00;
+  --text-color-light: #6b3e26;
+  --background-page: #fff9e6;
+  --white: #fffffe;
+  --gray-medium: #e9ecef;
+  --gray-dark: #6c757d;
+  --alert-background: #fff4e0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", sans-serif;
+  background: var(--background-page);
+  color: var(--text-color-dark);
+  line-height: 1.6;
+}
+
+.page-header {
+  background: var(--primary-color);
+  color: #fff;
+  padding: 1.2rem 1.5rem;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.mock-notice {
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0.8rem;
+  background: var(--text-color-dark);
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+
+section {
+  background: var(--white);
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+  font-size: 1.1rem;
+  margin: 0 0 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.error-text {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin: 0.5rem 0 0;
+}
+
+/* ---- 運営向けの導線と一覧 ---- */
+
+.admin-links a {
+  font-weight: bold;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.admin-links a:hover {
+  text-decoration: underline;
+}
+
+.admin-list-section ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.admin-list-section > div > ul {
+  padding-left: 0;
+}
+
+.admin-list-section > div > ul > li {
+  margin-bottom: 0.8rem;
+  list-style: none;
+}
+
+.admin-list-section ul ul {
+  margin: 0.3rem 0 0;
+  padding-left: 1.4rem;
+  font-size: 0.9rem;
+}
+
+.admin-shop-link {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: bold;
+  color: var(--primary-color);
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-shop-link:hover {
+  text-decoration: underline;
+}
+
+.shop-select-section label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+#shop-select {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid var(--gray-medium);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--text-color-dark);
+}
+
+#id-input-section label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.id-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.id-input-row input {
+  flex: 1;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid var(--gray-medium);
+  border-radius: 4px;
+}
+
+.id-input-row button {
+  padding: 0.6rem 1rem;
+  color: #fff;
+  background: var(--primary-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* ---- 入力欄 ---- */
+
+.field {
+  margin-bottom: 1.2rem;
+}
+
+.field label {
+  display: block;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.field input[type="url"],
+.field input[type="text"],
+.field input[type="date"],
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-color-dark);
+  border: 1px solid var(--gray-medium);
+  border-radius: 4px;
+  background: var(--white);
+}
+
+.field select {
+  width: auto;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--text-color-light);
+  margin: 0.3rem 0 0;
+}
+
+.image-field {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.image-field figure {
+  margin: 0;
+  text-align: center;
+}
+
+.image-field img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  background: var(--background-page);
+  border: 1px solid var(--gray-medium);
+  border-radius: 4px;
+}
+
+.image-field figcaption {
+  font-size: 0.8rem;
+  color: var(--text-color-light);
+  margin-top: 0.2rem;
+}
+
+.file-input-wrap {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ---- 対価が未設定の商品の注意喚起 ---- */
+
+/* 埋め忘れに気づけるよう、通常のセクション(白背景)と違う配色にする */
+.price-alert-section {
+  background: var(--alert-background);
+  border: 2px solid var(--primary-color);
+  box-shadow: none;
+}
+
+.price-alert-section h2 {
+  color: var(--primary-color-dark);
+}
+
+.price-alert-section ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.price-alert-section li {
+  margin-bottom: 0.3rem;
+}
+
+.price-jump-link {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: bold;
+  color: var(--primary-color-dark);
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.price-jump-link:hover {
+  color: var(--primary-color);
+}
+
+/* 一覧から移動してきた商品。どこへ飛んだか分かるよう少しの間だけ枠を光らせる */
+.editor-item.jump-target {
+  animation: jump-highlight 2s ease-out;
+}
+
+@keyframes jump-highlight {
+  from { box-shadow: 0 0 0 3px var(--primary-color); }
+  to   { box-shadow: 0 0 0 3px rgba(237, 108, 21, 0); }
+}
+
+/* ---- 商品・お知らせのカード ---- */
+
+.editor-item {
+  border: 1px solid var(--gray-medium);
+  border-radius: 6px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
+.editor-item h3 {
+  margin: 0 0 0.8rem;
+  font-size: 1rem;
+}
+
+.editor-item .category-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: #fff;
+  background: var(--text-color-light);
+  border-radius: 3px;
+  padding: 0.1rem 0.5rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+/* 追加直後の入力欄。破線+薄い背景色で既存カードと見分けやすくする */
+.editor-item--new {
+  border-color: var(--primary-color);
+  border-style: dashed;
+  background: rgba(237, 108, 21, 0.07);
+}
+
+/* 販売状態に応じた色分け。販売中は色を付けない(追加直後の色をそのまま活かすため)。
+   削除マーク(.deleted)を優先させたいので、このルールは .deleted より前に置く */
+.editor-item[data-status="soldout"] {
+  background: rgba(255, 193, 7, 0.18);
+  border-color: #e0a800;
+}
+
+.editor-item[data-status="ended"] {
+  background: #f1f3f5;
+  border-color: var(--gray-dark);
+  color: var(--gray-dark);
+}
+
+/* 削除マーク済み。DOMには残し、送信時に items 配列から除外する */
+.editor-item.deleted {
+  background: var(--gray-medium);
+  opacity: 0.55;
+}
+
+.editor-item.deleted h3 {
+  text-decoration: line-through;
+}
+
+.remove-item-button {
+  float: right;
+  font-size: 0.8rem;
+  font-weight: normal;
+  color: var(--error-color);
+  background: none;
+  border: 1px solid var(--error-color);
+  border-radius: 4px;
+  padding: 0.2rem 0.6rem;
+  cursor: pointer;
+}
+
+.remove-item-button:hover {
+  background: rgba(192, 57, 43, 0.1);
+}
+
+/* ---- 選択肢(販売状態のラジオ・販売日のチェックボックス) ---- */
+
+.choice-field {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--gray-medium);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.choice-field legend {
+  padding: 0 0.3rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* 選択肢のラベルは label 要素なので、.field label の display:block より
+   詳細度を上げないと縦積みになる(このファイル内の順序では勝てない) */
+.choice-field .choice-option {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  margin-bottom: 0;
+  padding: 0.35rem 0;
+  font-weight: normal;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.choice-field .choice-option input {
+  margin-top: 0.35rem;
+  flex-shrink: 0;
+  width: auto;
+}
+
+.choice-option-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.choice-option-label {
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.choice-option-hint {
+  font-size: 0.85rem;
+  color: var(--gray-dark);
+}
+
+/* ---- 追加・送信 ---- */
+
+.add-item-area {
+  text-align: center;
+  margin: 1rem 0 1.2rem;
+}
+
+#add-item-button {
+  font-size: 0.95rem;
+  color: var(--primary-color);
+  background: var(--white);
+  border: 1px solid var(--primary-color);
+  border-radius: 6px;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+}
+
+#add-item-button:hover {
+  background: rgba(237, 108, 21, 0.1);
+}
+
+.submit-area {
+  text-align: center;
+}
+
+#submit-button {
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: #fff;
+  background: var(--primary-color);
+  border: none;
+  border-radius: 6px;
+  padding: 0.8rem 2.5rem;
+  cursor: pointer;
+}
+
+#submit-button:hover {
+  background: var(--primary-color-dark);
+}
+
+#submit-button:disabled {
+  background: var(--gray-dark);
+  cursor: default;
+}
+
+#send-result {
+  margin: 1rem auto 0;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+#send-result.success {
+  background: #e6f2e0;
+  color: #2e5c1e;
+  border: 1px solid #9cc487;
+}
+
+#send-result.error {
+  background: rgba(192, 57, 43, 0.1);
+  color: var(--error-color);
+  border: 1px solid rgba(192, 57, 43, 0.4);
+}
+
+#payload-section pre {
+  background: var(--text-color-dark);
+  color: var(--background-page);
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.8rem;
+}

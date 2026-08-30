@@ -58,7 +58,7 @@
         },
         "category": {
           "type": "string",
-          "description": "商品カテゴリ。商品一覧のフィルタに使う(出店者のカテゴリとは別物)"
+          "description": "商品カテゴリ。サイト設定 itemCategories[].id のいずれか。商品一覧のフィルタに使う(出店者のカテゴリとは別物)"
         },
         "description": {
           "type": "string",

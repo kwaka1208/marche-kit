@@ -48,9 +48,9 @@ def find_config(base):
 
 
 def check_config(path):
-    """設定を読み、商品検証に必要な情報(開催日ID・価格モード)を返す"""
+    """設定を読み、商品検証に必要な情報(開催日ID・価格モード・商品カテゴリ)を返す"""
     cfg = load(path)
-    day_ids, mode, decimals = set(), "currency", 0
+    day_ids, mode, decimals, item_cats = set(), "currency", 0, set()
 
     days = cfg.get("days")
     if not isinstance(days, list) or not days:
@@ -78,7 +78,22 @@ def check_config(path):
             errors.append("marche.config.json: pricing.mode が ticket なのに pricing.ticket が無い")
         decimals = (pricing.get("currency") or {}).get("decimals", 0)
 
-    return day_ids, mode, decimals, len(days or [])
+    cats = cfg.get("itemCategories")
+    if cats is not None:
+        if not isinstance(cats, list):
+            errors.append("marche.config.json: itemCategories は配列にすること")
+        else:
+            for i, c in enumerate(cats):
+                cid = str(c.get("id", ""))
+                if not ID.match(cid):
+                    errors.append(f"marche.config.json: itemCategories[{i}].id がパターン違反 ({cid!r})")
+                if cid in item_cats:
+                    errors.append(f"marche.config.json: itemCategories[].id が重複 ({cid})")
+                item_cats.add(cid)
+                if not c.get("label"):
+                    errors.append(f"marche.config.json: itemCategories[{i}] に label が無い")
+
+    return day_ids, mode, decimals, len(days or []), item_cats
 
 
 def check_text(where, label, value):
@@ -88,7 +103,7 @@ def check_text(where, label, value):
                       " → テキストとして扱う契約。改行は \\n を使う")
 
 
-def check_shop(path, shop_dir, listed, day_ids, mode, decimals):
+def check_shop(path, shop_dir, listed, day_ids, mode, decimals, item_cats):
     try:
         v = load(path)
     except Exception as e:
@@ -158,6 +173,9 @@ def check_shop(path, shop_dir, listed, day_ids, mode, decimals):
                 errors.append(f"{where}: 商品画像のファイル名が不正 {m['image']!r} ({label})")
             elif not os.path.exists(os.path.join(folder, m["image"])):
                 warnings.append(f"{where}: 商品画像が存在しない ({m['image']})")
+        if m.get("category") and item_cats and m["category"] not in item_cats:
+            errors.append(f"{where}: 未定義の商品カテゴリ {m['category']!r} ({label})"
+                          " → marche.config.json の itemCategories に無い")
         if "status" in m and m["status"] not in STATUSES:
             errors.append(f"{where}: status が不正 {m['status']!r} ({label})")
 
@@ -184,10 +202,10 @@ def main(base):
         sys.exit(f"エラー: {data_dir} が見つかりません")
 
     # 設定
-    day_ids, mode, decimals, day_count = set(), "currency", 0, 0
+    day_ids, mode, decimals, day_count, item_cats = set(), "currency", 0, 0, set()
     cfg_path = find_config(base)
     if cfg_path:
-        day_ids, mode, decimals, day_count = check_config(cfg_path)
+        day_ids, mode, decimals, day_count, item_cats = check_config(cfg_path)
         print(f"設定         : {mode} モード / 開催{day_count}日"
               + ("（販売日UIなし）" if day_count == 1 else ""))
     else:
@@ -242,7 +260,7 @@ def main(base):
                 (errors if d in listed else warnings).append(
                     f"{d}: data.json が無い" + ("" if d in listed else "(ロスター外)"))
                 continue
-            total += check_shop(p, d, listed, day_ids, mode, decimals)
+            total += check_shop(p, d, listed, day_ids, mode, decimals, item_cats)
             checked += 1
         for s in sorted(listed - set(dirs)):
             errors.append(f"shops.json: '{s}' のフォルダが shop-data/ に無い")
