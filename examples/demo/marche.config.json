@@ -2,7 +2,13 @@
   "site": {
     "name": "みどり野マルシェ",
     "url": "https://example.com",
-    "description": "marche-kit の動作確認用サンプル。架空のイベントです。"
+    "description": "marche-kit の動作確認用サンプル。架空のイベントです。",
+    "social": [
+      { "platform": "x", "url": "https://x.com/example" },
+      { "platform": "instagram", "url": "https://www.instagram.com/example/" },
+      { "platform": "youtube", "url": "https://www.youtube.com/@example", "label": "公式チャンネル" },
+      { "platform": "midorino-bbs", "url": "https://example.com/bbs" }
+    ]
   },
   "event": {
     "year": 2026,

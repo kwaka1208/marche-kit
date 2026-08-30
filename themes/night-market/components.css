@@ -598,3 +598,26 @@ a {
     color: var(--text-color-light);
     font-size: var(--font-size-small);
 }
+
+/* ---------------------------------------------------------------- SNS */
+
+/* リンク1件。**このテーマもアイコンを同梱していない**（決定12）。
+   暗い地色では、白い円の中にロゴを置くか、白抜きのロゴを使うかで見え方が変わる。
+   代替画像（images/noimage/）と同じで、どちらにするかはテーマが決めること */
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-medium);
+    border: 1px solid var(--gray-medium);
+    border-radius: var(--border-radius-pill);
+    background-color: var(--white);
+    color: var(--text-color-dark);
+    font-size: var(--font-size-small);
+    letter-spacing: 0.04em;
+    text-decoration: none;
+}
+
+.social-link:hover {
+    color: var(--primary-color);
+    box-shadow: var(--glow);
+}

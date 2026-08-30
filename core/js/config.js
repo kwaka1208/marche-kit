@@ -4,7 +4,7 @@
 // すべて marche.config.json と i18n/<locale>.json から読む。
 // コードに直接書いてある年・日付・カテゴリ名・通貨があれば、それは移植の漏れ。
 
-import { fetchJson } from './util.js';
+import { fetchJson, isHttpUrl } from './util.js';
 
 // ---------------------------------------------------------------- 設置に関する定数
 // いずれもページ相対。サイトのトップページ(公開ディレクトリ直下)から見た位置。
@@ -77,6 +77,48 @@ export const itemCategories = () => state.config.itemCategories ?? [];
 
 // お知らせ。source が空ならセクション自体を出さない
 export const announcements = () => state.config.announcements ?? {};
+
+// ---------------------------------------------------------------- イベント公式のSNS
+
+// プラットフォームの既定の表記(決定12)。ここに無いIDも設定に書ける。
+// 表記は固有名詞なので辞書(i18n)には置かない。言語が変わっても Instagram は Instagram
+const SOCIAL_LABELS = new Map([
+  ['x', 'X'],
+  ['instagram', 'Instagram'],
+  ['youtube', 'YouTube'],
+  ['facebook', 'Facebook'],
+  ['tiktok', 'TikTok'],
+  ['threads', 'Threads'],
+  ['line', 'LINE'],
+  ['note', 'note'],
+  ['bluesky', 'Bluesky'],
+  ['mastodon', 'Mastodon'],
+]);
+
+// プラットフォームIDに使える文字。クラス名(social-link--<id>)に入るため、
+// 商品カテゴリと同じく小文字・数字・ハイフンに限る
+const SOCIAL_PLATFORM = /^[a-z0-9][a-z0-9-]*$/;
+
+// イベント公式SNSのリンク。設定に書かれた順のまま返す(決定12)。
+// 形の合わない1件は黙って落とす。書き間違いで他のリンクまで消えないようにするため
+export function socialLinks() {
+  const list = state.config.site?.social;
+  if (!Array.isArray(list)) return [];
+  return list
+    .filter((entry) => entry !== null && typeof entry === 'object')
+    .map((entry) => {
+      const platform = String(entry.platform ?? '').trim();
+      const label = String(entry.label ?? '').trim();
+      return {
+        platform,
+        url: String(entry.url ?? '').trim(),
+        // 既定の表記を持たないIDは platform をそのまま出す(記入漏れが画面で分かるように)
+        label: label || SOCIAL_LABELS.get(platform) || platform,
+      };
+    })
+    // javascript: などはリンクにしない(店舗のURLと同じ規則)
+    .filter((link) => SOCIAL_PLATFORM.test(link.platform) && isHttpUrl(link.url));
+}
 
 const pricing = () => state.config.pricing ?? {};
 

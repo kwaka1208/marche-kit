@@ -110,6 +110,13 @@
 
 </main>
 
+<!-- フッター。SNSのリンクはコアが marche.config.json の site.social から作る。
+     site.social が空（または未設定）なら、コアがこの器ごと隠す。
+     著作権表示などを足すときは、この <footer> の中に並べればよい -->
+<footer class="site-footer">
+    <div class="social-links" data-marche-social hidden></div>
+</footer>
+
 <!-- 商品ポップアップ。空の器を置くと、コアが値を流し込む。
      要らない項目は器ごと消してよい（コアは器のあるものだけ埋める） -->
 <div class="item-popup-overlay">

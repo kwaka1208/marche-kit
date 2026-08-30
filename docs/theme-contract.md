@@ -76,6 +76,7 @@
 | `[data-marche-announcements-section]` | お知らせセクション全体。**0件時にここごと隠す** |
 | `[data-marche-announcements-past]` | 過去のお知らせの折りたたみ領域 |
 | `[data-marche-face-value]` | チケット1枚の額面の案内。金額運用では隠される |
+| `[data-marche-social]` | イベント公式SNSのリンクの置き場。**中身はコアが作る。** ページ内にいくつ置いてもよい（ヘッダーとフッターの両方など） |
 | `.top-navigation` / `.navigation-list` / `.menu-toggle-button` | ナビゲーションと開閉 |
 | `.item-filter-buttons` | フィルタボタンの置き場。**中身はコアが作る** |
 | `.show-more-button` | 商品の続きを表示するボタン |
@@ -243,6 +244,44 @@ body.no-scroll { overflow: hidden; }
 
 完売の帯（`item-sold-out-badge`）と販売日（`item-sale-day`）は、カードと同じ名前で入ります。
 
+### イベント公式のSNS
+
+`marche.config.json` の `site.social` から、コアが `[data-marche-social]` の中にリンクを並べます。
+
+| クラス | 要素 |
+|---|---|
+| `social-link` | リンク1件（`<a>`） |
+| `social-link--<platform>` | プラットフォームごとの見た目（`social-link--x` など） |
+| `social-link-label` | 表記（`X` / `Instagram` …）を包む要素 |
+
+```html
+<a class="social-link social-link--x" data-platform="x" href="…"
+   target="_blank" rel="noopener noreferrer" title="X">
+  <span class="social-link-label">X</span>
+</a>
+```
+
+**アイコンはテーマの持ち物です**（決定12）。代替画像（`images/noimage/`）と同じ扱いで、
+コアはリンクとクラス名しか出しません。既定テーマは表記をそのまま出しますが、
+アイコンにするテーマは画像を敷いてラベルを読み上げ用に残してください。
+
+```css
+.social-link--x {
+  background: url("../images/social/x.svg") center / 60% no-repeat;
+}
+/* display: none にすると読み上げからも消える。位置をずらして残す */
+.social-link--x .social-link-label {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+```
+
+**プラットフォームの種類は増えます。** `data-platform` を持たない未知のIDでも
+リンクは出るので、アイコンを用意していないIDでも表記が読める形にしておくと安全です
+（`social-link` 側に文字の見え方を、`social-link--<platform>` 側に画像を書く）。
+
 ### お知らせ
 
 | クラス | 要素 |
@@ -331,13 +370,14 @@ body.no-scroll { overflow: hidden; }
 | `filter-button` | `itemCategories` が未定義（1つも作られない） |
 | `[data-marche-announcements-section]` | お知らせが0件、または `announcements.source` が空 |
 | `[data-marche-face-value]` | 金額運用、または `ticket.showFaceValue` が偽 |
+| `[data-marche-social]` | `site.social` が未定義・空、または `http(s)` で始まるURLが1件も無い（**器ごと `hidden`**） |
 | `shop-card-official-link` | 店が公式サイトを登録していない |
 | `shop-popup-link` / `shop-popup-comment` | 店がURL・紹介文を登録していない（`hidden`） |
 
 ## 7. テーマ側の演出
 
 コアはカードを描き終えるたびに `marche:rendered` を `document` へ投げます。
-`detail.section` は `'shops'` か `'items'` です。
+`detail.section` は `'shops'` / `'items'` / `'social'` のいずれかです。
 
 ```js
 document.addEventListener('marche:rendered', (e) => {
@@ -374,4 +414,7 @@ document.addEventListener('marche:rendered', (e) => {
   名前は仕様なので変えられず、値のほうを役割に合わせる形になっています
 - **イベント名・会期・会場を出す器**がありません。`marche.config.json` に
   `site.name` や `days` がありますが、コアはこれを描画しないため、
-  テーマのHTMLに直接書くことになります（テーマがイベント固有の記述を持つ唯一の場所です）
+  テーマのHTMLに直接書くことになります（テーマがイベント固有の記述を持つ唯一の場所です）。
+  SNSのリンクだけは器（`[data-marche-social]`）を持ちます。**リンク先が運用中に変わり、
+  テーマを触らずに直せる必要があるため**です（決定12）。同じ理由が当てはまる項目が
+  他にもあるなら、器を足す形になります

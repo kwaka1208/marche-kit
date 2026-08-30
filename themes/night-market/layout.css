@@ -188,3 +188,23 @@ img {
     gap: var(--spacing-small);
     margin-top: var(--spacing-small);
 }
+
+/* ---------------------------------------------------------------- フッター */
+
+/* フッター。下に固定したナビの手前に置く。中身はこのテーマでは今のところSNSだけなので、
+   **余白と罫線はフッターではなく器の側に持たせている。**
+   SNSが1件も無いイベントでは器ごと隠れ、罫線だけが残ることもない
+   （他の要素を足すときは、その要素が自分の余白を持つ） */
+.site-footer {
+    padding: 0;
+}
+
+/* SNSのリンクの置き場。中身（リンク）はコアが作る */
+.social-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-medium);
+    padding: var(--spacing-large) var(--spacing-medium);
+    border-top: 1px solid var(--gray-medium);
+}

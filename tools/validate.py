@@ -25,6 +25,7 @@ HTML_TAG = re.compile(r"<[a-zA-Z/!]")
 STATUSES = {"onsale", "soldout", "ended"}
 VARIANTS = {"standard", "compact", "feature"}
 SHOP_FIELDS = {"id", "name", "url", "comment", "logo", "items", "updatedAt"}
+SOCIAL_FIELDS = {"platform", "url", "label"}
 ITEM_FIELDS = {"id", "name", "category", "description", "image", "price",
                "status", "saleDays", "imagePosition", "useContain"}
 TEXT_FIELDS = ("name", "comment", "description")
@@ -77,6 +78,29 @@ def check_config(path):
         if mode == "ticket" and not isinstance(pricing.get("ticket"), dict):
             errors.append("marche.config.json: pricing.mode が ticket なのに pricing.ticket が無い")
         decimals = (pricing.get("currency") or {}).get("decimals", 0)
+
+    site = cfg.get("site")
+    social = site.get("social") if isinstance(site, dict) else None
+    if social is not None:
+        if not isinstance(social, list):
+            errors.append("marche.config.json: site.social は配列にすること")
+        else:
+            for i, link in enumerate(social):
+                where = f"marche.config.json: site.social[{i}]"
+                if not isinstance(link, dict):
+                    errors.append(f"{where} はオブジェクトにすること")
+                    continue
+                pid = str(link.get("platform", ""))
+                if not ID.match(pid):
+                    errors.append(f"{where}.platform がパターン違反 ({pid!r})"
+                                  " → クラス名 social-link--<id> に入るため小文字・数字・ハイフンのみ")
+                url = str(link.get("url", ""))
+                if not url.startswith(("http://", "https://")):
+                    errors.append(f"{where}.url が http(s) で始まらない ({url!r})"
+                                  " → サイトには出力されない")
+                unknown = set(link) - SOCIAL_FIELDS
+                if unknown:
+                    warnings.append(f"{where}: 仕様に無いフィールド {sorted(unknown)}")
 
     cats = cfg.get("itemCategories")
     if cats is not None:

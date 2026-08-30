@@ -43,7 +43,15 @@ HTMLタグは書けません。保存時にサーバー側で除去されます�
 
 ```json
 {
-  "site":    { "name": "◯◯マルシェ", "url": "https://example.com" },
+  "site": {
+    "name": "◯◯マルシェ",
+    "url": "https://example.com",
+    "social": [
+      { "platform": "x",         "url": "https://x.com/example" },
+      { "platform": "instagram", "url": "https://www.instagram.com/example/" },
+      { "platform": "youtube",   "url": "https://www.youtube.com/@example", "label": "公式チャンネル" }
+    ]
+  },
   "event":   { "year": 2026, "venue": "中央公園", "hours": "10:00-17:00" },
   "days": [
     { "id": "day1", "date": "2026-10-03", "label": "10月3日(土)", "shortLabel": "3日(土)" },
@@ -68,6 +76,24 @@ HTMLタグは書けません。保存時にサーバー側で除去されます�
 | `timezone` | 日付の解釈と表示に使うタイムゾーン（`Asia/Tokyo` など）。省略時はサーバー/ブラウザの既定 |
 | `itemCategories` | 商品カテゴリの定義。商品一覧のフィルタとエディタの選択肢に使う。**空または未定義ならエディタに商品カテゴリの欄を出しません** |
 | `announcements.source` | お知らせJSONのパス。**空文字にするとセクション自体を出力しません** |
+| `site.social` | イベント公式SNSのリンク。テーマの器 `[data-marche-social]` に配列の順で並びます。**未定義・空なら器ごと隠れます** |
+
+### site.social — イベント公式のSNS
+
+出店者ごとのSNSではなく、**イベント運営が持つアカウント**です（決定12）。
+
+| フィールド | 必須 | 内容 |
+|---|---|---|
+| `platform` | ○ | プラットフォームID（`x` / `instagram` / `youtube` …）。小文字・数字・ハイフン |
+| `url` | ○ | リンク先。**`http://` または `https://` で始まるものだけ出力されます** |
+| `label` | | 画面に出す表記。省略時はコアの既定名（`x` なら `X`） |
+
+**プラットフォームの種類をコアは固定していません。** 既定の表記を持つのは
+`x` / `instagram` / `youtube` / `facebook` / `tiktok` / `threads` / `line` / `note` /
+`bluesky` / `mastodon` の10種ですが、それ以外のIDも書けます（表記は `label` で与えてください）。
+
+アイコンはテーマの持ち物です。コアが出すのはリンクとクラス名（`social-link--<platform>`）
+だけで、何の絵を出すかは[テーマ仕様](theme-contract.md#イベント公式のsns)の領分です。
 
 ## 2. shops.json — 出店者ロスターとカテゴリ定義
 
