@@ -1,0 +1,500 @@
+/* 部品の見た目
+ *
+ * ここに書くセレクタは、ほとんどがコアの出力するクラス名(docs/theme-contract.md)。
+ * **テーマ側で改名できない。** 名前を変えたければコアの契約を変えることになる。
+ *
+ * カテゴリIDに直接スタイルを当てないこと。カテゴリIDはイベント固有なので、
+ * 当てた瞬間にこのテーマは他のイベントで使えなくなる。variant を見て書く。
+ */
+
+/* ---------------------------------------------------------------- 共通 */
+
+.loading-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-color-light);
+    padding: var(--spacing-large) 0;
+}
+
+button {
+    font-family: inherit;
+    font-size: var(--font-size-base);
+    cursor: pointer;
+}
+
+.filter-button,
+.show-more-button,
+.announcements-toggle-button {
+    background-color: var(--white);
+    color: var(--text-color-dark);
+    border: 1px solid var(--gray-medium);
+    border-radius: var(--border-radius-pill);
+    padding: var(--spacing-small) var(--spacing-large);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.filter-button:hover,
+.show-more-button:hover,
+.announcements-toggle-button:hover {
+    background-color: var(--gray-light);
+}
+
+/* 選択中のフィルタ */
+.filter-button.active-filter {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--white);
+}
+
+/* ---------------------------------------------------------------- 出店者カード */
+
+.shop-card-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-small);
+    padding: var(--spacing-medium);
+    background-color: var(--white);
+    border: 1px solid var(--gray-medium);
+    border-radius: var(--border-radius-medium);
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.shop-card-info:hover {
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-2px);
+}
+
+.shop-logo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+}
+
+.shop-name {
+    margin: 0;
+    font-size: var(--font-size-base);
+    text-align: center;
+}
+
+.shop-card-official-link {
+    font-size: var(--font-size-small);
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.shop-card-official-link:hover {
+    text-decoration: underline;
+}
+
+/* カテゴリごとの見た目の差は variant で付ける。
+   ロスターの categories[].variant を変えるだけで、どの区分にも当てられる */
+.shop-card--compact {
+    padding: var(--spacing-small);
+}
+
+.shop-card--compact .shop-name {
+    font-size: var(--font-size-small);
+}
+
+.shop-card--feature {
+    border-color: var(--primary-color-light);
+    box-shadow: var(--shadow-medium);
+}
+
+.shop-card--feature .shop-name {
+    font-size: var(--font-size-large);
+}
+
+/* ---------------------------------------------------------------- 商品カード */
+
+.item-card {
+    display: flex;
+    flex-direction: column;
+    min-height: var(--item-card-min-height);
+    background-color: var(--white);
+    border: 1px solid var(--gray-medium);
+    border-radius: var(--border-radius-medium);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+}
+
+.item-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-small);
+    padding: var(--spacing-small);
+}
+
+.item-card-shop-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+.item-card-price-info {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-xs);
+    text-align: right;
+}
+
+/* 対価は数値・単位・但し書きが別要素で来る。単位だけ小さくできるのはそのため */
+.price-value {
+    font-size: var(--font-size-large);
+    font-weight: 600;
+}
+
+.price-unit,
+.price-note {
+    font-size: var(--font-size-small);
+    color: var(--text-color-light);
+}
+
+/* 販売日は開催が2日以上のときだけ来る。無い前提でレイアウトを崩さない */
+.item-sale-day {
+    font-size: var(--font-size-small);
+    color: var(--primary-color);
+    white-space: nowrap;
+}
+
+.item-image-wrapper {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background-color: var(--gray-light);
+    cursor: pointer;
+}
+
+.item-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* 完売の帯。販売中の商品では要素ごと来ない */
+.item-sold-out-badge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: var(--spacing-xs) 0;
+    background-color: var(--error-color);
+    color: var(--white);
+    font-size: var(--font-size-small);
+    text-align: center;
+}
+
+.item-text-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-small);
+    margin-top: auto;
+}
+
+.item-name {
+    margin: 0;
+    font-size: var(--font-size-base);
+}
+
+.item-shop-name {
+    margin: 0;
+    font-size: var(--font-size-small);
+    color: var(--text-color-light);
+}
+
+.item-detail-button {
+    margin-top: var(--spacing-small);
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: var(--border-radius-small);
+    padding: var(--spacing-small);
+}
+
+.item-detail-button:hover {
+    background-color: var(--primary-color-dark);
+}
+
+/* ---------------------------------------------------------------- サムネイル */
+/* 店舗ポップアップの取り扱い一覧と、商品ポップアップの「他の商品」で使う */
+
+.item-thumb {
+    position: relative;
+    width: 100px;
+    cursor: pointer;
+}
+
+.item-thumb-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--border-radius-small);
+}
+
+.item-thumb-name {
+    display: block;
+    font-size: var(--font-size-small);
+    line-height: 1.4;
+}
+
+.item-thumb .item-sold-out-badge {
+    bottom: auto;
+    top: 0;
+}
+
+/* ---------------------------------------------------------------- ポップアップ */
+
+.item-popup-overlay,
+.shop-popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: var(--spacing-medium);
+    overflow-y: auto;
+}
+
+/* コアが開くときに付けるクラス */
+.item-popup-overlay.active,
+.shop-popup-overlay.active {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.item-popup,
+.shop-popup {
+    position: relative;
+    width: min(680px, 100%);
+    margin: auto;
+    padding: var(--spacing-large);
+    background-color: var(--white);
+    border-radius: var(--border-radius-medium);
+    box-shadow: var(--shadow-medium);
+}
+
+.item-popup-close-button,
+.shop-popup-close-button {
+    position: absolute;
+    top: var(--spacing-small);
+    right: var(--spacing-small);
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--gray-light);
+    border: none;
+    border-radius: var(--border-radius-pill);
+    line-height: 1;
+}
+
+.item-popup-image,
+.shop-popup-logo {
+    width: 100%;
+    max-height: 320px;
+    object-fit: contain;
+}
+
+.shop-popup-logo {
+    max-height: 160px;
+}
+
+.item-popup-name,
+.shop-popup-name {
+    margin: var(--spacing-medium) 0 var(--spacing-xs);
+}
+
+.item-popup-shop-name,
+.shop-popup-link {
+    color: var(--text-color-light);
+    font-size: var(--font-size-small);
+}
+
+.item-popup-price {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-xs);
+}
+
+.item-popup-sold-out {
+    color: var(--error-color);
+    font-weight: 600;
+}
+
+.item-popup-other-items-list,
+.shop-popup-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-small);
+}
+
+/* ---------------------------------------------------------------- お知らせ */
+
+.announcement {
+    border: 1px solid var(--gray-medium);
+    border-radius: var(--border-radius-small);
+    background-color: var(--white);
+}
+
+.announcement--latest {
+    border-color: var(--primary-color);
+}
+
+.announcement-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--spacing-small);
+    padding: var(--spacing-small) var(--spacing-medium);
+    cursor: pointer;
+}
+
+.announcement-date {
+    font-size: var(--font-size-small);
+    color: var(--text-color-light);
+}
+
+.announcement-badge-new {
+    margin-left: var(--spacing-xs);
+    padding: 0 var(--spacing-xs);
+    background-color: var(--error-color);
+    color: var(--white);
+    border-radius: var(--border-radius-small);
+    font-size: var(--font-size-small);
+}
+
+.announcement-title {
+    font-weight: 600;
+}
+
+.announcement-toggle {
+    margin-left: auto;
+    font-size: var(--font-size-small);
+    color: var(--primary-color);
+}
+
+/* 開閉のラベルはコアが両方出す。どちらを見せるかはテーマが決める */
+.toggle-text--close,
+.announcement[open] .toggle-text--open {
+    display: none;
+}
+
+.announcement[open] .toggle-text--close {
+    display: inline;
+}
+
+.announcement-body {
+    padding: 0 var(--spacing-medium) var(--spacing-medium);
+}
+
+/* ---------------------------------------------------------------- ナビゲーション */
+
+.top-navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-medium);
+    padding: var(--spacing-small) var(--spacing-medium);
+    background-color: transparent;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 少しでもスクロールしたら背景を敷く(コアが付けるクラス) */
+.top-navigation.scrolled {
+    background-color: var(--white);
+    box-shadow: var(--shadow-soft);
+}
+
+.navigation-list {
+    display: flex;
+    gap: var(--spacing-medium);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navigation-item a {
+    color: var(--text-color-dark);
+    text-decoration: none;
+}
+
+/* いま見ている区画(コアが付けるクラス) */
+.navigation-item.active a {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.menu-toggle-button {
+    display: none;
+    background: none;
+    border: none;
+}
+
+@media (max-width: 599px) {
+    .menu-toggle-button {
+        display: block;
+    }
+
+    .navigation-list {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        padding: var(--spacing-medium);
+        background-color: var(--white);
+        box-shadow: var(--shadow-medium);
+    }
+
+    /* メニューを開いたとき(コアが付けるクラス) */
+    .navigation-list.open {
+        display: flex;
+    }
+}
+
+/* ---------------------------------------------------------------- FAQ */
+
+.faq-item {
+    border-bottom: 1px solid var(--gray-medium);
+}
+
+.faq-question {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: var(--spacing-medium) 0;
+    font-weight: 600;
+}
+
+/* 答えは開いている項目だけ見せる。開閉の状態はコアが .active で示す */
+.faq-answer {
+    display: none;
+    padding-bottom: var(--spacing-medium);
+}
+
+.faq-item.active .faq-answer {
+    display: block;
+}
+
+/* チケット運用の額面の案内。金額運用のイベントでは要素ごと隠される */
+.pricing-face-value {
+    text-align: center;
+    color: var(--text-color-light);
+    font-size: var(--font-size-small);
+}
+
+/* 但し書きは対価から少し離す */
+.price-note {
+    margin-left: var(--spacing-xs);
+}

@@ -1,0 +1,125 @@
+/* レイアウト
+ *
+ * ページの骨組みと、グリッドの段組み。
+ * **商品グリッドの列数はここで決まる。** コアは grid-template-columns を読んで
+ * 折りたたみ時に見せる件数を決めるので、段組みは必ずgridで書くこと。
+ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family-main);
+    font-size: var(--font-size-base);
+    line-height: 1.7;
+    color: var(--text-color-dark);
+    background-color: var(--white);
+    padding-bottom: var(--bottom-nav-height);
+}
+
+/* ポップアップ表示中とメニュー展開中に付く。背後の本文を動かさない */
+body.no-scroll {
+    overflow: hidden;
+}
+
+img {
+    max-width: 100%;
+}
+
+.content-wrapper {
+    max-width: var(--max-content-width);
+    margin: 0 auto;
+    padding: 0 var(--spacing-medium);
+}
+
+.section-container {
+    padding: var(--spacing-xl) 0;
+}
+
+.section-container:nth-of-type(even) {
+    background-color: var(--gray-light);
+}
+
+.section-heading {
+    text-align: center;
+    font-size: var(--font-size-large);
+    margin: 0 0 var(--spacing-large);
+}
+
+/* 出店者グリッド。カテゴリごとに1つ置かれる */
+.shop-grid {
+    display: grid;
+    gap: var(--grid-gap);
+    grid-template-columns: repeat(2, 1fr);
+}
+
+/* 商品グリッド */
+.item-grid {
+    display: grid;
+    gap: var(--grid-gap);
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 600px) {
+    .shop-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .item-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 900px) {
+    .shop-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .item-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* 折りたたみ中。何件見せるかはコアが列数から計算して描き分ける
+   (ここでCSSが隠すのではなく、描かれる件数そのものが変わる) */
+.item-grid.is-collapsed {
+    overflow: hidden;
+}
+
+.item-filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-small);
+    margin-bottom: var(--spacing-large);
+}
+
+.show-more-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--spacing-large);
+}
+
+/* お知らせ */
+.announcements-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-small);
+}
+
+/* 過去のお知らせ。開くまでは畳んでおく。
+   中身はコアが直接書き込むため、包む要素を挟まずこの要素自体を出し入れする */
+.announcements-past {
+    display: none;
+}
+
+.announcements-past.is-expanded {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-small);
+    margin-top: var(--spacing-small);
+}

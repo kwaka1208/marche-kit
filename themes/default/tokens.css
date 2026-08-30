@@ -1,0 +1,49 @@
+/* デザイントークン
+ *
+ * テーマが定義すべき変数の一覧は docs/theme-contract.md にある。
+ * **ここにある変数を削らないこと。** コアと他のCSSがこの名前を前提にしている。
+ * 値はテーマの自由。追加も自由。
+ *
+ * このテーマは、どのイベントでも当たり障りのない中立な見た目を狙っている。
+ * 自分のイベントの色にするときは、まずこのファイルの値だけを差し替えるとよい。
+ */
+
+:root {
+    /* 配色 */
+    --primary-color: #2f6f4e;
+    --primary-color-dark: #24573d;
+    --primary-color-light: #e6f1ea;
+    --error-color: #c0392b;
+    --text-color-dark: #23282d;
+    --text-color-light: #6b7280;
+    --white: #ffffff;
+    --gray-light: #f4f5f6;
+    --gray-medium: #dcdfe3;
+    --gray-dark: #9aa0a6;
+
+    /* 文字 */
+    --font-family-main: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", system-ui, sans-serif;
+    --font-size-base: 1rem;
+    --font-size-small: 0.85rem;
+    --font-size-large: 1.25rem;
+
+    /* 余白 */
+    --spacing-xs: 0.25rem;
+    --spacing-small: 0.5rem;
+    --spacing-medium: 1rem;
+    --spacing-large: 2rem;
+    --spacing-xl: 4rem;
+
+    /* 形 */
+    --border-radius-small: 4px;
+    --border-radius-medium: 12px;
+    --border-radius-pill: 999px;
+    --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --grid-gap: 1rem;
+
+    /* レイアウト */
+    --max-content-width: 1100px;
+    --bottom-nav-height: 0px;
+    --item-card-min-height: 320px;
+}

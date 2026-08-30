@@ -70,17 +70,43 @@
 
 | セレクタ | 役割 |
 |---|---|
-| `[data-marche-items]` | 商品カードの描画先 |
+| `[data-marche-items]` | 商品カードの描画先。**段組みはgridで書くこと**（下の注記） |
 | `[data-marche-announcements]` | お知らせの描画先 |
 | `[data-marche-announcements-status]` | お知らせの状態表示（読み込み中・エラー） |
 | `[data-marche-announcements-section]` | お知らせセクション全体。**0件時にここごと隠す** |
 | `[data-marche-announcements-past]` | 過去のお知らせの折りたたみ領域 |
+| `[data-marche-face-value]` | チケット1枚の額面の案内。金額運用では隠される |
 | `.top-navigation` / `.navigation-list` / `.menu-toggle-button` | ナビゲーションと開閉 |
-| `.item-filter-buttons` | フィルタボタンの置き場 |
+| `.item-filter-buttons` | フィルタボタンの置き場。**中身はコアが作る** |
 | `.show-more-button` | 商品の続きを表示するボタン |
-| `.faq-list` / `.faq-answer` | FAQの開閉 |
+| `.announcements-toggle-button` | 過去のお知らせを開くボタン |
+| `.faq-list` / `.faq-item` / `.faq-question` / `.faq-answer` | FAQの開閉 |
 | `.item-popup-*` | 商品詳細ポップアップの各パーツ |
 | `.shop-popup-*` | 店舗詳細ポップアップの各パーツ |
+
+ポップアップの中身の器は次の名前です。**要らないものは器ごと消して構いません。**
+コアは器のあるものだけを埋めます。
+
+| 商品ポップアップ | 店舗ポップアップ |
+|---|---|
+| `.item-popup-overlay` / `.item-popup-close-button` | `.shop-popup-overlay` / `.shop-popup-close-button` |
+| `.item-popup-image` / `.item-popup-name` | `.shop-popup-logo` / `.shop-popup-name` |
+| `.item-popup-shop-name` / `.item-popup-description` | `.shop-popup-link` / `.shop-popup-comment` |
+| `.item-popup-price` / `.item-popup-sale-day` / `.item-popup-sold-out` | `.shop-popup-items`（取り扱い一覧） |
+| `.item-popup-other-items` / `.item-popup-other-items-list` | |
+
+### 商品グリッドはgridで組む
+
+**折りたたみ時に何件描くかは、コアが `grid-template-columns` を読んで決めます。**
+列数 × 3行が最初に見える件数です。flexなど他の方法で段組みすると列数を読めず、
+1行分しか描かれません。
+
+### 隠すのは `hidden` 属性
+
+条件に合わない要素を、コアは `hidden` 属性で隠します。
+**テーマがその要素に `display` を指定すると `hidden` が効かなくなります。**
+`.item-popup-sale-day` や `.shop-popup-link` にレイアウト用の `display` を当てるときは、
+`[hidden] { display: none !important; }` を併せて書いてください。
 
 ポップアップの `*-overlay` / `*-close-button` / `*-image` / `*-name` / `*-price` /
 `*-description` などは、**テーマが用意した空の器にコアが値を流し込む**構造です。
@@ -106,9 +132,11 @@
 
 | クラス | 要素 |
 |---|---|
+| `item-card` | カード本体。完売の商品には `is-sold-out` も付く |
 | `item-card-top` | カード上部 |
 | `item-card-shop-logo` | カード内の店ロゴ |
 | `item-card-price-info` | 対価と販売日の行 |
+| `item-price` | 対価の3要素（数値・単位・但し書き）を包む |
 | `price-value` | **対価の数値のみ**（`600` / `2`） |
 | `price-unit` | **単位のみ**（`円` / `枚`） |
 | `price-note` | 但し書き（`税込` など）。設定に文言が無ければ**要素ごと出力されない** |
@@ -119,6 +147,34 @@
 | `item-detail-button` | 詳細を開くボタン |
 | `item-sold-out-badge` | 完売の帯 |
 | `item-sale-day` | 販売日の表記。**開催が1日だけなら出力されない** |
+
+商品カード本体には、商品カテゴリがあれば `data-category="<カテゴリID>"` も付きます。
+使い分けは出店者カードと同じで、**カテゴリIDに直接スタイルを当てないのが基本**です。
+
+### 商品のサムネイル
+
+店舗ポップアップの取り扱い一覧と、商品ポップアップの「他の商品」で使う小さなカードです。
+
+| クラス | 要素 |
+|---|---|
+| `item-thumb` | サムネイル本体 |
+| `item-thumb-image` | 画像 |
+| `item-thumb-name` | 商品名 |
+
+完売の帯（`item-sold-out-badge`）と販売日（`item-sale-day`）は、カードと同じ名前で入ります。
+
+### お知らせ
+
+| クラス | 要素 |
+|---|---|
+| `announcement` | 1件。`<details>` 要素。**開閉はブラウザ任せでJSは要らない** |
+| `announcement--latest` | 最新の1件。初期状態で開いている |
+| `announcement-summary` | 見出しの行（`<summary>`） |
+| `announcement-date` | 日付 |
+| `announcement-badge-new` | 最新の1件に付くバッジ |
+| `announcement-title` | 見出し |
+| `announcement-toggle` | 開閉ラベルの置き場。中に `toggle-text--open` / `--close` が入る |
+| `announcement-body` | 本文。**ここだけHTMLが入る**（運営しか書けないため） |
 
 ### 状態・共通
 
@@ -179,20 +235,47 @@
 
 | 要素 | 出力されない条件 |
 |---|---|
-| `price-note` | `pricing.note` が空 |
-| `item-sale-day` | 開催日が1日だけ（`days` が1件） |
-| `[data-marche-announcements-section]` の中身 | お知らせが0件 |
+| `price-note` | `pricing.note` が空。**商品カードと詳細の両方に出ます** |
+| `price-unit` | 単位の設定が空 |
+| `item-sale-day` | 開催日が1日だけ（`days` が1件）、または全日販売の商品 |
+| `item-sold-out-badge` | 販売中の商品 |
+| `filter-button` | `itemCategories` が未定義（1つも作られない） |
+| `[data-marche-announcements-section]` | お知らせが0件、または `announcements.source` が空 |
+| `[data-marche-face-value]` | 金額運用、または `ticket.showFaceValue` が偽 |
 | `shop-card-official-link` | 店が公式サイトを登録していない |
+| `shop-popup-link` / `shop-popup-comment` | 店がURL・紹介文を登録していない（`hidden`） |
 
-## 7. テーマを作るときの手順（予定）
+## 7. テーマ側の演出
+
+コアはカードを描き終えるたびに `marche:rendered` を `document` へ投げます。
+`detail.section` は `'shops'` か `'items'` です。
+
+```js
+document.addEventListener('marche:rendered', (e) => {
+  if (e.detail.section === 'items') { /* あとから増えたカードにも効果をかけ直す */ }
+});
+```
+
+スクロール連動などの演出はテーマの領分です。ただし**データの描画には触れないでください。**
+既定テーマは演出を持たないため、このJSも置いていません。
+
+## 8. 表示順の固定
+
+**`?fixed` を付けたURLでは、店舗と商品の並びがデータ順のまま出ます。**
+通常のアクセスでは読み込みのたびにシャッフルされるため、
+表示の確認をするときはこれを使ってください。
+
+## 9. テーマを作るときの手順
 
 1. `themes/default/` をコピーして名前を変える
-2. CSS変数の値を差し替える
-3. レイアウトCSSを調整する
+2. `tokens.css` の変数の値を差し替える
+3. `layout.css` のレイアウトを調整する（**商品グリッドはgridのまま**）
 4. 「2. コアが探す器」がすべて存在することを確認する
 5. カテゴリIDではなく `variant` にスタイルを当てているか見直す
+6. `?fixed` を付けて、条件によって出ない要素（`price-note`・`item-sale-day`）が
+   無くても崩れないか確かめる
 
-## 8. まだ決まっていないこと
+## 10. まだ決まっていないこと
 
 - **フォント読み込み**をテーマ側で完結させるか、サイト設定側に置くか
 - **ダークモード**への対応。現状は考慮していません

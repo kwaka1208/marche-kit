@@ -3,7 +3,8 @@
     "loading": "Loading…",
     "close": "Close",
     "showMore": "Show more",
-    "showDetail": "View details"
+    "showDetail": "View details",
+    "listSeparator": ", "
   },
   "shop": {
     "logoAlt": "{name} logo",
@@ -14,6 +15,7 @@
   },
   "item": {
     "imageAlt": "Product image",
+    "filterAll": "All",
     "noName": "Unnamed item",
     "noDescription": "No details available.",
     "soldOut": "Sold out",
