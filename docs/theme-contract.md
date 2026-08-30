@@ -433,9 +433,9 @@ body.no-scroll { overflow: hidden; }
 
 ### 問い合わせフォーム
 
-**クラス名とCSS変数は [astro-courier](https://github.com/kwaka1208/astro-courier) の
-Courier と同じです**（決定13）。上流のCSSをそのまま持ってこられるようにするためで、
-`courier-` の接頭辞はテーマ側で改名しないでください。
+**クラス名とCSS変数は、移植元の [astro-courier](https://github.com/kwaka1208/astro-courier) の
+Courier と同じです**（決定13）。`courier-` の接頭辞はテーマ側で改名しないでください。
+コアが出力する名前なので、変えるとスタイルが当たらなくなります。
 
 | クラス | 要素 |
 |---|---|

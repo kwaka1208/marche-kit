@@ -110,7 +110,7 @@ python3 tools/validate.py examples/demo/variants/oneday
 8項目を確認してください。特に次の3つが漏れやすいところです。
 
 - [テーマ仕様の「コアが探すスロット」](docs/theme-contract.md)がすべて存在すること
-- [「テーマが用意する仕掛け」の6つ](docs/theme-contract.md#テーマが用意する仕掛け)が書かれていること
+- [「テーマが用意する仕掛け」の7つ](docs/theme-contract.md#テーマが用意する仕掛け)が書かれていること
 - **条件によって出力されない要素が無くても崩れないこと**（`price-note`、SNSのスロット、ロゴなど）
 
 `default/` からコピーするなら、`[data-category]` を使ったスタイルが紛れ込んでいないか
@@ -129,7 +129,7 @@ python3 tools/validate.py examples/demo/variants/oneday
 
 ### コアを直す
 
-**先に [docs/decisions.md](docs/decisions.md) を読んでください。** 13件の決定があり、
+**先に [docs/decisions.md](docs/decisions.md) を読んでください。** 17件の決定があり、
 それぞれに却下した案が併記されています。既に検討済みの可能性があります。
 
 コアの挙動を変える修正では、[データ仕様](docs/data-contract.md)と
