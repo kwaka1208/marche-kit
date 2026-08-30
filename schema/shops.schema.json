@@ -31,7 +31,7 @@
         "id": {
           "type": "string",
           "pattern": "^[a-z0-9][a-z0-9-]*$",
-          "description": "カテゴリID。テーマ側の器 data-marche-shops=\"<id>\" と対応し、カードに data-category=\"<id>\" として出力される"
+          "description": "カテゴリID。テーマ側のスロット data-marche-shops=\"<id>\" と対応し、カードに data-category=\"<id>\" として出力される"
         },
         "label": {
           "type": "string",

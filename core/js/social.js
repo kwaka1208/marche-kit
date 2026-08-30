@@ -1,6 +1,6 @@
 // イベント公式のSNSリンク
 //
-// テーマが置いた器 [data-marche-social] に、marche.config.json の site.social を並べる。
+// テーマが置いたスロット [data-marche-social] に、marche.config.json の site.social を並べる。
 // 出店者のSNSではなく、イベント運営のアカウント(決定12)。
 //
 // **アイコンはここで作らない。** コアが出すのはリンク・クラス名・表記だけで、
@@ -24,7 +24,7 @@ function buildSocialLink(link) {
   return anchor;
 }
 
-// 器はページ内にいくつあってもよい(ヘッダーとフッターの両方など)
+// スロットはページ内にいくつあってもよい(ヘッダーとフッターの両方など)
 export function initSocial() {
   const containers = document.querySelectorAll('[data-marche-social]');
   if (containers.length === 0) return;
@@ -32,7 +32,7 @@ export function initSocial() {
   const links = socialLinks();
   for (const container of containers) {
     container.textContent = '';
-    // 1件も無いときは器ごと隠す。空の枠や余白だけが残らないようにするため
+    // 1件も無いときはスロットごと隠す。空の枠や余白だけが残らないようにするため
     container.hidden = links.length === 0;
     const fragment = document.createDocumentFragment();
     for (const link of links) fragment.appendChild(buildSocialLink(link));

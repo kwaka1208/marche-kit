@@ -216,7 +216,7 @@ function renderFilterButtons() {
 
 // ---------------------------------------------------------------- ポップアップ
 
-// テーマが用意した空の器に値を流し込む。器の見た目はテーマの自由
+// テーマが用意した空のスロットに値を流し込む。スロットの見た目はテーマの自由
 function updateItemPopup(itemId) {
   const item = state.store.items.find((i) => i.id === itemId);
   if (!item) return;
@@ -279,7 +279,7 @@ export function initItems(store) {
     update: updateItemPopup,
   });
 
-  // チケット1枚の額面の案内。器を置いたテーマにだけ出す。
+  // チケット1枚の額面の案内。スロットを置いたテーマにだけ出す。
   // 金額運用のイベントと、額面を出さない設定では要素ごと隠す
   const faceValue = document.querySelector('[data-marche-face-value]');
   if (faceValue) {
@@ -288,7 +288,7 @@ export function initItems(store) {
     faceValue.hidden = !note;
   }
 
-  // 商品の器が無いテーマ(商品を出さないページ)では、ここから先は何もしない
+  // 商品のスロットが無いテーマ(商品を出さないページ)では、ここから先は何もしない
   if (!state.grid) return;
 
   renderFilterButtons();

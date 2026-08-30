@@ -4,10 +4,7 @@
   "title": "フォーム項目定義 (forms/<種別>.json)",
   "description": "フロントのフォーム生成とサーバー側の検証が共有する単一ソース。通知先メールアドレスや本文テンプレートはここに書かない(公開ディレクトリに置かれるため)。",
   "type": "object",
-  "required": [
-    "formType",
-    "fields"
-  ],
+  "required": ["formType", "fields"],
   "additionalProperties": false,
   "properties": {
     "formType": {
@@ -33,19 +30,13 @@
     "fields": {
       "type": "array",
       "minItems": 1,
-      "items": {
-        "$ref": "#/$defs/field"
-      }
+      "items": { "$ref": "#/$defs/field" }
     }
   },
   "$defs": {
     "field": {
       "type": "object",
-      "required": [
-        "name",
-        "label",
-        "type"
-      ],
+      "required": ["name", "label", "type"],
       "additionalProperties": false,
       "properties": {
         "name": {
@@ -53,68 +44,28 @@
           "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$",
           "description": "項目名。送信データのキーになる"
         },
-        "label": {
-          "type": "string",
-          "minLength": 1
-        },
+        "label": { "type": "string", "minLength": 1 },
         "type": {
-          "enum": [
-            "text",
-            "email",
-            "tel",
-            "url",
-            "number",
-            "date",
-            "time",
-            "textarea",
-            "select",
-            "checkbox",
-            "radio",
-            "consent",
-            "hidden"
-          ],
+          "enum": ["text", "email", "tel", "url", "number", "date", "time", "textarea", "select", "checkbox", "radio", "consent", "hidden"],
           "description": "入力欄の種類。consent は単一の同意チェック、hidden は画面に出さない値（value か capture で埋める）"
         },
-        "required": {
-          "type": "boolean",
-          "default": false
-        },
+        "required": { "type": "boolean", "default": false },
         "validation": {
-          "enum": [
-            "email",
-            "phone",
-            "url",
-            "number",
-            "halfwidth"
-          ],
+          "enum": ["email", "phone", "url", "number", "halfwidth"],
           "description": "追加検証をかける種別。フロント（core/js/form.js）とサーバー（core/php/send.php）が同じ規則で二重に検査する。空値の扱いは required に委ね、値があるときだけ形式を見る。選択式（select / radio / checkbox / consent / hidden）には効かない"
         },
-        "maxLength": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "placeholder": {
-          "type": "string"
-        },
-        "autocomplete": {
-          "type": "string"
-        },
+        "maxLength": { "type": "integer", "minimum": 1 },
+        "placeholder": { "type": "string" },
+        "autocomplete": { "type": "string" },
         "options": {
           "type": "array",
           "description": "select / radio / checkbox の選択肢。value が送信値、label が表示",
           "items": {
             "type": "object",
-            "required": [
-              "value",
-              "label"
-            ],
+            "required": ["value", "label"],
             "properties": {
-              "value": {
-                "type": "string"
-              },
-              "label": {
-                "type": "string"
-              }
+              "value": { "type": "string" },
+              "label": { "type": "string" }
             }
           }
         },
@@ -123,31 +74,10 @@
           "minLength": 1,
           "description": "ラベルの下に出す補足テキスト（記入例・注意書き）。aria-describedby で入力欄に関連付ける"
         },
-        "min": {
-          "type": [
-            "string",
-            "number"
-          ],
-          "description": "number / date / time の最小値"
-        },
-        "max": {
-          "type": [
-            "string",
-            "number"
-          ],
-          "description": "number / date / time の最大値"
-        },
-        "step": {
-          "type": [
-            "string",
-            "number"
-          ],
-          "description": "number の刻み幅"
-        },
-        "value": {
-          "type": "string",
-          "description": "hidden の固定値。capture を指定した場合はそちらが優先される"
-        },
+        "min": { "type": ["string", "number"], "description": "number / date / time の最小値" },
+        "max": { "type": ["string", "number"], "description": "number / date / time の最大値" },
+        "step": { "type": ["string", "number"], "description": "number の刻み幅" },
+        "value": { "type": "string", "description": "hidden の固定値。capture を指定した場合はそちらが優先される" },
         "capture": {
           "type": "string",
           "pattern": "^(pageUrl|referrer|query:[A-Za-z0-9_-]+)$",

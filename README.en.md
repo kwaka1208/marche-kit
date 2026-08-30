@@ -29,7 +29,7 @@ without the organizers touching code.
 | Site rendering | Visitors | Vendor cards, product listing, announcements | ✅ |
 | Official social links | Organizers | List URLs in the config and they appear on the site. Icons belong to the theme | ✅ |
 
-The only requirement is **a shared host that runs PHP 8.0 or later.**
+The only requirement is **a shared host running a PHP version that still receives security support** (see [docs/setup.md](docs/setup.md), in Japanese, for the current range).
 No database, no admin framework, no external SaaS. All data lives as JSON files on the server.
 
 ## ⚠️ This assumes vendors you can trust

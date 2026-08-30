@@ -29,7 +29,7 @@
 | サイトの描画 | 来場者 | 出店者カード・商品一覧・お知らせの表示 | ✅ |
 | イベント公式のSNS | 運営 | 設定にURLを並べるとサイトに出る。アイコンはテーマが持つ | ✅ |
 
-動作要件は **PHP 8.0以上が動く一般的なレンタルサーバー**だけです。
+動作要件は **セキュリティサポートが継続しているPHP**が動く一般的なレンタルサーバーだけです（[対象のバージョン](docs/setup.md#動作要件)）。
 データベースも、管理画面フレームワークも、外部SaaSも使いません。
 データはすべてサーバー上のJSONファイルとして置かれます。
 
@@ -110,7 +110,7 @@ python3 tools/inject-env.py <配置先ディレクトリ>
 | [docs/setup.md](docs/setup.md) | セットアップ手順。配置・パーミッション・動作確認 |
 | [docs/decisions.md](docs/decisions.md) | 設計上の決定と、その理由 |
 | [docs/data-contract.md](docs/data-contract.md) | データ仕様。JSONの形式とサーバー側の検証 |
-| [docs/theme-contract.md](docs/theme-contract.md) | テーマ仕様。CSS変数、クラス名、コアが探す器 |
+| [docs/theme-contract.md](docs/theme-contract.md) | テーマ仕様。CSS変数、クラス名、コアが探すスロット |
 | [docs/roadmap.md](docs/roadmap.md) | 実装の段階 |
 | [schema/](schema/) | JSON Schema（形式の正） |
 | [core/README.md](core/README.md) | コアが守る約束 |

@@ -6,7 +6,7 @@
   「テーマが必ず用意する仕掛け」の最小形（ポップアップの開閉など）。
   つまりこのページは、**見た目を何も与えなくてもデータが正しく出るか**の試験になる。
 
-  器の一覧は docs/theme-contract.md。器が無い機能は動かない。
+  スロットの一覧は docs/theme-contract.md。スロットが無い機能は動かない。
 -->
 <html lang="ja">
 <head>
@@ -44,7 +44,7 @@
         <button class="announcements-toggle-button" hidden></button>
     </section>
 
-    <!-- 出店者。器の属性値は data/shops.json の categories[].id と一致させる -->
+    <!-- 出店者。スロットの属性値は data/shops.json の categories[].id と一致させる -->
     <section id="shops">
         <h2>出店ブース</h2>
         <div data-marche-shops="stalls"></div>
@@ -81,7 +81,7 @@
         </div>
     </section>
 
-    <!-- お問い合わせ。器はこの1行だけで、中身は forms/contact.json からコアが組み立てる。
+    <!-- お問い合わせ。スロットはこの1行だけで、中身は forms/contact.json からコアが組み立てる。
          このデモは marche.config.json の forms.endpoint が空（モックモード）なので、
          実際には送信せず、送信内容をコンソールに出して完了表示に切り替える -->
     <section id="contact" data-marche-form-section>
@@ -97,7 +97,7 @@
     <div data-marche-social hidden></div>
 </footer>
 
-<!-- 商品ポップアップ。空の器を置くと、コアが値を流し込む -->
+<!-- 商品ポップアップ。空のスロットを置くと、コアが値を流し込む -->
 <div class="item-popup-overlay">
     <div class="item-popup">
         <button class="item-popup-close-button" aria-label="閉じる">×</button>

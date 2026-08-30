@@ -1,9 +1,9 @@
 // 問い合わせ／申込フォーム
 //
-// テーマが置いた器 [data-marche-form="<種別>"] に、forms/<種別>.json の定義から
+// テーマが置いたスロット [data-marche-form="<種別>"] に、forms/<種別>.json の定義から
 // フォームを組み立てる。入力・確認モーダル・送信までをここで受け持つ。
 //
-// 定義が読めないときは器を隠す。器を [data-marche-form-section] で包んでおくと、
+// 定義が読めないときはスロットを隠す。スロットを [data-marche-form-section] で包んでおくと、
 // 見出しごと消える(お知らせの [data-marche-announcements-section] と同じ)。
 //
 // astro-courier(https://github.com/kwaka1208/astro-courier)の Courier.astro を、
@@ -183,7 +183,7 @@ function buildField(field, uid) {
   return wrap;
 }
 
-// 器の中身を丸ごと作る。テーマが置くのは器の1行だけ
+// スロットの中身を丸ごと作る。テーマが置くのはスロットの1行だけ
 function buildForm(container, def, settings, uid) {
   container.textContent = '';
   container.classList.add('courier');
@@ -473,7 +473,7 @@ function activate(container, def, settings) {
   });
 }
 
-// 器はページ内にいくつあってもよい。種別ごとに定義を1回だけ取りに行く
+// スロットはページ内にいくつあってもよい。種別ごとに定義を1回だけ取りに行く
 export async function initForms() {
   const containers = document.querySelectorAll('[data-marche-form]');
   if (containers.length === 0) return;
@@ -493,7 +493,7 @@ export async function initForms() {
       activate(container, def, settings);
     } catch (err) {
       // 定義が読めないときは隠す。**見出しごと消せるように、セクションを先に探す。**
-      // 器だけ隠すと「お問い合わせ」の見出しと余白が残る(お知らせと同じ扱い)
+      // スロットだけ隠すと「お問い合わせ」の見出しと余白が残る(お知らせと同じ扱い)
       console.error(`フォーム定義 ${type} を読み込めませんでした:`, err);
       const section = container.closest('[data-marche-form-section]');
       (section ?? container).hidden = true;

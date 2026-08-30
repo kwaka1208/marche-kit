@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <!--
-  夜市テーマのトップページ（器の見本）
+  夜市テーマのトップページ（スロットの見本）
 
   既定テーマとは狙いが違う。暗い背景を前提にし、ナビゲーションを画面下に固定する。
   この2点は「テーマの自由」の範囲だが、**どこまでが自由なのか**を確かめるために
   意図的にずらしてある（docs/roadmap.md 段階5）。
 
-  器の一覧は docs/theme-contract.md。**器が無い機能は動かない。**
-  逆に、要らない機能は器ごと消せばよい。
+  スロットの一覧は docs/theme-contract.md。**スロットが無い機能は動かない。**
+  逆に、要らない機能はスロットごと消せばよい。
 
   データやイベント固有の文言はここに書かない。店名・商品・お知らせはコアが流し込む。
 
@@ -34,7 +34,7 @@
 
 <!-- ページの表札。イベント名・会期・会場はサイトごとに書き換える。
      コアはここを描画しない（marche.config.json を読むのは描画JSの中だけで、
-     site.name や days を出力する器は仕様に無い） -->
+     site.name や days を出力するスロットは仕様に無い） -->
 <header class="site-header">
     <div class="content-wrapper">
         <p class="site-header-mark">◍</p>
@@ -63,7 +63,7 @@
 
     <!-- 出店者。
          属性値は data/shops.json の categories[].id と一致させる。
-         **区分を増やすときはこの器を1行足すだけでよい**（コアの変更は要らない）。
+         **区分を増やすときはこのスロットを1行足すだけでよい**（コアの変更は要らない）。
          見た目の差は categories[].variant で付ける。CSSはカテゴリIDを見ていない -->
     <section class="section-container" id="shops">
         <div class="content-wrapper">
@@ -77,7 +77,7 @@
 
     <!-- 商品。
          フィルタボタンは marche.config.json の itemCategories からコアが作る。
-         カテゴリが未定義のイベントでは1つも作られない（空の器が残るだけ） -->
+         カテゴリが未定義のイベントでは1つも作られない（空のスロットが残るだけ） -->
     <section class="section-container" id="items">
         <div class="content-wrapper">
             <h2 class="section-heading">商品</h2>
@@ -112,9 +112,9 @@
         </div>
     </section>
 
-    <!-- お問い合わせ。**器はこの1行だけ。** forms/contact.json の項目定義から、
+    <!-- お問い合わせ。**スロットはこの1行だけ。** forms/contact.json の項目定義から、
          コアが入力欄・確認モーダル・送信までを組み立てる。
-         定義が読めないときはコアが器ごと隠すので、壊れた枠は出ない -->
+         定義が読めないときはコアがスロットごと隠すので、壊れた枠は出ない -->
     <section class="section-container" id="contact" data-marche-form-section>
         <div class="content-wrapper">
             <h2 class="section-heading">お問い合わせ</h2>
@@ -134,9 +134,9 @@
 <!-- ナビゲーション。**このテーマは画面の下に固定する。**
      位置を決めているのはCSSだけで、コアに上下の区別は無い。
 
-     開閉ボタン（.menu-toggle-button）の器は置いていない。下に固定した4項目は
+     開閉ボタン（.menu-toggle-button）のスロットは置いていない。下に固定した4項目は
      スマートフォンでも畳まずに収まるため、この機能は要らない。
-     **器の無い機能は動かないだけで、エラーにはならない**（要らない機能は器ごと消せる） -->
+     **スロットの無い機能は動かないだけで、エラーにはならない**（要らない機能はスロットごと消せる） -->
 <nav class="top-navigation">
     <ul class="navigation-list">
         <li class="navigation-item"><a href="#news">お知らせ</a></li>
@@ -147,8 +147,8 @@
     </ul>
 </nav>
 
-<!-- 商品ポップアップ。空の器を置くと、コアが値を流し込む。
-     要らない項目は器ごと消してよい（コアは器のあるものだけ埋める） -->
+<!-- 商品ポップアップ。空のスロットを置くと、コアが値を流し込む。
+     要らない項目はスロットごと消してよい（コアはスロットのあるものだけ埋める） -->
 <div class="item-popup-overlay">
     <div class="item-popup">
         <button class="item-popup-close-button" aria-label="閉じる">×</button>

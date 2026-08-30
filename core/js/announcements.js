@@ -71,7 +71,7 @@ export async function initAnnouncements() {
   const past = document.querySelector('[data-marche-announcements-past]');
   const toggleButton = document.querySelector('.announcements-toggle-button');
 
-  // お知らせの器が無いテーマでは何もしない
+  // お知らせのスロットが無いテーマでは何もしない
   if (!list) return;
 
   const config = announcementsConfig();

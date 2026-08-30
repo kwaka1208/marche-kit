@@ -109,9 +109,9 @@ python3 tools/validate.py examples/demo/variants/oneday
 `themes/<名前>/` を作り、[themes/README.md](themes/README.md) の「テーマを作る」の
 8項目を確認してください。特に次の3つが漏れやすいところです。
 
-- [テーマ仕様の「コアが探す器」](docs/theme-contract.md)がすべて存在すること
+- [テーマ仕様の「コアが探すスロット」](docs/theme-contract.md)がすべて存在すること
 - [「テーマが用意する仕掛け」の6つ](docs/theme-contract.md#テーマが用意する仕掛け)が書かれていること
-- **条件によって出力されない要素が無くても崩れないこと**（`price-note`、SNSの器、ロゴなど）
+- **条件によって出力されない要素が無くても崩れないこと**（`price-note`、SNSのスロット、ロゴなど）
 
 `default/` からコピーするなら、`[data-category]` を使ったスタイルが紛れ込んでいないか
 確認してください。**そのテーマが他のイベントで使えなくなります。**

@@ -53,7 +53,7 @@ PHPを置かずに、入力・検証・確認モーダルまで確かめられ�
 | ロゴ未設定 | 小熊堂は `images/noimage/shop.svg` が出る |
 | URL未設定 | 小熊堂には公式サイトのリンクが出ない |
 | 紹介文なし | 森のキッチンは店舗ポップアップの紹介文が隠れる |
-| カテゴリの器 | `index.html` の `data-marche-shops` を1行足すだけで区分が増える |
+| カテゴリのスロット | `index.html` の `data-marche-shops` を1行足すだけで区分が増える |
 | `variant` | キッチンカーのカードに `shop-card--feature` が付く |
 | フィルタ | ボタンが `itemCategories` から作られる |
 | お知らせ | 最新1件に NEW、`visibleCount` を超えた1件が「過去のお知らせ」に入る |
@@ -87,7 +87,7 @@ PHPを置かずに、入力・検証・確認モーダルまで確かめられ�
 | `variants/ticket/` | `pricing.mode: "ticket"` で対価が「2枚」になり、但し書きが消え、「チケット1枚 300円」の案内が出る |
 | `variants/oneday/` | `days` が1件のとき、販売日の表記（「3日(土)のみ」）がどこにも出ない |
 
-`variants/` の2つは `site.social` を持ちません。**SNSを設定していないイベントで器ごと隠れること**の確認を兼ねています。
+`variants/` の2つは `site.social` を持ちません。**SNSを設定していないイベントでスロットごと隠れること**の確認を兼ねています。
 
 `forms/` も持ちません。**フォームの定義が読めないとき、見出しごとセクションが隠れること**の確認を兼ねています
 （`data-marche-form-section`）。

@@ -35,6 +35,7 @@ FORM_FIELDS = {"name", "label", "type", "required", "validation", "maxLength",
                "placeholder", "autocomplete", "options", "description",
                "min", "max", "step", "value", "capture"}
 FORM_TOP = {"formType", "autoReply", "replyToField", "autoReplyToField", "fields"}
+FORMS_CONFIG = {"endpoint", "honeypot", "retries", "successUrl"}
 INPUT_TYPES = {"text", "email", "tel", "url", "number", "date", "time",
                "textarea", "select", "checkbox", "radio", "consent", "hidden"}
 VALIDATIONS = {"email", "phone", "url", "number", "halfwidth"}
@@ -112,6 +113,27 @@ def check_config(path):
                 if unknown:
                     warnings.append(f"{where}: 仕様に無いフィールド {sorted(unknown)}")
 
+    forms = cfg.get("forms")
+    if forms is not None:
+        if not isinstance(forms, dict):
+            errors.append("marche.config.json: forms はオブジェクトにすること")
+            forms = {}
+        else:
+            unknown = set(forms) - FORMS_CONFIG
+            if unknown:
+                warnings.append(f"marche.config.json: forms に仕様に無いフィールド {sorted(unknown)}")
+            hp = forms.get("honeypot")
+            if hp is not None and not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", str(hp)):
+                errors.append(f"marche.config.json: forms.honeypot がパターン違反 ({hp!r})"
+                              " → 入力欄の name になるため英字始まりにすること")
+            r = forms.get("retries")
+            if r is not None and (not isinstance(r, int) or isinstance(r, bool) or r < 0):
+                errors.append(f"marche.config.json: forms.retries は0以上の整数にすること ({r!r})")
+            if forms.get("endpoint") == "":
+                warnings.append("marche.config.json: forms.endpoint が空"
+                                " → モックモード。**実際には送信されません**")
+    honeypot = (forms or {}).get("honeypot") or "website"
+
     cats = cfg.get("itemCategories")
     if cats is not None:
         if not isinstance(cats, list):
@@ -127,7 +149,7 @@ def check_config(path):
                 if not c.get("label"):
                     errors.append(f"marche.config.json: itemCategories[{i}] に label が無い")
 
-    return day_ids, mode, decimals, len(days or []), item_cats
+    return day_ids, mode, decimals, len(days or []), item_cats, honeypot
 
 
 def check_text(where, label, value):
@@ -137,7 +159,7 @@ def check_text(where, label, value):
                       " → テキストとして扱う仕様。改行は \\n を使う")
 
 
-def check_form(path, name):
+def check_form(path, name, honeypot="website"):
     """フォーム項目定義(forms/<種別>.json)。フロントの生成とサーバーの検証が共有する"""
     form = load(path)
     where = f"forms/{name}"
@@ -171,6 +193,10 @@ def check_form(path, name):
                           " → 送信データのキーになるため英字始まりの英数字とアンダースコア")
         if fname in seen:
             errors.append(f"{at}.name が重複 ({fname})")
+        if fname == honeypot:
+            errors.append(f"{at}.name がおとり欄と同じ ({fname!r})"
+                          " → 入力された時点でボット扱いになり、**送信が黙って捨てられる。**"
+                          " marche.config.json の forms.honeypot を別の名前にすること")
         seen.add(fname)
 
         if not f.get("label"):
@@ -324,9 +350,10 @@ def main(base):
 
     # 設定
     day_ids, mode, decimals, day_count, item_cats = set(), "currency", 0, 0, set()
+    honeypot = "website"
     cfg_path = find_config(base)
     if cfg_path:
-        day_ids, mode, decimals, day_count, item_cats = check_config(cfg_path)
+        day_ids, mode, decimals, day_count, item_cats, honeypot = check_config(cfg_path)
         print(f"設定         : {mode} モード / 開催{day_count}日"
               + ("（販売日UIなし）" if day_count == 1 else ""))
     else:
@@ -393,7 +420,8 @@ def main(base):
     forms_dir = os.path.join(base, "forms")
     if os.path.isdir(forms_dir):
         names = sorted(f[:-5] for f in os.listdir(forms_dir) if f.endswith(".json"))
-        count = sum(check_form(os.path.join(forms_dir, n + ".json"), n) for n in names)
+        count = sum(check_form(os.path.join(forms_dir, n + ".json"), n, honeypot)
+                    for n in names)
         if names:
             print(f"フォーム     : {len(names)}種 / {count}項目")
 

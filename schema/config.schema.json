@@ -17,7 +17,7 @@
         "description": { "type": "string", "description": "サイトの説明(meta description)" },
         "social": {
           "type": "array",
-          "description": "イベント公式SNSのリンク(決定12)。テーマの器 [data-marche-social] に、この配列の順で出力される。未定義・空のときは1件も出力せず、器ごと隠される",
+          "description": "イベント公式SNSのリンク(決定12)。テーマのスロット [data-marche-social] に、この配列の順で出力される。未定義・空のときは1件も出力せず、スロットごと隠される",
           "items": {
             "type": "object",
             "required": ["platform", "url"],
@@ -159,6 +159,35 @@
           "minimum": 1,
           "default": 3,
           "description": "最初から見せる件数。これを超える古いものは「過去のお知らせ」側に折りたたむ"
+        }
+      }
+    },
+    "forms": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "問い合わせフォームの設定(決定13)。すべて省略可。項目そのものは forms/<種別>.json 側にある",
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "default": "data/send.php",
+          "description": "送信先。空文字にするとモックモード(送らずに内容を画面へ出す)になる"
+        },
+        "honeypot": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+          "default": "website",
+          "description": "おとり欄の項目名。フォームの実項目と同じ名前にしないこと"
+        },
+        "retries": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 1,
+          "description": "送信に失敗したときの再試行回数。0で再試行しない"
+        },
+        "successUrl": {
+          "type": "string",
+          "default": "",
+          "description": "送信後の遷移先。空なら同じページで完了表示に差し替える"
         }
       }
     }

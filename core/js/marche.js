@@ -26,8 +26,8 @@ function applyStaticText(root = document) {
   }
 }
 
-// 出店者データが読めなかったことを、器の中に出す。
-// 器を空のままにすると「まだ出店者がいない」ように見えてしまうため
+// 出店者データが読めなかったことを、スロットの中に出す。
+// スロットを空のままにすると「まだ出店者がいない」ように見えてしまうため
 function showShopLoadError() {
   const containers = [
     ...document.querySelectorAll('[data-marche-shops]'),
@@ -50,7 +50,7 @@ async function start() {
   // 出店者データを待たない。設定だけで描けるものは先に出す
   initSocial();
   // フォームは自前の定義(forms/<種別>.json)だけで組み立てられる。
-  // 失敗しても他の描画を止めない(器ごと隠して先へ進む)
+  // 失敗しても他の描画を止めない(スロットごと隠して先へ進む)
   const forms = initForms();
 
   // お知らせは外部JSONで応答が遅いことがある。出店者データの取得と並行して進める

@@ -16,7 +16,7 @@ const popups = new Map();
 
 // ポップアップを1つ登録する。
 //   name   … openPopup / closePopup で指す名前('item' / 'shop')
-//   overlay … 表示中に active が付く要素。テーマが用意する器
+//   overlay … 表示中に active が付く要素。テーマが用意するスロット
 //   closeButton … 閉じるボタン(無くてもよい)
 //   update … 中身を差し替える関数。openPopup に渡した値がそのまま届く
 // overlay が無いテーマでは登録せず、開く要求は黙って無視される

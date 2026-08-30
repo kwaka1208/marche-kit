@@ -2,7 +2,7 @@
 //
 // 出店者カードと店舗ポップアップを受け持つ。
 // カテゴリの数と名前はイベントごとに違うため、コアは固定のIDを持たない(決定1)。
-// テーマが置いた器 [data-marche-shops="<カテゴリID>"] を探し、あるものだけを埋める。
+// テーマが置いたスロット [data-marche-shops="<カテゴリID>"] を探し、あるものだけを埋める。
 
 import { FALLBACK_IMAGES, t } from './config.js';
 import { buildItemThumb, openItemFromShop } from './items.js';
@@ -65,7 +65,7 @@ function renderShopGrid(container, shops) {
   container.appendChild(fragment);
 }
 
-// カテゴリごとの器を埋める。器の無いカテゴリは描画しない
+// カテゴリごとのスロットを埋める。スロットの無いカテゴリは描画しない
 // (どのカテゴリをどこに出すかはテーマのHTMLが決める)
 function renderShopGrids() {
   for (const category of state.store.categories) {
@@ -86,7 +86,7 @@ function renderShopGrids() {
 
 // ---------------------------------------------------------------- ポップアップ
 
-// テーマが用意した空の器に値を流し込む。器の見た目はテーマの自由
+// テーマが用意した空のスロットに値を流し込む。スロットの見た目はテーマの自由
 function updateShopPopup(shopId) {
   const shop = state.store.shops.get(shopId);
   if (!shop) return;
@@ -117,7 +117,7 @@ function updateShopPopup(shopId) {
     comment.hidden = !text;
   }
 
-  // 取り扱いの一覧。器が無いテーマ(商品を出さないサイト)では何もしない
+  // 取り扱いの一覧。スロットが無いテーマ(商品を出さないサイト)では何もしない
   const list = $('.shop-popup-items');
   if (!list) return;
   const items = state.store.items.filter((item) => item.shopId === shopId);
