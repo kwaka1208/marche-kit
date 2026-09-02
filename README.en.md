@@ -13,7 +13,7 @@ festivals, farmers' markets, morning markets, school festivals, community events
 > **Status: in development (stage 8 of the [roadmap](docs/roadmap.md))**
 > The server side ([`core/php/`](core/php/)), the editors ([`core/editor/`](core/editor/)),
 > the rendering layer ([`core/js/`](core/js/)), the contact form, two themes ([`themes/`](themes/README.md))
-> and a working sample ([`examples/demo/`](examples/demo/README.md)) all run.
+> and working samples ([`examples/`](examples/README.md)) all run.
 
 ## What you get
 
@@ -65,17 +65,19 @@ The line between Halle and Auvent is one sentence:
 
 ## Try it
 
-A sample for a fictional event is included. It runs with no theme applied at all.
+A sample for a fictional event is included. It runs with the default theme applied.
 
 ```bash
-cd examples/demo
+cd examples/demo-default
 python3 -m http.server 8000
 ```
 
 Open <http://localhost:8000/?fixed>. (`?fixed` stops the display order from being shuffled.)
 
-The demo is not decoration — **it is the real test of whether the separation holds.**
-If it doesn't work bare, the theme has leaked into the core.
+**The same data is also served with no theme at all** (`examples/demo/`). That one is not
+decoration — **it is the real test of whether the separation holds.** If the data renders
+correctly with nothing styling it, the theme has not leaked into the core. The two share
+the same data and config — only the markup and the CSS differ.
 
 ## Using it for your event
 
@@ -120,6 +122,7 @@ All Japanese.
 | [docs/theme-contract.md](docs/theme-contract.md) | Theme contract. CSS variables, class names, the hooks the core looks for |
 | [docs/roadmap.md](docs/roadmap.md) | Implementation stages |
 | [schema/](schema/) | JSON Schema (the authoritative format) |
+| [examples/README.md](examples/README.md) | The working samples, with and without a theme |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
 
 ## Validating your data

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!--
+  デモのトップページ（既定テーマ default を当てた状態）
+
+  隣の examples/demo/ と**データも設定も同じ**で、違うのは見た目だけ。
+  data/ forms/ marche.config.json は demo/ を共有し、css/ と images/ は
+  themes/default/ を参照している（このリポジトリではシンボリックリンク）。
+
+  つまりこの2つを見比べると、**同じコア・同じデータのまま、
+  CSSとスロットの並べ方だけで見た目が決まる**ことが確かめられる。
+
+  テーマの index.html との違いは2箇所だけ:
+      - 出店者スロットの属性値を data/shops.json のカテゴリID（stalls / foodtrucks）に合わせた
+      - タイトルとフッターの注記をデモ用にした
+
+  スロットの一覧は docs/theme-contract.md。スロットが無い機能は動かない。
+-->
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>みどり野マルシェ（marche-kit デモ・default テーマ）</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <!-- 描画JS。読み込むのはこの1行だけで、残りは core/js/ の中で解決する -->
+    <script type="module" src="js/marche.js"></script>
+    <!-- **これはテーマの一部ではない。** フッターに置いた「架空のイベントです」の
+         注記1件分の余白だけをここで持つ。themes/default/layout.css が
+         「他の要素を足すときは、その要素が自分の余白を持つ」としているため -->
+    <style>
+        .site-note {
+            padding: var(--spacing-medium);
+            text-align: center;
+            font-size: var(--font-size-small);
+            color: var(--text-color-muted);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ページの表札。イベント名・会期・会場は marche.config.json から引く。
+     data-marche-text の値は設定のパス。設定に無ければコアがその要素を隠すので、
+     event.hours を持たないイベントでも崩れない -->
+<header class="site-header">
+    <div class="content-wrapper">
+        <h1 class="site-title" data-marche-text="site.name"></h1>
+        <p class="site-meta">
+            <span data-marche-text="days.label"></span>
+            <span data-marche-text="event.venue"></span>
+            <span data-marche-text="event.hours"></span>
+        </p>
+    </div>
+</header>
+
+<nav class="top-navigation">
+    <button class="menu-toggle-button" aria-label="メニュー">≡</button>
+    <ul class="navigation-list">
+        <li class="navigation-item"><a href="#news">お知らせ</a></li>
+        <li class="navigation-item"><a href="#shops">出店者</a></li>
+        <li class="navigation-item"><a href="#items">商品</a></li>
+        <li class="navigation-item"><a href="#faq">よくある質問</a></li>
+        <li class="navigation-item"><a href="#contact">お問い合わせ</a></li>
+    </ul>
+</nav>
+
+<main>
+
+    <!-- お知らせ。
+         0件のときと取得先が未設定のときは、コアがこのセクションごと隠す -->
+    <section class="section-container" id="news" data-marche-announcements-section>
+        <div class="content-wrapper">
+            <h2 class="section-heading">お知らせ</h2>
+            <!-- 取得に時間がかかることがあるため、読み込み中の表示を先に出しておく。
+                 取得できたらコアがこの要素を取り除く -->
+            <p class="loading-message" data-marche-announcements-status data-i18n="common.loading"></p>
+            <div class="announcements-list" data-marche-announcements></div>
+            <div class="announcements-past" data-marche-announcements-past></div>
+            <div class="show-more-wrapper">
+                <button class="announcements-toggle-button" hidden></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 出店者。
+         カテゴリを増やすときは、このスロットを1行足すだけでよい（コアの変更は要らない）。
+         属性値は data/shops.json の categories[].id と一致させる -->
+    <section class="section-container" id="shops">
+        <div class="content-wrapper">
+            <h2 class="section-heading">出店ブース</h2>
+            <div class="shop-grid" data-marche-shops="stalls"></div>
+
+            <!-- 区分が増えても、見出しとスロットを1組足すだけでよい -->
+            <h2 class="section-heading">キッチンカー</h2>
+            <div class="shop-grid" data-marche-shops="foodtrucks"></div>
+        </div>
+    </section>
+
+    <!-- 商品。
+         出すかどうかは marche.config.json の items.display が決める（既定は none = 出さない）。
+         data-marche-items-section を付けておくと、出さない設定のときに
+         このセクションと、ナビゲーションの「商品」がまとめて隠れる。
+         フィルタボタンは itemCategories からコアが作る。
+         カテゴリが未定義のイベントでは1つも作られない（空のスロットが残るだけ） -->
+    <section class="section-container" id="items" data-marche-items-section>
+        <div class="content-wrapper">
+            <h2 class="section-heading">商品</h2>
+            <!-- チケット運用で額面を出す設定のときだけ、コアが文言を入れる -->
+            <p class="pricing-face-value" data-marche-face-value hidden></p>
+            <div class="item-filter-buttons"></div>
+            <div class="item-grid" data-marche-items></div>
+            <div class="show-more-wrapper">
+                <button class="show-more-button" hidden></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- よくある質問。中身はテーマ（サイト）が直接書く。コアは開閉だけを受け持つ -->
+    <section class="section-container" id="faq">
+        <div class="content-wrapper">
+            <h2 class="section-heading">よくある質問</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">雨天でも開催しますか？</button>
+                    <div class="faq-answer">
+                        <p>小雨決行です。荒天の場合は、お知らせでご案内します。</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">駐車場はありますか？</button>
+                    <div class="faq-answer">
+                        <p>会場に駐車場はありません。公共交通機関をご利用ください。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- お問い合わせ。**スロットはこの1行だけ。** forms/contact.json の項目定義から、
+         コアが入力欄・確認モーダル・送信までを組み立てる。
+         定義が読めないときはコアがスロットごと隠すので、壊れた枠は出ない -->
+    <section class="section-container" id="contact" data-marche-form-section>
+        <div class="content-wrapper">
+            <h2 class="section-heading">お問い合わせ</h2>
+            <div data-marche-form="contact"></div>
+        </div>
+    </section>
+
+</main>
+
+<!-- フッター。SNSのリンクはコアが marche.config.json の site.social から作る。
+     site.social が空（または未設定）なら、コアがこのスロットごと隠す。
+     著作権表示などを足すときは、この <footer> の中に並べればよい -->
+<footer class="site-footer">
+    <div class="social-links" data-marche-social hidden></div>
+    <p class="site-note">marche-kit の動作確認用サンプルです。架空のイベントで、実在しません。</p>
+</footer>
+
+<!-- 商品ポップアップ。空のスロットを置くと、コアが値を流し込む。
+     要らない項目はスロットごと消してよい（コアはスロットのあるものだけ埋める） -->
+<div class="item-popup-overlay">
+    <div class="item-popup">
+        <button class="item-popup-close-button" aria-label="閉じる">×</button>
+        <img class="item-popup-image" src="" alt="">
+        <h3 class="item-popup-name"></h3>
+        <p class="item-popup-shop-name"></p>
+        <p class="item-popup-price"></p>
+        <p class="item-popup-sale-day" hidden></p>
+        <p class="item-popup-sold-out" hidden></p>
+        <p class="item-popup-description"></p>
+        <div class="item-popup-other-items" hidden>
+            <h4>この店の他の商品</h4>
+            <div class="item-popup-other-items-list"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 店舗ポップアップ -->
+<div class="shop-popup-overlay">
+    <div class="shop-popup">
+        <button class="shop-popup-close-button" aria-label="閉じる">×</button>
+        <img class="shop-popup-logo" src="" alt="">
+        <h3 class="shop-popup-name"></h3>
+        <a class="shop-popup-link" target="_blank" rel="noopener noreferrer"
+           data-i18n="shop.officialSite"></a>
+        <p class="shop-popup-comment"></p>
+        <div class="shop-popup-item-list">
+            <h4>取り扱い</h4>
+            <div class="shop-popup-items"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

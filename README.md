@@ -67,15 +67,19 @@ Halle と Auvent の境界は「**コアはクラス名を出力する。見た�
 
 ## 動かしてみる
 
-架空のイベントのサンプルが入っています。テーマを当てない素の状態で動きます。
+架空のイベントのサンプルが入っています。既定テーマを当てた状態で動きます。
 
 ```bash
-cd examples/demo
+cd examples/demo-default
 python3 -m http.server 8000
 ```
 
 <http://localhost:8000/?fixed> を開いてください。
-何が確認できるかは [examples/demo/README.md](examples/demo/README.md) にあります。
+何が確認できるかは [examples/demo-default/README.md](examples/demo-default/README.md) にあります。
+
+**同じデータをテーマ無しで表示するサンプル**も入っています（`examples/demo/`）。
+見た目を何も与えなくてもデータが正しく出ることの確認で、
+[コアにテーマが混ざっていないことの試験](examples/README.md)を兼ねています。
 
 ## 使い方
 
@@ -121,7 +125,8 @@ python3 tools/inject-env.py <配置先ディレクトリ>
 | [core/README.md](core/README.md) | コアが守る約束 |
 | [core/php/README.md](core/php/README.md) | サーバー側の配置と検証 |
 | [core/editor/README.md](core/editor/README.md) | 編集画面の配置とアクセス制御 |
-| [examples/demo/README.md](examples/demo/README.md) | 動くサンプル。動かし方と確認できること |
+| [examples/demo-default/README.md](examples/demo-default/README.md) | 動くサンプル（既定テーマを当てた状態）。動かし方 |
+| [examples/demo/README.md](examples/demo/README.md) | 動くサンプル（テーマ無し）。確認できることの一覧 |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | 貢献の手引き。コアとテーマの境界、送る前の確認 |
 
 ## データの検証
