@@ -81,14 +81,34 @@ the same data and config — only the markup and the CSS differ.
 
 ## Using it for your event
 
-It is a template, not a dependency. You copy the repository rather than installing it —
+It is a template, not a dependency. You copy it rather than installing it —
 it contains PHP, and every event customizes it.
+
+### Download a zip (no git needed)
+
+Three zips are attached to each [release](https://github.com/kwaka1208/marche-kit/releases).
+
+| zip | Contents |
+|---|---|
+| `marche-kit-<ver>-site-default.zip` | **Assembled into the shape of a public directory**, neutral theme |
+| `marche-kit-<ver>-site-night-market.zip` | The same, with the dark theme |
+| `marche-kit-<ver>.zip` | Everything: both themes, the samples, the documentation |
+
+**To get something running, take one of the assembled ones.** Unzip it, fill in the
+config, and upload the contents of `site/` to your server. The steps are in the bundled
+`START-HERE.md` (Japanese). Take the full set instead if you want to write your own theme
+or read through the internals.
+
+### Or clone it
 
 ```bash
 git clone https://github.com/kwaka1208/marche-kit my-event
 cd my-event
 rm -rf .git && git init
 ```
+
+Same contents as the full zip. **Either way, you assemble the public directory yourself**
+— step 2 of [docs/setup.md](docs/setup.md).
 
 Everything about the event lives in a single `marche.config.json`: dates, whether
 products are listed at all, product categories, the unit prices are shown in, and the

@@ -1,0 +1,89 @@
+# VERSION に版を書いてコミットすると、配布用のzipを作ってリリースを公開する。
+#
+#     echo "1.0.0" > VERSION
+#     git commit -am "v1.0.0"
+#     git push
+#
+# タグ（v1.0.0）はリリースと一緒に自動で作られます。手で打つ必要はありません。
+#
+# **走らないのは次の場合です。**
+#   - VERSION が版番号の形（1.0.0）になっていない … dev のうちは何も起きません
+#   - 同じ版のタグが既にある                      … 打ち直しにはなりません
+#
+# zipを作るのは tools/build-release.sh で、ここはそれを呼ぶだけです。
+# 手元でも同じものを作れます（bash tools/build-release.sh v1.0.0）。
+
+name: リリース
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - VERSION
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # リリースノートの自動生成と、既存タグの確認に履歴が要る
+          fetch-depth: 0
+
+      - name: 版を読む
+        id: version
+        run: |
+          version="$(tr -d ' \t\r\n' < VERSION)"
+
+          if ! printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$'; then
+            echo "VERSION が「$version」なのでリリースしません（版番号の例: 1.0.0）"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          tag="v$version"
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo "タグ $tag は既にあります。何もしません"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "リリースします: $tag"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: zip を組み立てる
+        if: steps.version.outputs.skip == 'false'
+        run: bash tools/build-release.sh "${{ steps.version.outputs.tag }}"
+
+      # 組み立ての中で site/ は検証しているが、
+      # 素材zipに入るデモも仕様どおりであることを、ここで別に確かめる
+      - name: デモを検証する
+        if: steps.version.outputs.skip == 'false'
+        run: |
+          for dir in examples/demo examples/demo-default \
+                     examples/demo/variants/ticket \
+                     examples/demo/variants/oneday \
+                     examples/demo/variants/popup-only \
+                     examples/demo/variants/no-items; do
+            echo "▸ $dir"
+            python3 tools/validate.py "$dir"
+          done
+
+      # タグはここで作られる（--target に今のコミットを指定している）
+      - name: リリースを公開する
+        if: steps.version.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          gh release create "$TAG" \
+            --target "$GITHUB_SHA" \
+            --title "$TAG" \
+            --generate-notes \
+            dist/*.zip

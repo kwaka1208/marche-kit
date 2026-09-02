@@ -83,14 +83,33 @@ python3 -m http.server 8000
 
 ## 使い方
 
-テンプレート方式です。npmの依存として入れるのではなく、リポジトリごとコピーして使います。
+テンプレート方式です。npmの依存として入れるのではなく、一式をコピーして使います。
 PHPを含むこと、そしてイベントごとにカスタマイズする前提が強いためです。
+
+### zip を取る（gitは要りません）
+
+[リリース](https://github.com/kwaka1208/marche-kit/releases)に3つのzipがあります。
+
+| zip | 中身 |
+|---|---|
+| `marche-kit-<版>-site-default.zip` | **公開ディレクトリの形まで組み立て済み**（中立なテーマ） |
+| `marche-kit-<版>-site-night-market.zip` | 同じものを、暗い配色のテーマで |
+| `marche-kit-<版>.zip` | 素材一式。テーマ2種・デモ・ドキュメントが全部入る |
+
+**まず動かすなら、配置済みのどちらかです。** 解凍して設定を書き、
+`site/` の中身をサーバーへ上げれば動きます。手順は同梱の `START-HERE.md` にあります。
+テーマを自分で作る、中身を読む、というときは素材一式のほうを取ってください。
+
+### git で取る
 
 ```bash
 git clone https://github.com/kwaka1208/marche-kit my-event
 cd my-event
 rm -rf .git && git init
 ```
+
+素材一式のzipと同じ中身になります。**この場合も、公開ディレクトリの組み立ては
+自分で行います**（[docs/setup.md](docs/setup.md) の手順2）。
 
 年度やイベントの設定は `marche.config.json` の1ファイルに集約されています。
 開催日・商品情報を出すかどうか・商品カテゴリ・対価の単位・表示文言の言語は、すべてここで決まります。
