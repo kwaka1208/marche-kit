@@ -7,6 +7,11 @@
   <!-- 見出し・ラベルは data-i18n の指す辞書(core/i18n/<locale>.json)から
        editor.js が入れます。ここに文言を直書きしないこと -->
   <title data-i18n="editor.pageTitle"></title>
+  <!-- サイトに置いたテーマの配色・書体・角丸に合わせる（決定19）。
+       tokens.css は変数の定義だけで、レイアウトの規則を持ちません。
+       **テーマを置いていない構成では読めなくてかまいません** —
+       editor.css が既定テーマ（themes/default）と同じ値を持っています。 -->
+  <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="editor.css">
 </head>
 <body>

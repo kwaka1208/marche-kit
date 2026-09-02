@@ -104,6 +104,12 @@ echo '[]' > "$SITE"/data/news.json
 
 **`core/php/secrets.example.php` はコピーしません。** 実際の `secrets.php` は手順5で生成します。
 
+**編集画面（`editor/`）の配色は `css/tokens.css` から決まります**（[決定19](decisions.md)）。
+テーマのCSSを上のとおり `css/` に置けば、出店者が使う編集画面もそのテーマの色になります。
+置き場所を変えるなら `editor/index.html` と `editor/news/index.html` の
+`<link rel="stylesheet" href="../css/tokens.css">` も直してください。
+**読めないままでも動きます**（既定テーマと同じ配色になります）。
+
 テーマの中身と作り方は [themes/README.md](../themes/README.md) を参照してください。
 
 **HTMLをAstroなどの静的サイトジェネレーターで生成することもできます。**

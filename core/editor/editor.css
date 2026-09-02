@@ -4,24 +4,106 @@
  * 運営と出店者が使う管理ツールです。テーマ仕様(docs/theme-contract.md)の
  * クラス名とは無関係で、サイト本体のCSSとも混ざりません。
  *
- * 色を変えたいときは下の :root のカスタムプロパティを差し替えてください。
- * サイト側のテーマと揃えたいなら、テーマの同名プロパティと同じ値を入れます。
+ * **ただし配色・書体・角丸・影はテーマに合わせます**(決定19)。
+ * 値は下の --editor-* に集めてあり、そのそれぞれがテーマのトークンを引いています。
+ *
+ *   テーマの tokens.css を読み込んでいる → そのテーマの配色になる
+ *   読み込んでいない               → 既定テーマ(themes/default)と同じ配色になる
+ *
+ * index.html が ../css/tokens.css を読んでいるのはこのためです。
+ * **テーマを置いていない構成では読めなくてかまいません。**
+ *
+ * 色を1色だけ変えたいときは、テーマの tokens.css 側を直してください。
+ * エディタだけを別の配色にしたいときは、下の --editor-* を上書きします。
  *
  * クラス名は editor- を接頭辞に付けます。テーマ仕様側の .item-card などと
  * 読み手が取り違えないようにするためです。
  */
 
 :root {
-  --primary-color: #ed6c15;
-  --primary-color-dark: #d95f10;
-  --error-color: #c0392b;
-  --text-color-dark: #4a1d00;
-  --text-color-light: #6b3e26;
-  --background-page: #fff9e6;
-  --white: #fffffe;
-  --gray-medium: #e9ecef;
-  --gray-dark: #6c757d;
-  --alert-background: #fff4e0;
+  /* 配色。**名前は色ではなく役割**(テーマ仕様と同じ考え方)。
+     フォールバックの値は themes/default/tokens.css と同じもの */
+  --editor-primary: var(--primary-color, #2f6f4e);
+  --editor-primary-strong: var(--primary-color-strong, #24573d);
+  --editor-primary-subtle: var(--primary-color-subtle, #e6f1ea);
+  --editor-error: var(--error-color, #c0392b);
+  --editor-text: var(--text-color, #23282d);
+  --editor-text-muted: var(--text-color-muted, #6b7280);
+  --editor-surface: var(--surface, #ffffff);
+  --editor-surface-sunken: var(--surface-sunken, #f4f5f6);
+  --editor-border: var(--border-color, #dcdfe3);
+  --editor-border-strong: var(--border-color-strong, #9aa0a6);
+
+  /* 主色を敷いた面に載る文字。テーマが --on-primary-color を持てばそれを使い、
+     無ければ --surface(前面の背景)を使う。**主色が暗いテーマは前面が明るく、
+     主色が明るいテーマは前面が暗い**ので、たいていはこれで読める。
+     そうならない配色のテーマだけが --on-primary-color を定義する */
+  --editor-on-primary: var(--on-primary-color, var(--surface, #ffffff));
+
+  /* 状態の色。**テーマは持たないので、ここで決める。**
+     完売・販売終了・送信結果は運用の状態であって、イベントの配色ではない */
+  --editor-warning: #d69e2e;
+  --editor-success: #2f855a;
+
+  /* 状態を示す淡い面。下の @supports で面の色に混ぜ直す。
+     ここに書いてあるのは color-mix() が使えないブラウザ向けの単色 */
+  --editor-warning-surface: #fbf2de;
+  --editor-warning-border: #e3c377;
+  --editor-error-surface: #f9eae8;
+  --editor-success-surface: #e9f2ec;
+
+  /* 書体・形。テーマが決めた印象(角丸の強さ・影の深さ)をそのまま借りる */
+  --editor-font: var(--font-family-main,
+    "Hiragino Sans", "Noto Sans JP", "Yu Gothic", system-ui, sans-serif);
+  --editor-radius-small: var(--border-radius-small, 4px);
+  --editor-radius-medium: var(--border-radius-medium, 12px);
+  --editor-shadow: var(--shadow-medium, 0 4px 16px rgba(0, 0, 0, 0.12));
+
+  /* ブラウザが描く部品(日付ピッカー・ファイル選択・スクロールバー)の明暗。
+     エディタは入力欄の多い画面なので、ここが揃わないと目立つ。
+     **暗い配色に固定しているテーマだけが --color-scheme: dark を定義する。**
+     明暗の両方を持つテーマと、テーマを置いていない構成ではOSの設定に従う */
+  color-scheme: var(--color-scheme, light dark);
+}
+
+/* 状態の淡い面を、**そのときの面の色に混ぜて**作る。
+   明るいテーマでは淡く、暗いテーマでは暗いまま色味だけが乗る。
+   単色で持つと「暗いテーマなのに明るい黄色の帯」になってしまうため。
+
+   テーマが暗くてもOSの設定は明るい、という組み合わせが普通に起きる
+   (夜市のテーマを昼間に開く)。**OSの設定では判断できない。** */
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+  :root {
+    --editor-warning-surface: color-mix(in srgb, var(--editor-warning) 16%, var(--editor-surface));
+    --editor-warning-border: color-mix(in srgb, var(--editor-warning) 55%, var(--editor-surface));
+    --editor-error-surface: color-mix(in srgb, var(--editor-error) 12%, var(--editor-surface));
+    --editor-success-surface: color-mix(in srgb, var(--editor-success) 12%, var(--editor-surface));
+  }
+}
+
+/* テーマを読み込んでいない構成でも、OSの設定に合わせて暗くする。
+   **差し替えるのはフォールバックの値だけ。** テーマの tokens.css を読んでいるときは
+   var() がテーマの値を先に拾うため、ここの指定は効かない(テーマ側の @media が効く)。
+   値は themes/default/tokens.css の暗い側と同じもの */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --editor-primary: var(--primary-color, #5cae86);
+    --editor-primary-strong: var(--primary-color-strong, #7cc4a0);
+    --editor-primary-subtle: var(--primary-color-subtle, #1c2a23);
+    --editor-error: var(--error-color, #e06c5b);
+    --editor-text: var(--text-color, #e8eaed);
+    --editor-text-muted: var(--text-color-muted, #9aa0a6);
+    --editor-surface: var(--surface, #1e2124);
+    --editor-surface-sunken: var(--surface-sunken, #17191b);
+    --editor-border: var(--border-color, #34383c);
+    --editor-border-strong: var(--border-color-strong, #5f6469);
+    --editor-on-primary: var(--on-primary-color, var(--surface, #1e2124));
+    --editor-shadow: var(--shadow-medium, 0 4px 16px rgba(0, 0, 0, 0.6));
+
+    /* 暗い地の上で見えるところまで明度を上げる */
+    --editor-warning: #e0b155;
+    --editor-success: #6cb98d;
+  }
 }
 
 * {
@@ -30,15 +112,15 @@
 
 body {
   margin: 0;
-  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", sans-serif;
-  background: var(--background-page);
-  color: var(--text-color-dark);
+  font-family: var(--editor-font);
+  background: var(--editor-surface-sunken);
+  color: var(--editor-text);
   line-height: 1.6;
 }
 
 .page-header {
-  background: var(--primary-color);
-  color: #fff;
+  background: var(--editor-primary);
+  color: var(--editor-on-primary);
   padding: 1.2rem 1.5rem;
 }
 
@@ -47,11 +129,14 @@ body {
   font-size: 1.3rem;
 }
 
+/* モック版の断り書き。主色の帯の上に載るので、面の色に戻して読ませる */
 .mock-notice {
   margin: 0.5rem 0 0;
   padding: 0.5rem 0.8rem;
-  background: var(--text-color-dark);
-  border-radius: 4px;
+  background: var(--editor-surface);
+  color: var(--editor-error);
+  border: 1px solid var(--editor-error);
+  border-radius: var(--editor-radius-small);
   font-size: 0.85rem;
 }
 
@@ -62,22 +147,22 @@ main {
 }
 
 section {
-  background: var(--white);
-  border-radius: 8px;
+  background: var(--editor-surface);
+  border-radius: var(--editor-radius-medium);
   padding: 1.2rem 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--editor-shadow);
 }
 
 h2 {
   font-size: 1.1rem;
   margin: 0 0 1rem;
   padding-bottom: 0.4rem;
-  border-bottom: 2px solid var(--primary-color);
+  border-bottom: 2px solid var(--editor-primary);
 }
 
 .error-text {
-  color: var(--error-color);
+  color: var(--editor-error);
   font-size: 0.9rem;
   margin: 0.5rem 0 0;
 }
@@ -86,7 +171,7 @@ h2 {
 
 .admin-links a {
   font-weight: bold;
-  color: var(--primary-color);
+  color: var(--editor-primary);
   text-decoration: none;
 }
 
@@ -120,7 +205,7 @@ h2 {
   background: none;
   font: inherit;
   font-weight: bold;
-  color: var(--primary-color);
+  color: var(--editor-primary);
   text-align: left;
   cursor: pointer;
 }
@@ -139,10 +224,11 @@ h2 {
   width: 100%;
   padding: 0.6rem;
   font-size: 1rem;
-  border: 1px solid var(--gray-medium);
-  border-radius: 4px;
-  background: var(--white);
-  color: var(--text-color-dark);
+  font-family: inherit;
+  border: 1px solid var(--editor-border);
+  border-radius: var(--editor-radius-small);
+  background: var(--editor-surface-sunken);
+  color: var(--editor-text);
 }
 
 #id-input-section label {
@@ -160,16 +246,20 @@ h2 {
   flex: 1;
   padding: 0.6rem;
   font-size: 1rem;
-  border: 1px solid var(--gray-medium);
-  border-radius: 4px;
+  font-family: inherit;
+  border: 1px solid var(--editor-border);
+  border-radius: var(--editor-radius-small);
+  background: var(--editor-surface-sunken);
+  color: var(--editor-text);
 }
 
 .id-input-row button {
   padding: 0.6rem 1rem;
-  color: #fff;
-  background: var(--primary-color);
+  font-family: inherit;
+  color: var(--editor-on-primary);
+  background: var(--editor-primary);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--editor-radius-small);
   cursor: pointer;
 }
 
@@ -195,10 +285,10 @@ h2 {
   padding: 0.5rem 0.6rem;
   font-size: 1rem;
   font-family: inherit;
-  color: var(--text-color-dark);
-  border: 1px solid var(--gray-medium);
-  border-radius: 4px;
-  background: var(--white);
+  color: var(--editor-text);
+  border: 1px solid var(--editor-border);
+  border-radius: var(--editor-radius-small);
+  background: var(--editor-surface-sunken);
 }
 
 .field select {
@@ -207,7 +297,7 @@ h2 {
 
 .hint {
   font-size: 0.8rem;
-  color: var(--text-color-light);
+  color: var(--editor-text-muted);
   margin: 0.3rem 0 0;
 }
 
@@ -227,14 +317,14 @@ h2 {
   width: 140px;
   height: 140px;
   object-fit: contain;
-  background: var(--background-page);
-  border: 1px solid var(--gray-medium);
-  border-radius: 4px;
+  background: var(--editor-surface-sunken);
+  border: 1px solid var(--editor-border);
+  border-radius: var(--editor-radius-small);
 }
 
 .image-field figcaption {
   font-size: 0.8rem;
-  color: var(--text-color-light);
+  color: var(--editor-text-muted);
   margin-top: 0.2rem;
 }
 
@@ -245,15 +335,15 @@ h2 {
 
 /* ---- 対価が未設定の商品の注意喚起 ---- */
 
-/* 埋め忘れに気づけるよう、通常のセクション(白背景)と違う配色にする */
+/* 埋め忘れに気づけるよう、通常のセクション(面の色)と違う配色にする */
 .price-alert-section {
-  background: var(--alert-background);
-  border: 2px solid var(--primary-color);
+  background: var(--editor-primary-subtle);
+  border: 2px solid var(--editor-primary);
   box-shadow: none;
 }
 
 .price-alert-section h2 {
-  color: var(--primary-color-dark);
+  color: var(--editor-primary-strong);
 }
 
 .price-alert-section ul {
@@ -271,14 +361,14 @@ h2 {
   background: none;
   font: inherit;
   font-weight: bold;
-  color: var(--primary-color-dark);
+  color: var(--editor-primary-strong);
   text-align: left;
   text-decoration: underline;
   cursor: pointer;
 }
 
 .price-jump-link:hover {
-  color: var(--primary-color);
+  color: var(--editor-primary);
 }
 
 /* 一覧から移動してきた商品。どこへ飛んだか分かるよう少しの間だけ枠を光らせる */
@@ -287,15 +377,15 @@ h2 {
 }
 
 @keyframes jump-highlight {
-  from { box-shadow: 0 0 0 3px var(--primary-color); }
-  to   { box-shadow: 0 0 0 3px rgba(237, 108, 21, 0); }
+  from { box-shadow: 0 0 0 3px var(--editor-primary); }
+  to   { box-shadow: 0 0 0 3px transparent; }
 }
 
 /* ---- 商品・お知らせのカード ---- */
 
 .editor-item {
-  border: 1px solid var(--gray-medium);
-  border-radius: 6px;
+  border: 1px solid var(--editor-border);
+  border-radius: var(--editor-radius-small);
   padding: 1rem 1.2rem;
   margin-bottom: 1.2rem;
 }
@@ -309,37 +399,38 @@ h2 {
   display: inline-block;
   font-size: 0.75rem;
   font-weight: normal;
-  color: #fff;
-  background: var(--text-color-light);
-  border-radius: 3px;
+  color: var(--editor-surface);
+  background: var(--editor-text-muted);
+  border-radius: var(--editor-radius-small);
   padding: 0.1rem 0.5rem;
   margin-left: 0.5rem;
   vertical-align: middle;
 }
 
-/* 追加直後の入力欄。破線+薄い背景色で既存カードと見分けやすくする */
+/* 追加直後の入力欄。破線+淡いアクセントで既存カードと見分けやすくする */
 .editor-item--new {
-  border-color: var(--primary-color);
+  border-color: var(--editor-primary);
   border-style: dashed;
-  background: rgba(237, 108, 21, 0.07);
+  background: var(--editor-primary-subtle);
 }
 
 /* 販売状態に応じた色分け。販売中は色を付けない(追加直後の色をそのまま活かすため)。
-   削除マーク(.deleted)を優先させたいので、このルールは .deleted より前に置く */
+   削除マーク(.deleted)を優先させたいので、このルールは .deleted より前に置く。
+   **文字色は変えない。** 面に色味を乗せるだけにして、どの配色でも読めるようにする */
 .editor-item[data-status="soldout"] {
-  background: rgba(255, 193, 7, 0.18);
-  border-color: #e0a800;
+  background: var(--editor-warning-surface);
+  border-color: var(--editor-warning-border);
 }
 
 .editor-item[data-status="ended"] {
-  background: #f1f3f5;
-  border-color: var(--gray-dark);
-  color: var(--gray-dark);
+  background: var(--editor-surface-sunken);
+  border-color: var(--editor-border-strong);
+  color: var(--editor-text-muted);
 }
 
 /* 削除マーク済み。DOMには残し、送信時に items 配列から除外する */
 .editor-item.deleted {
-  background: var(--gray-medium);
+  background: var(--editor-border);
   opacity: 0.55;
 }
 
@@ -351,16 +442,17 @@ h2 {
   float: right;
   font-size: 0.8rem;
   font-weight: normal;
-  color: var(--error-color);
+  font-family: inherit;
+  color: var(--editor-error);
   background: none;
-  border: 1px solid var(--error-color);
-  border-radius: 4px;
+  border: 1px solid var(--editor-error);
+  border-radius: var(--editor-radius-small);
   padding: 0.2rem 0.6rem;
   cursor: pointer;
 }
 
 .remove-item-button:hover {
-  background: rgba(192, 57, 43, 0.1);
+  background: var(--editor-error-surface);
 }
 
 /* ---- 選択肢(販売状態のラジオ・販売日のチェックボックス) ---- */
@@ -368,9 +460,9 @@ h2 {
 .choice-field {
   margin: 0 0 1rem;
   padding: 0.6rem 0.8rem;
-  border: 1px solid var(--gray-medium);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--editor-border);
+  border-radius: var(--editor-radius-small);
+  background: var(--editor-surface);
 }
 
 .choice-field legend {
@@ -410,7 +502,7 @@ h2 {
 
 .choice-option-hint {
   font-size: 0.85rem;
-  color: var(--gray-dark);
+  color: var(--editor-text-muted);
 }
 
 /* ---- 追加・送信 ---- */
@@ -422,16 +514,17 @@ h2 {
 
 #add-item-button {
   font-size: 0.95rem;
-  color: var(--primary-color);
-  background: var(--white);
-  border: 1px solid var(--primary-color);
-  border-radius: 6px;
+  font-family: inherit;
+  color: var(--editor-primary);
+  background: var(--editor-surface);
+  border: 1px solid var(--editor-primary);
+  border-radius: var(--editor-radius-small);
   padding: 0.5rem 1.5rem;
   cursor: pointer;
 }
 
 #add-item-button:hover {
-  background: rgba(237, 108, 21, 0.1);
+  background: var(--editor-primary-subtle);
 }
 
 .submit-area {
@@ -441,47 +534,53 @@ h2 {
 #submit-button {
   font-size: 1.05rem;
   font-weight: bold;
-  color: #fff;
-  background: var(--primary-color);
+  font-family: inherit;
+  color: var(--editor-on-primary);
+  background: var(--editor-primary);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--editor-radius-small);
   padding: 0.8rem 2.5rem;
   cursor: pointer;
 }
 
 #submit-button:hover {
-  background: var(--primary-color-dark);
+  background: var(--editor-primary-strong);
 }
 
+/* 送信中。主色を外して「いま押せない」ことを見せる */
 #submit-button:disabled {
-  background: var(--gray-dark);
+  color: var(--editor-text-muted);
+  background: var(--editor-surface-sunken);
+  border: 1px solid var(--editor-border);
   cursor: default;
 }
 
+/* 送信結果。**文字色は本文のまま**にして、意味は枠の色で示す。
+   どのテーマの面の上でも読めることを、色の選び方より優先する */
 #send-result {
   margin: 1rem auto 0;
   padding: 0.6rem 1rem;
-  border-radius: 6px;
+  border-radius: var(--editor-radius-small);
   font-size: 0.95rem;
+  color: var(--editor-text);
 }
 
 #send-result.success {
-  background: #e6f2e0;
-  color: #2e5c1e;
-  border: 1px solid #9cc487;
+  background: var(--editor-success-surface);
+  border: 1px solid var(--editor-success);
 }
 
 #send-result.error {
-  background: rgba(192, 57, 43, 0.1);
-  color: var(--error-color);
-  border: 1px solid rgba(192, 57, 43, 0.4);
+  background: var(--editor-error-surface);
+  border: 1px solid var(--editor-error);
 }
 
 #payload-section pre {
-  background: var(--text-color-dark);
-  color: var(--background-page);
+  background: var(--editor-surface-sunken);
+  color: var(--editor-text);
+  border: 1px solid var(--editor-border);
   padding: 1rem;
-  border-radius: 6px;
+  border-radius: var(--editor-radius-small);
   overflow-x: auto;
   font-size: 0.8rem;
 }
