@@ -24,6 +24,7 @@ without the organizers touching code.
 | Feature | Who uses it | What it does | Status |
 |---|---|---|---|
 | Vendor editor | Each vendor | Edit their own blurb, logo, products, prices and sold-out state; live immediately | ✅ |
+| Product visibility | Organizers | One config line picks none / vendor popup only / full listing. **Defaults to none** | ✅ |
 | Announcement editor | Organizers | Add and revise announcements. No rebuild | ✅ |
 | Contact form | Visitors | Generated from a field-definition JSON, with a confirmation step and spam trap. Sends mail | ✅ |
 | Site rendering | Visitors | Vendor cards, product listing, announcements | ✅ |
@@ -87,8 +88,13 @@ cd my-event
 rm -rf .git && git init
 ```
 
-Everything about the event lives in a single `marche.config.json`: dates, product
-categories, the unit prices are shown in, and the display language.
+Everything about the event lives in a single `marche.config.json`: dates, whether
+products are listed at all, product categories, the unit prices are shown in, and the
+display language.
+
+**Products are not shown by default.** Events that are only about the vendors themselves
+are the bare case. To show them, add one line — `"items": { "display": "list" }`, or
+`"popup"` to expose them only from the vendor popup.
 
 Notification addresses, the admin key and webhook URLs go in `.env` and are injected
 into the deployed copy — **never into the files in the repository.**

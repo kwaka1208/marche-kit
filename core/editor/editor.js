@@ -109,6 +109,17 @@ const usesSaleDays = () => days().length > 1;
 // 商品カテゴリ。未定義なら商品カテゴリの欄を出さない
 const itemCategories = () => state.config.itemCategories ?? [];
 
+// 商品情報の掲載範囲(none / popup / list)。core/js/config.js の itemDisplay と同じ規則で、
+// **未定義・綴り違いは none(掲載なし)に落とす。**
+// none のイベントではエディタに商品の欄を出さない。ただし**登録済みの商品は消さない** —
+// 掲載しないだけなので、保存時は読み込んだ内容をそのまま送り返す(buildPayload)
+const ITEM_DISPLAYS = ['none', 'popup', 'list'];
+const itemDisplay = () => {
+  const value = (state.config.items ?? {}).display;
+  return ITEM_DISPLAYS.includes(value) ? value : 'none';
+};
+const showsItems = () => itemDisplay() !== 'none';
+
 // 対価の入力欄のラベルと補足。単位と言い回しは pricing.mode で変わる
 function priceLabel() {
   const pricing = state.config.pricing ?? {};
@@ -231,9 +242,10 @@ function createShopLink(id) {
   return link;
 }
 
-// どちらの一覧も、トップ(店舗未選択)のときだけ出す
+// どちらの一覧も、トップ(店舗未選択)のときだけ出す。
+// 商品を掲載しないイベントでは、どちらも意味を持たないので出さない
 function setAdminListsVisible(visible) {
-  const hidden = !(state.isAdmin && visible);
+  const hidden = !(state.isAdmin && visible && showsItems());
   $('price-missing-section').hidden = hidden;
   $('no-item-section').hidden = hidden;
 }
@@ -305,6 +317,12 @@ function renderShopPriceMissing() {
   const list = $('shop-price-missing-list');
   list.textContent = '';
 
+  // 商品を掲載しないイベントでは、対価が空でもサイトの見え方は変わらない
+  if (!showsItems()) {
+    $('shop-price-missing').hidden = true;
+    return;
+  }
+
   for (const wrap of $('item-list').querySelectorAll('.editor-item')) {
     if (wrap.dataset.deleted === 'true') continue;
     if (getStatus(wrap) === 'ended') continue;
@@ -360,7 +378,11 @@ function showShop(id) {
   $('shop-logo-file').value = '';
   $('shop-logo-preview-wrap').hidden = true;
 
-  renderItems(data.items ?? []);
+  // 商品を掲載しないイベントでは商品の欄ごと出さない。
+  // 入力欄を作らないので、保存時は読み込んだ商品がそのまま送り返される(buildPayload)
+  $('item-section').hidden = !showsItems();
+  if (showsItems()) renderItems(data.items ?? []);
+  else $('item-list').textContent = '';
   renderShopPriceMissing();
 
   setAdminListsVisible(false);
@@ -747,8 +769,14 @@ function buildPayload() {
 
   const items = [];
 
-  // 既存の商品
+  // 既存の商品。**商品を掲載しないイベントでは入力欄そのものが無い。**
+  // 画面から組み直さず、読み込んだ内容をそのまま送り返す
+  // (掲載しないだけで、登録済みの商品を消してよいわけではない)
   for (const original of data.items ?? []) {
+    if (!showsItems()) {
+      items.push(original);
+      continue;
+    }
     const wrap = document.querySelector(`.editor-item[data-item-id="${CSS.escape(original.id)}"]`);
     if (!wrap || wrap.dataset.deleted === 'true') continue;
     const get = (name) => wrap.querySelector(`[data-field="${name}"]`).value;

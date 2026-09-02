@@ -1,12 +1,13 @@
 {
   "site": {
-    "name": "みどり野マルシェ（1日開催の確認）",
+    "name": "みどり野マルシェ（店舗からのリンクのみの確認）",
     "url": "https://example.com",
-    "description": "days が1件のとき、販売日のUIが出力されないことを確認するための設定。"
+    "description": "items.display が popup のとき、商品一覧のセクションが出ず、店舗ポップアップの取り扱いからだけ商品を開けることを確認するための設定。"
   },
   "event": { "year": 2026, "venue": "みどり野中央公園", "hours": "10:00-16:00" },
   "days": [
-    { "id": "day1", "date": "2026-10-03", "label": "10月3日(土)", "shortLabel": "3日(土)" }
+    { "id": "day1", "date": "2026-10-03", "label": "10月3日(土)", "shortLabel": "3日(土)" },
+    { "id": "day2", "date": "2026-10-04", "label": "10月4日(日)", "shortLabel": "4日(日)" }
   ],
   "pricing": {
     "mode": "currency",
@@ -15,7 +16,7 @@
   },
   "locale": "ja",
   "timezone": "Asia/Tokyo",
-  "items": { "display": "list" },
+  "items": { "display": "popup" },
   "itemCategories": [
     { "id": "drink", "label": "ドリンク" },
     { "id": "food", "label": "フード" }

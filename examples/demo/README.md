@@ -12,9 +12,11 @@ cd examples/demo
 python3 -m http.server 8000
 ```
 
-- 既定（2日開催・金額表示） … <http://localhost:8000/?fixed>
+- 既定（2日開催・金額表示・商品一覧あり） … <http://localhost:8000/?fixed>
 - チケット運用 … <http://localhost:8000/variants/ticket/?fixed>
 - 1日開催 … <http://localhost:8000/variants/oneday/?fixed>
+- 商品は店舗からのリンクのみ … <http://localhost:8000/variants/popup-only/?fixed>
+- 商品情報なし（**キットの既定**） … <http://localhost:8000/variants/no-items/?fixed>
 
 `?fixed` は表示順のシャッフルを止めます。付けないと毎回並びが変わります。
 
@@ -59,6 +61,7 @@ PHPを置かずに、入力・検証・確認モーダルまで確かめられ�
 | お知らせ | 最新1件に NEW、`visibleCount` を超えた1件が「過去のお知らせ」に入る |
 | もっと見る | 画面幅を狭めて1列にすると、3件で折りたたまれる |
 | ポップアップの行き来 | 店舗 → 商品 → 「この店の他の商品」と移れる |
+| 商品の掲載範囲 | `items.display` が `list`。`variants/` の2つで `popup` と `none` を確かめられる |
 | SNSのリンク | フッターに4件。`公式チャンネル` は `label` の上書き、`midorino-bbs` はコアが名前を知らないID |
 | フォームの全項目 | `text` / `email` / `tel` / `select` / `radio` / `checkbox` / `textarea` / `consent` / `hidden` が1つずつ |
 | 隠し項目 | `pageUrl` が送信元URLを自動で拾う（`capture`）。確認画面には出ない |
@@ -86,24 +89,36 @@ PHPを置かずに、入力・検証・確認モーダルまで確かめられ�
 |---|---|
 | `variants/ticket/` | `pricing.mode: "ticket"` で対価が「2枚」になり、但し書きが消え、「チケット1枚 300円」の案内が出る |
 | `variants/oneday/` | `days` が1件のとき、販売日の表記（「3日(土)のみ」）がどこにも出ない |
+| `variants/popup-only/` | `items.display: "popup"` で商品一覧のセクションが消え、**店舗ポップアップの取り扱いからだけ**商品を開ける |
+| `variants/no-items/` | `items` を書かないとき（**キットの既定**）、商品がどこにも出ない。取り扱いの区画も消える |
 
-`variants/` の2つは `site.social` を持ちません。**SNSを設定していないイベントでスロットごと隠れること**の確認を兼ねています。
+**後ろの2つは、データを変えずに掲載範囲だけを変えています。**
+`data/` は既定のデモと共有しているので、商品は8件登録されたままです。
+`items.display` を戻せば、同じ商品がそのまま出ます
+（`tools/validate.py` は「商品が8件あるが出ません」と知らせます）。
+
+商品を出さない設定では、**ナビゲーションの「商品」も一緒に消えます。**
+セクションが `data-marche-items-section` で包まれているためです（[テーマ仕様](../../docs/theme-contract.md)）。
+
+`variants/` のどれも `site.social` を持ちません。**SNSを設定していないイベントでスロットごと隠れること**の確認を兼ねています。
 
 `forms/` も持ちません。**フォームの定義が読めないとき、見出しごとセクションが隠れること**の確認を兼ねています
 （`data-marche-form-section`）。
 
 チケット運用は対価が枚数になるため、データも専用のものを置いています
 （金額のデータをそのまま枚数として読むと「900枚」になってしまうため）。
-1日開催のほうは既定のデモとデータを共有しています。
+残りの3つは既定のデモとデータを共有しています。
 
 ## データの検証
 
-3つとも仕様に合っていることを確認できます。
+5つとも仕様に合っていることを確認できます。
 
 ```bash
 python3 tools/validate.py examples/demo
 python3 tools/validate.py examples/demo/variants/ticket
 python3 tools/validate.py examples/demo/variants/oneday
+python3 tools/validate.py examples/demo/variants/popup-only
+python3 tools/validate.py examples/demo/variants/no-items
 ```
 
 ## 実在のものは入っていません

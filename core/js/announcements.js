@@ -8,7 +8,7 @@
 // 採らない — 最新が取れなかったときに古い情報が見えるほうが困るため(concepts.md)。
 
 import { announcements as announcementsConfig, formatDate, t } from './config.js';
-import { el, fetchJson } from './util.js';
+import { el, fetchJson, hideSection } from './util.js';
 
 // 最初から見せる件数の既定値。設定の visibleCount で変えられる
 const DEFAULT_VISIBLE_COUNT = 3;
@@ -78,7 +78,7 @@ export async function initAnnouncements() {
   const source = config.source ?? '';
   // 取得先が未設定のイベントではセクションごと出さない
   if (!source) {
-    if (section) section.hidden = true;
+    hideSection(section);
     return;
   }
 
@@ -94,7 +94,7 @@ export async function initAnnouncements() {
 
   // 1件も無いときはセクションごと非表示にする
   if (items.length === 0) {
-    if (section) section.hidden = true;
+    hideSection(section);
     return;
   }
 

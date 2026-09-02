@@ -98,9 +98,12 @@ php -S 127.0.0.1:8000
 python3 tools/validate.py examples/demo
 python3 tools/validate.py examples/demo/variants/ticket
 python3 tools/validate.py examples/demo/variants/oneday
+python3 tools/validate.py examples/demo/variants/popup-only
+python3 tools/validate.py examples/demo/variants/no-items
 ```
 
-**この3つは常に仕様違反0で通る必要があります。** コアやスキーマを変えたら必ず実行してください。
+**この5つは常に仕様違反0で通る必要があります。** コアやスキーマを変えたら必ず実行してください。
+（`no-items` は「商品があるのに掲載しない設定」の警告が1件出ます。**これは想定どおりです。**）
 
 ## 変更の種類ごとに
 
@@ -112,6 +115,8 @@ python3 tools/validate.py examples/demo/variants/oneday
 - [テーマ仕様の「コアが探すスロット」](docs/theme-contract.md)がすべて存在すること
 - [「テーマが用意する仕掛け」の7つ](docs/theme-contract.md#テーマが用意する仕掛け)が書かれていること
 - **条件によって出力されない要素が無くても崩れないこと**（`price-note`、SNSのスロット、ロゴなど）
+- 商品一覧のセクションを `data-marche-items-section` で包むこと。
+  **商品の掲載は既定で off** なので、包み忘れると空の見出しが残ります
 
 `default/` からコピーするなら、`[data-category]` を使ったスタイルが紛れ込んでいないか
 確認してください。**そのテーマが他のイベントで使えなくなります。**

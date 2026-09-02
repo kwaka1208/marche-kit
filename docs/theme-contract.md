@@ -149,7 +149,8 @@ CSSの `@import` でも読めますが、**CSSの取得が終わってから fon
 
 | セレクタ | 役割 |
 |---|---|
-| `[data-marche-items]` | 商品カードの描画先。**段組みはgridで書くこと**（下の注記） |
+| `[data-marche-items]` | 商品カードの描画先。**段組みはgridで書くこと**（下の注記）。`items.display` が `list` のときだけ埋まる |
+| `[data-marche-items-section]` | 商品一覧のセクション全体。**商品を一覧に出さない設定のとき、ここごと隠す**（下の注記） |
 | `[data-marche-announcements]` | お知らせの描画先 |
 | `[data-marche-announcements-status]` | お知らせの状態表示（読み込み中・エラー） |
 | `[data-marche-announcements-section]` | お知らせセクション全体。**0件時にここごと隠す** |
@@ -176,7 +177,30 @@ CSSの `@import` でも読めますが、**CSSの取得が終わってから fon
 | `.item-popup-image` / `.item-popup-name` | `.shop-popup-logo` / `.shop-popup-name` |
 | `.item-popup-shop-name` / `.item-popup-description` | `.shop-popup-link` / `.shop-popup-comment` |
 | `.item-popup-price` / `.item-popup-sale-day` / `.item-popup-sold-out` | `.shop-popup-items`（取り扱い一覧） |
-| `.item-popup-other-items` / `.item-popup-other-items-list` | |
+| `.item-popup-other-items` / `.item-popup-other-items-list` | `.shop-popup-item-list`（取り扱いの見出しを含む区画） |
+
+### 商品を出すかどうかは設定が決める
+
+商品情報をどこまで出すかは `marche.config.json` の `items.display` で決まります
+（`none` / `popup` / `list`。**未定義の既定は `none` = 出さない**）。
+**テーマ側では決められません。** スロットを置いても、設定が出さないと言っていれば埋まりません。
+
+| 設定 | 商品一覧のセクション | 店舗ポップアップの取り扱い | 商品ポップアップ |
+|---|---|---|---|
+| `none`（既定） | 隠れる | 隠れる | 開かない |
+| `popup` | 隠れる | 埋まる | 開く |
+| `list` | 埋まる | 埋まる | 開く |
+
+テーマがすることは2つです。
+
+1. 商品一覧のセクションを `data-marche-items-section` で包む。
+   **包まないと、空のスロットと見出しだけが残ります。**
+   包んでおけば、コアがセクションごと隠し、**そのセクションを指すナビゲーションの項目も一緒に隠します**
+   （`<a href="#items">` を含む `.navigation-item`。`id` を頼りに探すため、セクションに `id` を付けること）。
+2. 店舗ポップアップの取り扱い一覧を `.shop-popup-item-list` で包む。
+   包まないときは `.shop-popup-items` だけが隠れ、**「取り扱い」の見出しが残ります**（フォームと同じ扱い）。
+
+同じ理由で、`[hidden]` に `display: none` を当てておくことが要ります（[テーマが用意する仕掛け](#テーマが用意する仕掛け)）。
 
 ### 商品グリッドはgridで組む
 
@@ -541,12 +565,14 @@ Courier と同じです**（決定13）。`courier-` の接頭辞はテーマ側
 | `price-unit` | 単位の設定が空 |
 | `item-sale-day` | 開催日が1日だけ（`days` が1件）、または全日販売の商品 |
 | `item-sold-out-badge` | 販売中の商品 |
-| `filter-button` | `itemCategories` が未定義（1つも作られない） |
-| `[data-marche-announcements-section]` | お知らせが0件、または `announcements.source` が空 |
-| `[data-marche-face-value]` | 金額運用、または `ticket.showFaceValue` が偽 |
+| `filter-button` | `itemCategories` が未定義（1つも作られない）、または `items.display` が `list` でない |
+| `[data-marche-items-section]` | `items.display` が `none` または `popup`（**セクションごと `hidden`。** ナビゲーションの項目も隠れる） |
+| `.shop-popup-item-list` | `items.display` が `none`（**区画ごと `hidden`。** 包んでいないときは `.shop-popup-items` だけが隠れ、見出しが残る） |
+| `[data-marche-announcements-section]` | お知らせが0件、または `announcements.source` が空（**ナビゲーションの項目も隠れる**） |
+| `[data-marche-face-value]` | 金額運用、`ticket.showFaceValue` が偽、または `items.display` が `none` |
 | `[data-marche-social]` | `site.social` が未定義・空、または `http(s)` で始まるURLが1件も無い（**スロットごと `hidden`**） |
 | `[data-marche-text]` の要素 | 指したパスが設定に無い、または値が空（**要素ごと `hidden`**） |
-| `[data-marche-form-section]` | `forms/<種別>.json` が読めない（**セクションごと `hidden`**）。スロットを包んでいないときはスロットだけが隠れ、**見出しが残ります** |
+| `[data-marche-form-section]` | `forms/<種別>.json` が読めない（**セクションごと `hidden`。** ナビゲーションの項目も隠れる）。スロットを包んでいないときはスロットだけが隠れ、**見出しが残ります** |
 | `courier-desc` | その項目に `description` が無い |
 | `courier-required` | その項目が必須でない |
 | `shop-card-official-link` | 店が公式サイトを登録していない |
@@ -581,6 +607,8 @@ document.addEventListener('marche:rendered', (e) => {
 5. カテゴリIDではなく `variant` にスタイルを当てているか見直す
 6. `?fixed` を付けて、条件によって出ない要素（`price-note`・`item-sale-day`）が
    無くても崩れないか確かめる
+7. `items.display` を `none` にして、**商品のセクションとナビゲーションの項目が消えたあとも
+   崩れない**か確かめる（既定はこちらです）
 
 ## 10. まだ決まっていないこと
 

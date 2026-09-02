@@ -1,10 +1,12 @@
 // 出店者の描画
 //
 // 出店者カードと店舗ポップアップを受け持つ。
+// ポップアップの取り扱い一覧は、marche.config.json の items.display が
+// none 以外のときだけ埋める(既定は none = 出さない)。
 // カテゴリの数と名前はイベントごとに違うため、コアは固定のIDを持たない。
 // テーマが置いたスロット [data-marche-shops="<カテゴリID>"] を探し、あるものだけを埋める。
 
-import { FALLBACK_IMAGES, t } from './config.js';
+import { FALLBACK_IMAGES, showsItems, t } from './config.js';
 import { buildItemThumb, openItemFromShop } from './items.js';
 import { openPopup, registerPopup } from './popup.js';
 import {
@@ -117,7 +119,9 @@ function updateShopPopup(shopId) {
     comment.hidden = !text;
   }
 
-  // 取り扱いの一覧。スロットが無いテーマ(商品を出さないサイト)では何もしない
+  // 取り扱いの一覧。商品を掲載しない設定では埋めない(区画は initShops で隠してある)。
+  // スロットが無いテーマ(商品を出さないページ)でも何もしない
+  if (!showsItems()) return;
   const list = $('.shop-popup-items');
   if (!list) return;
   const items = state.store.items.filter((item) => item.shopId === shopId);
@@ -143,6 +147,14 @@ function openShopPopupById(shopId) {
 
 export function initShops(store) {
   state.store = store;
+
+  // 商品を掲載しない設定では、取り扱いの一覧を見出しごと隠す。
+  // 一覧を包む区画があればそちらを隠す(無ければスロットだけを隠し、見出しは残る)
+  if (!showsItems()) {
+    const wrapper = document.querySelector('.shop-popup-item-list')
+      ?? document.querySelector('.shop-popup-items');
+    if (wrapper) wrapper.hidden = true;
+  }
 
   registerPopup('shop', {
     overlay: document.querySelector('.shop-popup-overlay'),

@@ -112,7 +112,7 @@ echo '[]' > "$SITE"/data/news.json
 ### 3. イベントの設定を書く
 
 `<配置用>/marche.config.json` に、そのイベントのことを書きます。
-**開催日・対価の単位・商品カテゴリ・言語は、すべてこの1ファイルで決まります。**
+**開催日・対価の単位・商品情報を出すかどうか・言語は、すべてこの1ファイルで決まります。**
 
 ```json
 {
@@ -135,6 +135,7 @@ echo '[]' > "$SITE"/data/news.json
   },
   "locale": "ja",
   "timezone": "Asia/Tokyo",
+  "items": { "display": "list" },
   "itemCategories": [
     { "id": "drink", "label": "ドリンク" },
     { "id": "food", "label": "フード" }
@@ -150,6 +151,7 @@ echo '[]' > "$SITE"/data/news.json
 |---|---|
 | `days` が1件だけ | **販売日の選択・表示がどこにも出なくなります**（エディタもサイトも） |
 | `pricing.mode: "ticket"` | 対価が金額ではなく枚数になり、但し書きが消えます |
+| `items` を書かない | **商品情報がどこにも出ません（既定）。** 出すなら `{ "display": "popup" }`（店舗ポップアップのみ）か `{ "display": "list" }`（商品一覧も） |
 | `itemCategories` が空 | 商品カテゴリの欄とフィルタが出なくなります |
 | `locale: "en"` | 画面の文言と日付が英語になります（`i18n/en.json`） |
 | `site.social` が無い | SNSのリンクが**スロットごと**隠れます |

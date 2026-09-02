@@ -26,6 +26,7 @@
   },
   "locale": "ja",
   "timezone": "Asia/Tokyo",
+  "items": { "display": "list" },
   "itemCategories": [
     { "id": "drink", "label": "ドリンク" },
     { "id": "food", "label": "フード" }

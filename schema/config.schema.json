@@ -127,9 +127,22 @@
       "type": "string",
       "description": "日付の解釈と表示に使うタイムゾーン(例: Asia/Tokyo)。お知らせの日付整形と通知の日時に使う。省略時はサーバー/ブラウザの既定"
     },
+    "items": {
+      "type": "object",
+      "required": ["display"],
+      "additionalProperties": false,
+      "description": "商品情報をどこまで掲載するか。未定義のときは none(掲載しない)として扱う",
+      "properties": {
+        "display": {
+          "enum": ["none", "popup", "list"],
+          "default": "none",
+          "description": "none = どこにも出さない(既定) / popup = 店舗ポップアップの取り扱い一覧と、そこから開く商品ポップアップだけ / list = popup に加えて商品一覧のセクション(フィルタ・もっと見る)も出す。none と popup では、テーマに商品一覧のスロットがあっても埋めず、[data-marche-items-section] ごと隠す"
+        }
+      }
+    },
     "itemCategories": {
       "type": "array",
-      "description": "商品カテゴリの定義(出店者のカテゴリとは別物)。商品一覧のフィルタとエディタの選択肢に使う。未定義または空のときは、エディタに商品カテゴリの欄を出さない",
+      "description": "商品カテゴリの定義(出店者のカテゴリとは別物)。商品一覧のフィルタとエディタの選択肢に使う。未定義または空のときは、エディタに商品カテゴリの欄を出さない。items.display が list のときだけフィルタとして意味を持つ",
       "items": {
         "type": "object",
         "required": ["id", "label"],
@@ -211,6 +224,7 @@
       ],
       "pricing": { "mode": "currency", "currency": { "unit": "円", "position": "suffix", "grouping": true, "decimals": 0 }, "note": "税込" },
       "locale": "ja",
+      "items": { "display": "list" },
       "itemCategories": [
         { "id": "beer", "label": "ビール" },
         { "id": "food", "label": "フード" },

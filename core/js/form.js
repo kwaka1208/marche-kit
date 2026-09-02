@@ -21,7 +21,7 @@
 //   - 送信に失敗したら成功を偽らない。入力を残したままエラーを出して再送できる
 
 import { FORM_URL, formSettings, t } from './config.js';
-import { announceRendered, el, fetchJson } from './util.js';
+import { announceRendered, el, fetchJson, hideSection } from './util.js';
 
 // 値がある時だけ形式を検査する(空欄の扱いは required に委ねる)。
 // strip は検査前に落とす文字(電話番号のハイフンなど)。サーバー側(send.php)と同じ規則
@@ -497,7 +497,8 @@ export async function initForms() {
       // スロットだけ隠すと「お問い合わせ」の見出しと余白が残る(お知らせと同じ扱い)
       console.error(`フォーム定義 ${type} を読み込めませんでした:`, err);
       const section = container.closest('[data-marche-form-section]');
-      (section ?? container).hidden = true;
+      if (section) hideSection(section);
+      else container.hidden = true;
     }
   }
   announceRendered('forms');

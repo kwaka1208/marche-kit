@@ -34,6 +34,7 @@ python3 tools/inject-env.py <配置先ディレクトリ>
 | 店舗の一覧とカテゴリ分け | `data/shops.json` の `categories` |
 | 販売日の選択肢 | `marche.config.json` の `days`。**1件のときは欄ごと出しません** |
 | 商品カテゴリの選択肢 | `marche.config.json` の `itemCategories`。**空なら欄ごと出しません** |
+| 商品を編集させるかどうか | `marche.config.json` の `items.display`。**`none`（既定）なら商品の欄と、運営向けの商品関連の一覧を出しません。** 登録済みの商品は消さず、保存時にそのまま送り返します（[決定18](../../docs/decisions.md)） |
 | 対価のラベルと単位 | `marche.config.json` の `pricing`（`currency` / `ticket` で言い回しが変わる） |
 | 画面のすべての文言 | `i18n/<locale>.json` の `editor` セクション |
 

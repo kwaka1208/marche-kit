@@ -1,6 +1,8 @@
 // 商品の描画
 //
 // 商品カード・カテゴリのフィルタ・「もっと見る」・商品ポップアップを受け持つ。
+// **どこまで出すかは marche.config.json の items.display が決める**(既定は none = 出さない)。
+// テーマにスロットがあっても、設定が出さないと言っていれば埋めない。
 // 出力するクラス名は docs/theme-contract.md の約束。**テーマ側で改名できない。**
 // 見た目(色・余白・段数)はここでは決めず、テーマのCSSに任せる。
 
@@ -8,6 +10,7 @@ import {
   FALLBACK_IMAGES,
   faceValueNote,
   itemCategories,
+  itemDisplay,
   priceNote,
   priceParts,
   saleDayLabel,
@@ -15,7 +18,15 @@ import {
 } from './config.js';
 import { isSoldOut } from './data.js';
 import { openPopup, registerPopup, switchPopup } from './popup.js';
-import { announceRendered, el, maybeShuffle, oneLine, setImage, setText } from './util.js';
+import {
+  announceRendered,
+  el,
+  hideSection,
+  maybeShuffle,
+  oneLine,
+  setImage,
+  setText,
+} from './util.js';
 
 // 折りたたみ時に見せる行数。段数(列の数)はテーマのCSSが決めるため、
 // 件数ではなく行数で持つ(何列で並ぼうと、見えるのは常にこの行数になる)
@@ -269,9 +280,25 @@ function updateItemPopup(itemId) {
 
 export function initItems(store) {
   state.store = store;
-  state.grid = document.querySelector('[data-marche-items]');
-  state.filterContainer = document.querySelector('.item-filter-buttons');
-  state.showMoreButton = document.querySelector('.show-more-button');
+
+  const display = itemDisplay();
+  const section = document.querySelector('[data-marche-items-section]');
+
+  // チケット1枚の額面の案内。スロットを置いたテーマにだけ出す。
+  // 金額運用のイベント・額面を出さない設定・商品を出さない設定では要素ごと隠す
+  const faceValue = document.querySelector('[data-marche-face-value]');
+  if (faceValue) {
+    const note = display === 'none' ? '' : faceValueNote();
+    faceValue.textContent = note;
+    faceValue.hidden = !note;
+  }
+
+  // 商品を掲載しないイベント(既定)では、ここから先は何もしない。
+  // ポップアップも登録しないため、店舗ポップアップから商品へ移る経路ごと閉じる
+  if (display === 'none') {
+    hideSection(section);
+    return;
+  }
 
   registerPopup('item', {
     overlay: document.querySelector('.item-popup-overlay'),
@@ -279,16 +306,18 @@ export function initItems(store) {
     update: updateItemPopup,
   });
 
-  // チケット1枚の額面の案内。スロットを置いたテーマにだけ出す。
-  // 金額運用のイベントと、額面を出さない設定では要素ごと隠す
-  const faceValue = document.querySelector('[data-marche-face-value]');
-  if (faceValue) {
-    const note = faceValueNote();
-    faceValue.textContent = note;
-    faceValue.hidden = !note;
+  // 「店舗からのリンクだけ」の設定では、一覧のセクションごと出さない。
+  // 商品はポップアップの中にだけあり、ページ内の一覧としては現れない
+  if (display !== 'list') {
+    hideSection(section);
+    return;
   }
 
-  // 商品のスロットが無いテーマ(商品を出さないページ)では、ここから先は何もしない
+  state.grid = document.querySelector('[data-marche-items]');
+  state.filterContainer = document.querySelector('.item-filter-buttons');
+  state.showMoreButton = document.querySelector('.show-more-button');
+
+  // 一覧のスロットが無いテーマ(商品一覧を置かないページ)では、ここから先は何もしない
   if (!state.grid) return;
 
   renderFilterButtons();

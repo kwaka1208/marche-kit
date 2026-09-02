@@ -81,9 +81,12 @@
     </section>
 
     <!-- 商品。
-         フィルタボタンは marche.config.json の itemCategories からコアが作る。
+         出すかどうかは marche.config.json の items.display が決める（既定は none = 出さない）。
+         data-marche-items-section を付けておくと、出さない設定のときに
+         このセクションと、ナビゲーションの「商品」がまとめて隠れる。
+         フィルタボタンは itemCategories からコアが作る。
          カテゴリが未定義のイベントでは1つも作られない（空のスロットが残るだけ） -->
-    <section class="section-container" id="items">
+    <section class="section-container" id="items" data-marche-items-section>
         <div class="content-wrapper">
             <h2 class="section-heading">商品</h2>
             <!-- チケット運用で額面を出す設定のときだけ、コアが文言を入れる -->

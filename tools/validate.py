@@ -23,6 +23,8 @@ IMAGE = re.compile(r"^[^/\\]*\." + EXT + r"$")
 DAY_ID = re.compile(r"^day[0-9]+$")
 HTML_TAG = re.compile(r"<[a-zA-Z/!]")
 STATUSES = {"onsale", "soldout", "ended"}
+ITEM_DISPLAYS = {"none", "popup", "list"}
+ITEMS_CONFIG = {"display"}
 VARIANTS = {"standard", "compact", "feature"}
 SHOP_FIELDS = {"id", "name", "url", "comment", "logo", "items", "updatedAt"}
 SOCIAL_FIELDS = {"platform", "url", "label"}
@@ -60,9 +62,10 @@ def find_config(base):
 
 
 def check_config(path):
-    """設定を読み、商品検証に必要な情報(開催日ID・価格モード・商品カテゴリ)を返す"""
+    """設定を読み、商品検証に必要な情報(開催日ID・価格モード・商品カテゴリ・掲載範囲)を返す"""
     cfg = load(path)
     day_ids, mode, decimals, item_cats = set(), "currency", 0, set()
+    item_display = "none"
 
     days = cfg.get("days")
     if not isinstance(days, list) or not days:
@@ -134,6 +137,27 @@ def check_config(path):
                                 " → モックモード。**実際には送信されません**")
     honeypot = (forms or {}).get("honeypot") or "website"
 
+    # 商品情報の掲載範囲。**未定義は none(掲載しない)。** コア側の既定と揃える
+    items_cfg = cfg.get("items")
+    if items_cfg is not None:
+        if not isinstance(items_cfg, dict):
+            errors.append("marche.config.json: items はオブジェクトにすること"
+                          ' → {"display": "none" | "popup" | "list"}')
+        else:
+            unknown = set(items_cfg) - ITEMS_CONFIG
+            if unknown:
+                warnings.append(f"marche.config.json: items に仕様に無いフィールド {sorted(unknown)}")
+            display = items_cfg.get("display")
+            if display is None:
+                warnings.append("marche.config.json: items に display が無い"
+                                " → none(掲載しない)として扱われます")
+            elif display not in ITEM_DISPLAYS:
+                errors.append(f"marche.config.json: items.display が不正 ({display!r})"
+                              f" → {sorted(ITEM_DISPLAYS)} のいずれか。"
+                              "**不正な値は none(掲載しない)に落ちます**")
+            else:
+                item_display = display
+
     cats = cfg.get("itemCategories")
     if cats is not None:
         if not isinstance(cats, list):
@@ -148,8 +172,12 @@ def check_config(path):
                 item_cats.add(cid)
                 if not c.get("label"):
                     errors.append(f"marche.config.json: itemCategories[{i}] に label が無い")
+        if item_cats and item_display == "none":
+            warnings.append(f"marche.config.json: itemCategories が{len(item_cats)}件あるが、"
+                            "items.display が none"
+                            " → 商品を掲載しないため、カテゴリはどこにも使われません")
 
-    return day_ids, mode, decimals, len(days or []), item_cats, honeypot
+    return day_ids, mode, decimals, len(days or []), item_cats, honeypot, item_display
 
 
 def check_text(where, label, value):
@@ -179,10 +207,14 @@ def read_slots(base):
         "forms": set(re.findall(r'data-marche-form\s*=\s*"([^"]*)"', html)),
         "social": bool(re.search(r"data-marche-social\b", html)),
         "text": set(re.findall(r'data-marche-text\s*=\s*"([^"]*)"', html)),
+        # data-marche-items-section も data-marche-items で始まるため、
+        # 続く文字を見て取り違えないようにする
+        "items": bool(re.search(r"data-marche-items(?![-\w])", html)),
+        "items_section": bool(re.search(r"data-marche-items-section\b", html)),
     }
 
 
-def check_slots(base, category_ids, form_names, cfg_path):
+def check_slots(base, category_ids, form_names, cfg_path, item_display="none"):
     """定義したものが、テーマのスロットに行き先を持っているかを照合する。
 
     **見るのは一方向だけ。** 「定義があるのにスロットが無い」＝出しどころが無く、
@@ -223,6 +255,19 @@ def check_slots(base, category_ids, form_names, cfg_path):
                                 f" marche.config.json のどの項目も指していない"
                                 f"（'{head}' がありません）→ この要素は常に隠れます")
 
+    # 商品の掲載範囲とスロットの照合。
+    # list なら一覧の置き場が要る。none / popup ではセクションごと隠せることを確かめる
+    if item_display == "list" and not slots["items"]:
+        errors.append("marche.config.json: items.display が list だが、"
+                      "index.html に data-marche-items が無い"
+                      ' → <div data-marche-items></div> を置くこと。'
+                      "**商品一覧はどこにも出ません**")
+    if item_display != "list" and slots["items"] and not slots["items_section"]:
+        warnings.append(f"index.html に data-marche-items があるが、"
+                        f"items.display は {item_display}"
+                        " → スロットだけが空で残り、**見出しが残ります。**"
+                        " セクションを data-marche-items-section で包むこと")
+
     if cfg_path and not slots["social"]:
         try:
             social = (load(cfg_path).get("site") or {}).get("social") or []
@@ -234,6 +279,7 @@ def check_slots(base, category_ids, form_names, cfg_path):
                             " → SNSのリンクは表示されない")
 
     print(f"スロット     : index.html と照合（出店者{len(slots['shops'])}"
+          f" / 商品{'あり' if slots['items'] else 'なし'}"
           f" / フォーム{len(slots['forms'])}"
           f" / SNS{'あり' if slots['social'] else 'なし'}"
           f" / 設定の差し込み{len(slots['text'])}）")
@@ -430,12 +476,20 @@ def main(base):
 
     # 設定
     day_ids, mode, decimals, day_count, item_cats = set(), "currency", 0, 0, set()
-    honeypot = "website"
+    honeypot, item_display = "website", "none"
+    # 商品の掲載範囲の表示。**未定義は none(掲載しない)。** コア側の既定と揃える
+    display_label = {
+        "none": "商品は掲載しない",
+        "popup": "商品は店舗ポップアップからのみ",
+        "list": "商品は一覧とポップアップ",
+    }
     cfg_path = find_config(base)
     if cfg_path:
-        day_ids, mode, decimals, day_count, item_cats, honeypot = check_config(cfg_path)
+        (day_ids, mode, decimals, day_count,
+         item_cats, honeypot, item_display) = check_config(cfg_path)
         print(f"設定         : {mode} モード / 開催{day_count}日"
-              + ("（販売日UIなし）" if day_count == 1 else ""))
+              + ("（販売日UIなし）" if day_count == 1 else "")
+              + f" / {display_label[item_display]}")
     else:
         warnings.append("marche.config.json が見つからない（設定に依存する検証を省略）")
 
@@ -501,6 +555,12 @@ def main(base):
         unlisted = len(set(dirs) - listed)
         print(f"出店者データ : {checked}店 / {total}商品"
               + (f"（ロスター外 {unlisted}件は非表示）" if unlisted else ""))
+        # 掲載しない設定でも商品データは消さない仕様。
+        # 「登録したのに出ない」と「意図して隠している」を取り違えないよう知らせる
+        if total and item_display == "none":
+            warnings.append(f"商品が{total}件あるが、items.display が none"
+                            " → サイトのどこにも出ません。"
+                            "出すなら popup（店舗ポップアップのみ）か list（一覧も）にすること")
 
     # フォーム項目定義（置いていない構成もある）
     forms_dir = os.path.join(base, "forms")
@@ -513,7 +573,7 @@ def main(base):
             print(f"フォーム     : {len(form_names)}種 / {count}項目")
 
     # 定義とテーマのスロットの照合
-    check_slots(base, category_ids, form_names, cfg_path)
+    check_slots(base, category_ids, form_names, cfg_path, item_display)
 
     # お知らせ
     news_path = os.path.join(data_dir, "news.json")

@@ -79,6 +79,29 @@ export const usesSaleDays = () => days().length > 1;
 // 商品カテゴリ。未定義なら商品一覧のフィルタを出さない
 export const itemCategories = () => state.config.itemCategories ?? [];
 
+// ---------------------------------------------------------------- 商品情報の掲載範囲
+
+// 商品情報をどこまで出すか。**既定は none(掲載なし)。**
+// 商品を持たないイベント(展示・体験・出店紹介だけの催し)を素の状態とし、
+// 出すと決めたイベントだけが設定に書く。
+//
+//   none  … どこにも出さない。商品一覧・店舗ポップアップの取り扱い・商品ポップアップのすべて
+//   popup … 店舗ポップアップの取り扱い一覧と、そこから開く商品ポップアップだけ
+//   list  … popup に加えて、商品一覧のセクション(フィルタ・もっと見る)も出す
+const ITEM_DISPLAYS = ['none', 'popup', 'list'];
+
+// 未定義・綴り違いは none に落とす(掲載しない側に倒す)
+export function itemDisplay() {
+  const value = state.config.items?.display;
+  return ITEM_DISPLAYS.includes(value) ? value : 'none';
+}
+
+// 商品情報を何らかの形で出すか(popup と list)
+export const showsItems = () => itemDisplay() !== 'none';
+
+// 商品一覧のセクションを出すか(list のみ)
+export const showsItemList = () => itemDisplay() === 'list';
+
 // 設定の値をドット区切りのパスで引く。
 // テーマが data-marche-text="site.name" と書いた箇所に流し込むためのもの。
 //

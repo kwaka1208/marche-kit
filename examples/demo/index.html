@@ -64,8 +64,10 @@
         <div data-marche-shops="foodtrucks"></div>
     </section>
 
-    <!-- 商品。フィルタボタンは marche.config.json の itemCategories からコアが作る -->
-    <section id="items">
+    <!-- 商品。出すかどうかは marche.config.json の items.display が決める（既定は none）。
+         data-marche-items-section を付けると、出さない設定でセクションごと隠れる。
+         フィルタボタンは itemCategories からコアが作る -->
+    <section id="items" data-marche-items-section>
         <h2>商品</h2>
         <p data-marche-face-value hidden></p>
         <div class="item-filter-buttons"></div>

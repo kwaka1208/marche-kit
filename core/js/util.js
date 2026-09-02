@@ -65,6 +65,21 @@ export const oneLine = (s) => String(s ?? '').replace(/\s*\n\s*/g, ' ').trim();
 // リンクにしてよいURLか。http(s) で始まらない値(javascript: など)はリンクにしない
 export const isHttpUrl = (url) => typeof url === 'string' && /^https?:\/\//.test(url);
 
+// セクションを隠す。**そのセクションを指すページ内リンクも一緒に隠す。**
+//
+// 出さないと決めた区画(商品・お知らせ・フォーム)がナビゲーションに残ると、
+// 押しても何も起きないリンクになる。テーマは自分がどの設定で使われるかを知らないため、
+// リンクを消せるのはコアだけ。ナビゲーションの項目を包む要素があればそちらを隠す
+// (リンクだけ消すと、区切り線や余白が残るテーマがあるため)。
+export function hideSection(section) {
+  if (!section) return;
+  section.hidden = true;
+  if (!section.id) return;
+  for (const link of document.querySelectorAll(`a[href="#${CSS.escape(section.id)}"]`)) {
+    (link.closest('.navigation-item') ?? link).hidden = true;
+  }
+}
+
 // 描画が終わったことをテーマに知らせる。テーマ側の演出(スクロール連動など)は
 // この合図を受けて、あとから足されたカードにも効果をかけ直せる
 export function announceRendered(section) {
