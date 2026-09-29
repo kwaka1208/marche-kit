@@ -295,7 +295,7 @@ HTMLタグは書けません。保存時にサーバー側で除去されます�
 | `validation` | | `email` / `phone` / `url` / `number` / `halfwidth`。**選択式には効きません** |
 | `maxLength` | | 文字数の上限 |
 | `placeholder` | | 入力例。`select` では先頭の空選択肢の文言になる |
-| `description` | | ラベルの下に出す補足。`aria-describedby` で入力欄に関連付きます |
+| `description` | | ラベルの下に出す補足。`aria-describedby` で入力欄に関連付けます |
 | `autocomplete` | | ブラウザの補完に渡す属性値（`name` / `email` / `tel` など） |
 | `options` | | `select` / `radio` / `checkbox` の選択肢。`[{"value", "label"}]` |
 | `min` / `max` / `step` | | `number` / `date` / `time` の範囲と刻み |

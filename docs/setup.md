@@ -353,7 +353,7 @@ rsync -av --exclude 'data/shop-data' --exclude 'data/news.json' \
 
 **2 が空欄のときはブラウザのコンソールを見てください。**
 `marche.config.json に 'evnt.venue' がありません` のように、
-コアが指したパスを残しています。`tools/validate.py` も同じ綴り違いを指摘します。
+コアが探しに行ったパスをコンソールに残します。`tools/validate.py` も同じ綴り違いを指摘します。
 
 `?fixed` は表示順のシャッフルを止めます。**付けないと毎回並びが変わります**ので、
 確認のあいだは付けておくと楽です。
@@ -501,10 +501,10 @@ my-event/
 └── astro.config.mjs
 ```
 
-CSSは `public/css/` に置いても、Astro側でimportしてもかまいません。
+CSSは `public/css/` に置いても、Astro側でimportしても構いません。
 ビルドすると `dist/` に出るので、**その中身を公開ディレクトリへ上げます**（手順7以降は同じです）。
 
-### 設定をビルド時に読める
+### 設定はビルド時にも読める
 
 `marche.config.json` はただのJSONなので、Astro側からimportできます。
 
