@@ -46,6 +46,76 @@ stripped server-side. Images are checked for extension, MIME type and size. Vend
 product IDs have fixed formats so nobody can write into another vendor's data.
 **Even so, a mistake can still go public.**
 
+## Ship it fast
+
+**If you only want one site up, this section is all you need to read.**
+No git, no Node.js, no build step — just a shared host that runs PHP.
+
+### 1. Get it
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/kwaka1208/marche-kit/main/tools/fetch-release.sh
+bash fetch-release.sh
+```
+
+The latest release lands in `marche-kit-<ver>-site-default/`.
+For the dark theme, add `--theme night-market`.
+
+**Read the script before you run it.** That is why it is not written as a pipe into a shell.
+
+Downloading `marche-kit-<ver>-site-<theme>.zip` from the
+[releases page](https://github.com/kwaka1208/marche-kit/releases) and unzipping it
+gets you the same thing. **The contents are already laid out as a public directory** —
+nothing to rearrange.
+
+### 2. Fill in three files
+
+```bash
+cd marche-kit-<ver>-site-default
+make env          # creates .env
+```
+
+These three are the only files you touch.
+
+| File | What goes in it |
+|---|---|
+| `.env` | Admin key, notification addresses, and **where your server is** |
+| `site/marche.config.json` | Event name, venue, dates |
+| `site/data/shops.json` | The list of vendor IDs |
+
+The server lives in the `DEPLOY_*` keys of `.env`. Use `rsync` if you have SSH,
+or `ftp` for a shared host that only speaks FTP (this one needs `lftp`).
+
+**Products are not shown by default.** Events that are only about the vendors themselves
+are the bare case. To list them, add `"items": { "display": "list" }` to `marche.config.json`.
+
+### 3. Send it
+
+```bash
+make setup          # inject the secrets, validate what you wrote
+make deploy-init    # upload, then fix up permissions
+```
+
+From then on use `make deploy`. **That one will not overwrite what vendors have saved.**
+
+### Check that it works
+
+| URL | Who uses it |
+|---|---|
+| `/` | Visitors |
+| `/editor/` | Each vendor — all you hand out is **this URL and their shop ID** |
+| `/editor/news/` | Organizers, for announcements (needs the admin key) |
+
+Add `/?fixed` to stop the display order from shuffling while you check.
+
+If something is off, see
+[docs/setup.md](docs/setup.md) (Japanese) — it has a troubleshooting table.
+The same steps ship inside the download as `START-HERE.md`.
+
+---
+
+**Everything below is for people writing themes or changing the internals.**
+
 ## Three layers
 
 marche-kit borrows the structure of a real marketplace.
@@ -79,33 +149,48 @@ decoration — **it is the real test of whether the separation holds.** If the d
 correctly with nothing styling it, the theme has not leaked into the core. The two share
 the same data and config — only the markup and the CSS differ.
 
-## Using it for your event
+## Customizing it
 
 It is a template, not a dependency. You copy it rather than installing it —
 it contains PHP, and every event customizes it.
+
+**To just get a site up, [Ship it fast](#ship-it-fast) is enough.**
+What follows is for writing your own theme, reading the core, or assembling
+the public directory yourself from the full set.
 
 ### Download a zip (no git needed)
 
 Three zips are attached to each [release](https://github.com/kwaka1208/marche-kit/releases).
 
-| zip | Contents |
-|---|---|
-| `marche-kit-<ver>-site-default.zip` | **Assembled into the shape of a public directory**, neutral theme |
-| `marche-kit-<ver>-site-night-market.zip` | The same, with the dark theme |
-| `marche-kit-<ver>.zip` | Everything: both themes, the samples, the documentation |
+| zip | Contents | For |
+|---|---|---|
+| `marche-kit-<ver>-site-default.zip` | **Assembled into the shape of a public directory**, neutral theme | Just shipping |
+| `marche-kit-<ver>-site-night-market.zip` | The same, with the dark theme | Same |
+| `marche-kit-<ver>.zip` | Everything: both themes, the samples, the documentation | **Customizing** |
 
-**To get something running, take one of the assembled ones.** Unzip it, fill in the
-config, and upload the contents of `site/` to your server. The steps are in the bundled
-`START-HERE.md` (Japanese). Take the full set instead if you want to write your own theme
-or read through the internals.
+**Take the full set if you want to write your own theme or read the core.**
+The assembled zips contain neither `themes/` nor `core/`.
+
+```bash
+bash fetch-release.sh --source    # the full set
+```
 
 ### Or clone it
 
+**git is not required.** Cloning is one way to get the full set; the zip gives you
+the same thing. This is a template — **it is not built to track upstream.**
+
 ```bash
 git clone https://github.com/kwaka1208/marche-kit my-event
-cd my-event
-rm -rf .git && git init
+cd my-event && rm -rf .git && git init
 ```
+
+`rm -rf .git` **throws away the upstream history.** It is neither a fork nor a
+dependency: from here on it is your event's repository. The `git init` that follows
+is optional — it is there if you want to version-control your event's config.
+
+> `cd my-event && rm -rf .git` is chained with `&&` so that **a failed clone cannot
+> delete the `.git` of whatever directory you happen to be standing in.**
 
 Same contents as the full zip. **Either way, you assemble the public directory yourself**
 — step 2 of [docs/setup.md](docs/setup.md).
@@ -128,6 +213,38 @@ python3 tools/inject-env.py <deploy directory>
 
 Full instructions — assembling the public directory, permissions, and a verification
 checklist — are in [docs/setup.md](docs/setup.md) (Japanese).
+
+### Doing it with make
+
+Assembling, injecting, validating and uploading are all reachable from the `Makefile`.
+**It does exactly what docs/setup.md describes**, calling the scripts in `tools/` in order.
+
+```bash
+make env            # create .env from .env.example
+                    # then write the admin key, addresses and server into .env
+make build          # assemble → inject secrets → validate
+                    # then write your event into the config files under build/site/
+make deploy-init    # first upload, plus permissions
+make deploy         # afterwards. **Never overwrites what vendors saved**
+```
+
+`make help` lists everything. Theme and destination are variables
+(`make build THEME=night-market SITE=../my-event-site`).
+
+Three transports, chosen with `DEPLOY_METHOD` in `.env`.
+
+| Method | When |
+|---|---|
+| `rsync` | The host gives you SSH. Sends only what changed — recommended |
+| `sftp` | SSH works but `rsync` is not installed |
+| `ftp` | A shared host that only speaks FTP. Needs `lftp` |
+
+**`make deploy` does not upload `data/shop-data/` or `data/news.json`.**
+Vendors and organizers write those on the server, so pushing your older local copy
+over them would destroy their work.
+
+The assembled zips ship the same Makefile. There `site/` already exists, so it is just
+`make env` → `make setup` → `make deploy-init`.
 
 ## Documentation
 

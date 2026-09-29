@@ -1,8 +1,13 @@
 # セットアップ手順
 
 リポジトリから、実際に公開するサイトを組み立てて配置するまでの手順です。
-架空のイベントで試したいだけなら、先に [`examples/demo/`](../examples/demo/README.md) を
-動かしてください（PHPもサーバーも要りません）。
+**何が起きているかを1つずつ説明する文書**なので、長くなっています。
+
+- **サイトを1つ立ち上げたいだけなら** → [README の「最短で公開する」](../README.md#最短で公開する)
+  （配置済みzipを取って、3ファイル書いて、送るだけ）
+- **架空のイベントで試したいだけなら** → [`examples/demo/`](../examples/demo/README.md)
+  （PHPもサーバーも要りません）
+- **中で何をしているか知りたい、素材一式から組み立てたい** → このまま読み進めてください
 
 ## 動作要件
 
@@ -11,7 +16,20 @@
 | サーバー | **セキュリティサポートが継続しているPHP**が動く一般的なレンタルサーバー。**データベースは要りません** |
 | PHPの拡張 | `mbstring`（メール送信）、`curl`（Webhook通知。無ければ通知だけスキップされます） |
 | 手元 | `python3`（設定の注入と検証に使います。サーバー側には不要。**無くても手作業で代替できます**→[手順5](#5-秘密情報を注入する)） |
+| 手元（任意） | `make`（手順をまとめて実行する。**無くても手順どおり手で進められます**→[make でまとめて行う](#make-でまとめて行う)） |
+| 転送 | 方式によって変わります。下の表を参照 |
 | ブラウザ | ESモジュールが動くもの。**ビルドは要りません** |
+
+**git も Node.js も要りません。** リリースのzipを解凍すれば、それだけで一式が揃います。
+
+転送に何が要るかは、サーバーが何を受け付けるかで決まります。
+
+| 方式 | 手元に要るもの | サーバー側の条件 |
+|---|---|---|
+| `rsync` | `rsync` と `ssh`（macOS・Linuxは標準で入っています） | SSHが使える。**差分だけ送るので速い。推奨** |
+| `sftp` | `sftp`（同上） | SSHは使えるが `rsync` が入っていない |
+| `ftp` | `lftp`（**別途インストールが要ります**。`brew install lftp`） | FTPしか使えないレンタルサーバー |
+| 手作業 | FTPクライアント（FileZillaなど） | どれでも |
 
 > **PHPのバージョンは「サポートが切れていないこと」で決めています。**
 > 数字を書いて固定すると、その数字自体がいずれ古くなるためです。
@@ -68,6 +86,46 @@
 サブディレクトリ（`https://example.com/2026/` など）に置いても動きます。
 コアのパスはすべてページからの相対で解決されます。
 
+## make でまとめて行う
+
+以下の手順は `Makefile` から呼べます。**やっていることは同じ**なので、
+何が起きているかを知りたいときは手順のほうを読んでください。
+
+```bash
+make help           # できることの一覧
+make env            # .env.example から .env を作る（手順5）
+make build          # 組み立て → 注入 → 検証（手順2・3・4・5・6）
+make deploy-init    # 初回の転送 ＋ パーミッション（手順7・8）
+make deploy         # 2回目以降の転送
+```
+
+| ターゲット | 対応する手順 |
+|---|---|
+| `make env` | `.env` を用意する（手順5の前半） |
+| `make site` | 配置用ディレクトリの組み立て（手順2）と雛形の生成（手順3・4の下地） |
+| `make inject` | `tools/inject-env.py`（手順5） |
+| `make validate` | `tools/validate.py`（手順6） |
+| `make build` | 上の3つをまとめて |
+| `make deploy-dry` | 送らずに差分だけ見る |
+| `make deploy-init` | 初回の転送（手順7）＋ パーミッション（手順8） |
+| `make deploy` | 2回目以降の転送。**サーバー側で育つファイルを送らない** |
+| `make deploy-prune` | `make deploy` ＋ サーバー側の余計なファイルを削除 |
+| `make permissions` | パーミッションだけ整える（手順8） |
+
+テーマと配置先は変数で変えられます。既定は `THEME=default` `SITE=build/site` です。
+
+```bash
+make build THEME=night-market SITE=../my-event-site
+```
+
+**`make site` は、すでにあるファイルを上書きしません。**
+`index.html`・`css/`・`marche.config.json`・`data/shops.json` のように
+自分で手を入れるものはそのまま残し、コア（`js/` `i18n/` `editor/` `data/*.php`）だけを
+毎回入れ替えます。版を上げたときは `make site` をもう一度叩けばコアだけが更新されます。
+
+転送には接続先の情報が要ります。`.env` の `DEPLOY_*` に書いてください
+（[手順7](#7-サーバーへ上げる)）。
+
 ## 手順
 
 ### 1. 一式を取得する
@@ -78,14 +136,39 @@
 **配置済みのzip（`marche-kit-<版>-site-<テーマ>.zip`）を取ったなら、次の手順2は要りません。**
 解凍すると `site/` が上の完成形そのものになっています。**手順3へ進んでください。**
 
+取得と展開は `tools/fetch-release.sh` でまとめて行えます。
+**このファイル1つだけで動く**ので、リポジトリを持っていなくても使えます。
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/kwaka1208/marche-kit/main/tools/fetch-release.sh
+bash fetch-release.sh                        # 最新版・配置済み・default テーマ
+bash fetch-release.sh --theme night-market   # テーマを変える
+bash fetch-release.sh --source               # 素材一式のほうを取る
+```
+
+**落としたスクリプトは、実行する前に中身を読んでください。**
+パイプでそのままシェルに流さない書き方にしてあるのは、そのためです。
+
 自分で組み立てるときは、素材一式（`marche-kit-<版>.zip`）を取って解凍します。
-gitで取っても中身は同じです。
+
+#### gitで取ることもできます
+
+**gitは要りません。** cloneは素材一式を取る手段の一つで、zipと結果は同じです。
+このキットはテンプレート方式なので、**上流を追いかける前提で作られていません。**
 
 ```bash
 git clone https://github.com/kwaka1208/marche-kit my-event
-cd my-event
-rm -rf .git && git init
+cd my-event && rm -rf .git && git init
 ```
+
+`rm -rf .git` で**上流の履歴を捨てています。** フォークでも依存でもなく、
+ここから先は自分のイベントのリポジトリだ、という区切りです。
+続く `git init` は、イベントの設定を自分で版管理したい人向けの任意の操作で、
+版管理しないなら省いて構いません。
+
+> `cd my-event && rm -rf .git` を `&&` でつないでいるのは、
+> **cloneが失敗したときに、いま居るディレクトリの `.git` を消さないため**です。
+> 3行を続けてコピーして貼るとき、これが無いと別のリポジトリを壊すことがあります。
 
 ### 2. 配置用のディレクトリを組み立てる
 
@@ -304,6 +387,40 @@ rsync -av --delete "$SITE"/ user@example.com:/home/user/public_html/
 rsync -av --exclude 'data/shop-data' --exclude 'data/news.json' \
       --exclude 'data/secrets.php' "$SITE"/ user@example.com:/home/user/public_html/
 ```
+
+#### make で送る
+
+接続先を `.env` に書いておくと、`make` から送れます。**除外の指定を毎回書かずに済みます。**
+
+```
+DEPLOY_METHOD=rsync        # rsync | sftp | ftp
+DEPLOY_HOST=example.com
+DEPLOY_USER=user
+DEPLOY_PATH=/home/user/public_html
+DEPLOY_PORT=               # 既定でよければ空
+DEPLOY_KEY=                # SSH秘密鍵。空なら ~/.ssh/config と ssh-agent に任せる
+DEPLOY_PASSWORD=           # ftp のときだけ
+```
+
+`tools/inject-env.py` は `MARCHE_` で始まる行しか読まないので、
+**この値が `secrets.php` やエディタJSに混ざることはありません。**
+
+```bash
+make deploy-dry     # 送らずに、何が変わるかだけ見る
+make deploy-init    # 初回。中身をすべて送る
+make deploy         # 2回目以降。data/shop-data/ と data/news.json は送らない
+```
+
+| 方式 | 使うとき | 備考 |
+|---|---|---|
+| `rsync` | SSHが使えるサーバー | 差分だけ送るので速い。推奨 |
+| `sftp` | SSHは使えるが rsync が入っていない | 毎回すべて送る。サーバー側の削除はできない |
+| `ftp` | FTPしか使えないレンタルサーバー | `lftp` が要る（`brew install lftp`） |
+
+送信先と動作を表示して確認を取ってから実行します。省くときは `YES=1 make deploy` です。
+
+**`--delete` に相当するのは `make deploy-prune` だけです。** 既定では消しません。
+`deploy-prune` でも `data/shop-data/` と `data/news.json` は除外しているので残ります。
 
 ### 8. パーミッションを整える
 
@@ -560,16 +677,43 @@ SSGを使っても、この部分がビルド時に固定されることはあ�
 | 送信は成功するのにメールが来ない | `MARCHE_NOTIFY_EMAIL` / `MARCHE_SENDER_EMAIL` が未設定 | 未設定なら500で失敗します。成功しているなら `mail()` 側の問題 |
 | 通知メールの選択肢が `exhibit` のまま | 定義の `options` に `label` が無い | `{"value": …, "label": …}` の形にする |
 
+転送まわり（`make deploy` 系）でつまずくのは、だいたい次のどれかです。
+
+| 症状 | 原因 | 対処 |
+|---|---|---|
+| `lftp がありません` で止まる | FTP方式には `lftp` が要る | `brew install lftp`。SSHが使えるなら `DEPLOY_METHOD=rsync` のほうが速い |
+| `.env の DEPLOY_HOST が空です` | 接続先を書いていない | `.env` の `DEPLOY_*` を埋める（[手順7](#7-サーバーへ上げる)） |
+| **出店者が編集した内容が消えた** | `make deploy-init` を運用開始後に使った | 初回用は全部送ります。2回目以降は必ず `make deploy` |
+| `make deploy` してもサーバーのお知らせが変わらない | **これは正常です** | `data/news.json` はサーバー側で育つので送りません。編集は `/editor/news/` から |
+| 上げたのにエディタが「管理キーが違う」と言う | `make inject` の前に送った | `make setup` を通してから送り直す |
+| `secrets.php` を読めずにPHPがエラーになる | `600` では読めないサーバー（`mod_php` など） | サーバー上で `640` か `644` にする（[手順8](#8-パーミッションを整える)） |
+| `make deploy-prune` でファイルが消えた | `prune` はサーバー側の余計なファイルを消す | `data/shop-data/` と `data/news.json` は除外されるので残ります。ほかは戻せません |
+| 確認プロンプトで止まったまま進まない | 対話端末が無い（CIなど） | `YES=1 make deploy` |
+
 ## 更新のしかた
 
-| 何を変えるとき | やること |
-|---|---|
-| コアを新しくする | `js/` `i18n/` `editor/` `data/*.php` を置き換え、`inject-env.py` を再実行する |
-| テーマを変える | `index.html` と `css/` `images/` を置き換える。データはそのまま |
-| 開催年を変える | `marche.config.json` の `event.year` と `days` を書き換える。**テーマは触りません** |
-| 出店者を入れ替える | `data/shops.json` を書き換える。**古い `shop-data/<店舗ID>/` は自動では消えません** |
+| 何を変えるとき | やること | make なら |
+|---|---|---|
+| コアを新しくする | `js/` `i18n/` `editor/` `data/*.php` を置き換え、`inject-env.py` を再実行する | `make site` → `make inject` |
+| テーマを変える | `index.html` と `css/` `images/` を置き換える。データはそのまま | 手で置き換える（下記） |
+| 開催年を変える | `marche.config.json` の `event.year` と `days` を書き換える。**テーマは触りません** | 書いたら `make validate` |
+| 出店者を入れ替える | `data/shops.json` を書き換える。**古い `shop-data/<店舗ID>/` は自動では消えません** | 書いたら `make validate` |
 
-コアを更新したあとは、**`inject-env.py` の再実行を忘れないでください。**
+いずれの場合も、サーバーへ反映するのは `make deploy` です。
+**`make deploy-init` ではありません。** 初回用は出店者のデータも送るため、
+運用が始まったあとに使うとサーバー側の内容を古い手元の内容で上書きします。
+
+**`make site` は、すでにあるファイルを上書きしません。**
+`index.html`・`css/`・`images/`・`marche.config.json`・`data/shops.json` のように
+**自分で手を入れるもの**はそのまま残し、
+コア（`js/` `i18n/` `editor/` `data/*.php`）だけを毎回入れ替えます。
+版を上げたときに `make site` をもう一度叩けば、コアだけが新しくなります。
+
+裏を返すと、**テーマの差し替えは `make site` ではできません。**
+残す側に入っているためです。`index.html` と `css/` `images/` を消してから
+`make site THEME=<新しいテーマ>` を叩くか、手で置き換えてください。
+
+コアを更新したあとは、**`inject-env.py` の再実行（`make inject`）を忘れないでください。**
 新しい `editor/*.js` にはプレースホルダが入っています。
 実行漏れはツール自身が「プレースホルダが残っています」と教えてくれます。
 

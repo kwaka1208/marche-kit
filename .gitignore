@@ -2,6 +2,8 @@
 node_modules/
 # ビルド成果物
 dist/
+# Makefile が組み立てる配置用ディレクトリ(実運用の値と出店者データが入る)
+build/
 .astro/
 # 環境固有の設定(通知先メール・Webhook URL・管理キー)
 .env

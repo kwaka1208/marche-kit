@@ -6,15 +6,28 @@
 ```
 このフォルダ/
 ├── site/                 ← **ここの中身だけ**をサーバーの公開ディレクトリへ上げる
+├── Makefile              ← 注入・検証・転送の入口。上げない
 ├── tools/                ← 手元で使う道具。上げない
 ├── docs/                 ← 詳しい手順。上げない
-├── .env.example          ← 通知先メールなどの記入用。上げない
+├── .env.example          ← 通知先メールとサーバーの接続先の記入用。上げない
 ├── secrets.example.php   ← python3 を使わないときの受け皿の見本。上げない
 └── START-HERE.md         ← このファイル
 ```
 
 必要なのは **PHPが動く一般的なレンタルサーバー**だけです。データベースは使いません。
 手元には `python3` があると楽です（無くても進められます。下の「python3 が無いとき」）。
+
+**全体はこれだけです。** 一つずつの中身は、下の1〜6で説明します。
+
+```
+make env            .env を作る（管理キー・通知先メール・サーバーの接続先を書く）
+                    site/marche.config.json と site/data/shops.json を書く
+make setup          秘密情報を注入して検証する
+make deploy-init    サーバーへ送り、パーミッションを整える
+```
+
+`make help` で一覧が出ます。**make を使わず手でやっても構いません。**
+各手順に、makeが実際に叩いているコマンドを併記しています。
 
 ## 1. イベントのことを書く
 
@@ -68,11 +81,17 @@
 
 ## 3. 通知先と管理キーを入れる
 
-`.env.example` を `.env` という名前でコピーして、値を書きます。
-問い合わせの通知先メール、お知らせ編集に使う管理キー、通知先のWebhook URLです。
+```
+make env
+```
+
+`.env` ができるので、開いて値を書きます。問い合わせの通知先メール、
+お知らせ編集に使う管理キー、通知先のWebhook URL、そして**サーバーの接続先**です。
+
+書けたら、site/ へ流し込みます。
 
 ```
-python3 tools/inject-env.py site
+make inject          （中身は python3 tools/inject-env.py site）
 ```
 
 これで `site/data/secrets.php` ができ、`site/editor/` のJSに管理キーが入ります。
@@ -97,14 +116,47 @@ python3 tools/inject-env.py site
 上げる前に、書いた内容が仕様に合っているかを見ます。外部ライブラリは要りません。
 
 ```
-python3 tools/validate.py site
+make validate        （中身は python3 tools/validate.py site）
 ```
+
+注入と検証をまとめてやるなら `make setup` です。
 
 店舗IDの不整合、HTMLタグの混入、画像の欠落に加えて、
 **`index.html` のスロットとカテゴリIDが対応しているか**も確かめます。
 カテゴリを増減したら必ず通してください。
 
 ## 5. サーバーへ上げる
+
+`.env` にサーバーの接続先を書いてあれば、`make` から送れます。
+
+```
+make deploy-dry      送らずに、何が変わるかだけ見る
+make deploy-init     初回。中身をすべて送り、パーミッションも整える
+make deploy          2回目以降
+```
+
+`.env` に書くのは次の5つです。
+
+```
+DEPLOY_METHOD=rsync                    # rsync | sftp | ftp
+DEPLOY_HOST=example.com
+DEPLOY_USER=あなたのログイン名
+DEPLOY_PATH=/home/user/public_html     # サーバーの公開ディレクトリ
+DEPLOY_PASSWORD=                       # ftp のときだけ
+```
+
+| 方式 | 使うとき |
+|---|---|
+| `rsync` | SSHが使えるサーバー。差分だけ送るので速い（推奨） |
+| `sftp` | SSHは使えるが rsync が入っていないサーバー |
+| `ftp` | FTPしか使えないレンタルサーバー。`lftp` が要ります（`brew install lftp`） |
+
+**2回目以降は `make deploy` を使ってください。** `make deploy` は
+`site/data/shop-data/` と `site/data/news.json` を送りません。
+**出店者が保存した紹介文と、運営が追加したお知らせは、サーバー側にしかないため**です。
+手元の古い内容で上書きすると消えます。
+
+### 手で上げるとき
 
 `site/` の**中身**を、公開ディレクトリへそのままアップロードします（FTP / SFTP）。
 `site` というフォルダごと上げるのではありません。
@@ -129,6 +181,11 @@ python3 tools/validate.py site
 | `data/news.json` | 書き込み可（`644` で足りなければ `664` / `666`） |
 | `data/secrets.php` | `600` |
 | ほかのファイル | `644`／ディレクトリ `755` |
+
+`make deploy-init` はこの3つを自動で設定します。あとから整え直すなら `make permissions` です。
+
+**`secrets.php` が `600` のままでは読めないサーバーもあります**（`mod_php` など、
+PHPが自分以外のユーザーで動く場合）。そのときは `640` や `644` まで緩めてください。
 
 ## 動いたら
 

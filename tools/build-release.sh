@@ -12,6 +12,7 @@
 #
 # 「配置済み」は docs/setup.md の手順2（公開ディレクトリの組み立て）を済ませた形。
 # 利用者は解凍して設定を書き、site/ の中身をサーバーへ上げるだけでよい。
+# 同梱の Makefile と tools/deploy.sh で、その注入・検証・転送を make から行える。
 #
 # **シンボリックリンクはすべて実体に展開する。** リポジトリの中では
 # examples/ や themes/ の参照をリンクで済ませているが、zipのまま
@@ -54,6 +55,7 @@ EXCLUDES=(
     --exclude=.git
     --exclude=.github
     --exclude=dist
+    --exclude=build
     --exclude=.DS_Store
     --exclude=__pycache__
     --exclude=.env
@@ -103,9 +105,12 @@ build_site () {
 
     echo '[]' > "$site/data/news.json"
 
-    # 秘密情報の注入と検証に使う。**公開ディレクトリには置かない**ので site/ の外
-    cp tools/inject-env.py tools/validate.py "$base/tools"/
+    # 秘密情報の注入・検証・転送に使う。**公開ディレクトリには置かない**ので site/ の外
+    cp tools/inject-env.py tools/validate.py tools/deploy.sh "$base/tools"/
     cp .env.example LICENSE "$base"/
+
+    # 注入から転送までの入口。利用者は make だけで済む
+    cp tools/release/Makefile "$base"/
     rsync -aL docs/ "$base/docs"/
 
     # python3 が無い環境では、これを写して secrets.php を手で作る。
